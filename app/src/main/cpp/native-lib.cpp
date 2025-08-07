@@ -59,6 +59,12 @@ public:
         audioBuffer = new AudioBuffer(data, sampleRate, channelCount, frameCount);
     }
 
+    void setBufferSize(int bufferSize) {
+        if (stream_) {
+            stream_->setBufferSizeInFrames(bufferSize);
+        }
+    }
+
     oboe::Result start() {
         oboe::AudioStreamBuilder builder;
         builder.setDirection(oboe::Direction::Output);
@@ -213,6 +219,11 @@ Java_com_example_audioapp_audio_AudioEngine_native_1setAudioBuffer(JNIEnv *env, 
     engine.setAudioBuffer(data, sampleRate, channelCount, frameCount);
 
     env->ReleaseFloatArrayElements(dataArray, data, JNI_ABORT);
+}
+
+extern "C" JNIEXPORT void JNICALL
+Java_com_example_audioapp_audio_AudioEngine_native_1setBufferSize(JNIEnv *env, jclass clazz, jint buffer_size) {
+    engine.setBufferSize(buffer_size);
 }
 
 extern "C" JNIEXPORT jlong JNICALL

@@ -12,6 +12,7 @@ public class TimelineView extends View {
 
     private AudioBuffer audioBuffer;
     private Paint paint;
+    private int playbackPosition;
 
     public TimelineView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -23,6 +24,11 @@ public class TimelineView extends View {
     public void setAudioBuffer(AudioBuffer audioBuffer) {
         this.audioBuffer = audioBuffer;
         requestLayout();
+        invalidate();
+    }
+
+    public void setPlaybackPosition(int playbackPosition) {
+        this.playbackPosition = playbackPosition;
         invalidate();
     }
 
@@ -53,6 +59,10 @@ public class TimelineView extends View {
                 float stopY = centerY - data[(i + 1) * channelCount] * scaleY;
                 canvas.drawLine(startX, startY, stopX, stopY, paint);
             }
+
+            paint.setColor(Color.RED);
+            canvas.drawLine(playbackPosition, 0, playbackPosition, getHeight(), paint);
+            paint.setColor(Color.BLUE);
         }
     }
 }

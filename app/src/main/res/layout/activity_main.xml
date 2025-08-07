@@ -10,7 +10,7 @@
         android:id="@+id/horizontal_scroll_view"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/button_load_file"
+        app:layout_constraintBottom_toTopOf="@+id/controls_layout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -21,13 +21,39 @@
             android:layout_height="match_parent" />
     </HorizontalScrollView>
 
-    <Button
-        android:id="@+id/button_load_file"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/controls_layout"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Load File"
+        android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent">
+
+        <Button
+            android:id="@+id/button_play"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Play" />
+
+        <Button
+            android:id="@+id/button_pause"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Pause" />
+
+        <Button
+            android:id="@+id/button_stop"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Stop" />
+
+        <Button
+            android:id="@+id/button_load_file"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Load File" />
+
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

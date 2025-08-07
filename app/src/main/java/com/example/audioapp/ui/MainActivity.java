@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.widget.Button;
 import android.widget.Toast;
 import com.example.audioapp.R;
@@ -21,6 +22,8 @@ public class MainActivity extends AppCompatActivity {
     private static final int FILE_PICKER_REQUEST_CODE = 2;
 
     private TimelineView timelineView;
+    private Handler handler = new Handler();
+    private Runnable playbackPositionUpdater;
 
     // Used to load the 'audioapp' library on application startup.
     static {
@@ -42,6 +45,18 @@ public class MainActivity extends AppCompatActivity {
             startActivityForResult(intent, FILE_PICKER_REQUEST_CODE);
         });
 
+        Button playButton = findViewById(R.id.button_play);
+        playButton.setOnClickListener(v -> AudioEngine.native_setPlaying(true));
+
+        Button pauseButton = findViewById(R.id.button_pause);
+        pauseButton.setOnClickListener(v -> AudioEngine.native_setPlaying(false));
+
+        Button stopButton = findViewById(R.id.button_stop);
+        stopButton.setOnClickListener(v -> {
+            AudioEngine.native_setPlaying(false);
+            AudioEngine.native_setPlaybackPosition(0);
+        });
+
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO)
                 != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.RECORD_AUDIO},
@@ -50,6 +65,14 @@ public class MainActivity extends AppCompatActivity {
             AudioEngine.native_create();
             AudioEngine.native_start();
         }
+
+        playbackPositionUpdater = new Runnable() {
+            @Override
+            public void run() {
+                timelineView.setPlaybackPosition(AudioEngine.native_getPlaybackPosition());
+                handler.postDelayed(this, 100);
+            }
+        };
     }
 
     @Override
@@ -73,6 +96,7 @@ public class MainActivity extends AppCompatActivity {
                 Uri uri = data.getData();
                 AudioBuffer audioBuffer = AudioFileLoader.load(getContentResolver(), uri);
                 if (audioBuffer != null) {
+                    AudioEngine.native_setAudioBuffer(audioBuffer);
                     timelineView.setAudioBuffer(audioBuffer);
                     Toast.makeText(this, "File loaded successfully", Toast.LENGTH_SHORT).show();
                 } else {
@@ -83,14 +107,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onStop() {
-        super.onStop();
-        AudioEngine.native_stop();
+    protected void onStart() {
+        super.onStart();
+        handler.post(playbackPositionUpdater);
     }
 
-    /**
-     * A native method that is implemented by the 'audioapp' native library,
-     * which is packaged with this application.
-     */
-    public native String stringFromJNI();
+    @Override
+    protected void onStop() {
+        super.onStop();
+        handler.removeCallbacks(playbackPositionUpdater);
+        AudioEngine.native_stop();
+    }
 }

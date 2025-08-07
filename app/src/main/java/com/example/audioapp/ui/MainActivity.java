@@ -15,6 +15,7 @@ import com.example.audioapp.R;
 import com.example.audioapp.audio.AudioBuffer;
 import com.example.audioapp.audio.AudioEngine;
 import com.example.audioapp.audio.AudioFileLoader;
+import com.example.audioapp.engine.ProcessingModeDetector;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -24,6 +25,7 @@ public class MainActivity extends AppCompatActivity {
     private TimelineView timelineView;
     private Handler handler = new Handler();
     private Runnable playbackPositionUpdater;
+    private ProcessingModeDetector processingModeDetector;
 
     // Used to load the 'audioapp' library on application startup.
     static {
@@ -36,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         timelineView = findViewById(R.id.timeline_view);
+        processingModeDetector = new ProcessingModeDetector();
 
         Button loadFileButton = findViewById(R.id.button_load_file);
         loadFileButton.setOnClickListener(v -> {
@@ -109,12 +112,14 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+        processingModeDetector.setInForeground(true);
         handler.post(playbackPositionUpdater);
     }
 
     @Override
     protected void onStop() {
         super.onStop();
+        processingModeDetector.setInForeground(false);
         handler.removeCallbacks(playbackPositionUpdater);
         AudioEngine.native_stop();
     }

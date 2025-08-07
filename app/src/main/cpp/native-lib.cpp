@@ -21,7 +21,17 @@ struct ParameterChange {
 
 class AudioEngine : public oboe::AudioStreamCallback {
 public:
-    AudioEngine() : circularBuffer(1024), paramQueue(128) {}
+    AudioEngine() : circularBuffer(1024), paramQueue(128) {
+        for (int i = 0; i < 2; ++i) {
+            bufferPool.push_back(new float[4096]);
+        }
+    }
+
+    ~AudioEngine() {
+        for (auto buffer : bufferPool) {
+            delete[] buffer;
+        }
+    }
 
     void addPlugin(avst::PluginHandle *plugin) {
         plugins.push_back(plugin);
@@ -140,6 +150,8 @@ public:
     }
 
     std::vector<avst::PluginHandle *> plugins;
+    std::vector<float *> bufferPool;
+    int currentBuffer = 0;
 private:
     oboe::AudioStream *stream_ = nullptr;
     int32_t sampleRate_ = 0;
@@ -283,10 +295,19 @@ Java_com_example_audioapp_avst_AvstHost_native_1process(JNIEnv *env, jclass claz
     };
 
     float *input = data;
-    float *output = new float[frameCount];
+    float *output = engine.bufferPool[engine.currentBuffer];
+    engine.currentBuffer = (engine.currentBuffer + 1) % engine.bufferPool.size();
+    int currentChannels = 1;
 
     for (int i = 0; i < count; i++) {
         avst::PluginHandle *pluginHandle = (avst::PluginHandle *) handles[i];
+        avst::AudioIOConfig pluginConfig = pluginHandle->plugin->getAudioIOConfig();
+
+        if (pluginConfig.currentInputChannels != currentChannels) {
+            ALOGE("Plugin %d has incompatible input channels", i);
+            // Here I should handle the error, but for now I will just log it.
+        }
+
         if (!pluginHandle->bypassed) {
             avst::ProcessContext context = {
                     .frameCount = (uint32_t) frameCount,
@@ -295,14 +316,18 @@ Java_com_example_audioapp_avst_AvstHost_native_1process(JNIEnv *env, jclass claz
             };
             pluginHandle->plugin->processAudio(context);
             input = output;
+            if (i < count - 1) {
+                output = engine.bufferPool[engine.currentBuffer];
+                engine.currentBuffer = (engine.currentBuffer + 1) % engine.bufferPool.size();
+            }
         }
+        currentChannels = pluginConfig.currentOutputChannels;
     }
 
     if (input != data) {
-        memcpy(data, output, frameCount * sizeof(float));
+        memcpy(data, input, frameCount * sizeof(float));
     }
 
-    delete[] output;
     env->ReleaseLongArrayElements(native_handles, handles, JNI_ABORT);
     env->ReleaseFloatArrayElements(buffer, data, 0);
 }

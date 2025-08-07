@@ -68,6 +68,7 @@ public:
     virtual const char *getParameterName(int index) const = 0;
     virtual float getParameter(int index) const = 0;
     virtual void setParameter(int index, float value) = 0;
+    virtual AudioIOConfig getAudioIOConfig() const = 0;
 };
 
 typedef IAvstPlugin *(*CreateAvstPlugin_t)();

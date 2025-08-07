@@ -4,13 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AvstHost {
-    private final List<Plugin> plugins = new ArrayList<>();
+    private final PluginChain pluginChain = new PluginChain();
 
     public Plugin loadPlugin(String path) {
         long nativeHandle = native_loadPlugin(path);
         if (nativeHandle != 0) {
             Plugin plugin = new Plugin(nativeHandle);
-            plugins.add(plugin);
+            pluginChain.add(plugin);
             return plugin;
         }
         return null;
@@ -18,7 +18,7 @@ public class AvstHost {
 
     public void unloadPlugin(Plugin plugin) {
         native_unloadPlugin(plugin.getNativeHandle());
-        plugins.remove(plugin);
+        pluginChain.remove(plugin);
     }
 
     public int getParameterCount(Plugin plugin) {
@@ -38,9 +38,9 @@ public class AvstHost {
     }
 
     public void process(float[] buffer, int sampleRate) {
-        long[] nativeHandles = new long[plugins.size()];
-        for (int i = 0; i < plugins.size(); i++) {
-            nativeHandles[i] = plugins.get(i).getNativeHandle();
+        long[] nativeHandles = new long[pluginChain.getPlugins().size()];
+        for (int i = 0; i < pluginChain.getPlugins().size(); i++) {
+            nativeHandles[i] = pluginChain.getPlugins().get(i).getNativeHandle();
         }
         native_process(nativeHandles, buffer, sampleRate);
     }

@@ -14,12 +14,26 @@ public class Plugin {
 
     public void setBypass(boolean bypass) {
         this.bypass = bypass;
-        native_setBypass(nativeHandle, bypass);
+        AvstHost.native_setBypass(nativeHandle, bypass);
     }
 
     public boolean isBypassed() {
         return bypass;
     }
 
-    private static native void native_setBypass(long nativeHandle, boolean bypass);
+    public int getParameterCount() {
+        return AvstHost.native_getParameterCount(nativeHandle);
+    }
+
+    public String getParameterName(int index) {
+        return AvstHost.native_getParameterName(nativeHandle, index);
+    }
+
+    public float getParameter(int index) {
+        return AvstHost.native_getParameter(nativeHandle, index);
+    }
+
+    public void setParameter(int index, float value) {
+        AvstHost.native_setParameter(nativeHandle, index, value);
+    }
 }

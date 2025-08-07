@@ -52,6 +52,8 @@ struct MidiMessage {
     uint8_t data2;
 };
 
+class IAvstUI;
+
 class IAvstPlugin {
 public:
     virtual ~IAvstPlugin() = default;
@@ -70,6 +72,14 @@ public:
     virtual float getParameter(int index) const = 0;
     virtual void setParameter(int index, float value) = 0;
     virtual AudioIOConfig getAudioIOConfig() const = 0;
+    virtual IAvstUI *getUI() = 0;
+};
+
+class IAvstUI {
+public:
+    virtual ~IAvstUI() = default;
+    virtual void *getView() = 0;
+    virtual void setParameter(int index, float value) = 0;
 };
 
 typedef IAvstPlugin *(*CreateAvstPlugin_t)();

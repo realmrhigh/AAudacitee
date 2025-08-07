@@ -73,6 +73,7 @@ public:
     virtual void setParameter(int index, float value) = 0;
     virtual AudioIOConfig getAudioIOConfig() const = 0;
     virtual IAvstUI *getUI() = 0;
+    virtual void setQuality(int quality) = 0;
 };
 
 class IAvstUI {

@@ -1,5 +1,6 @@
 package com.example.audioapp.avst;
 
+import com.example.audioapp.engine.QualityProfile;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -85,6 +86,16 @@ public class AvstHost {
         }
     }
 
+    public void setPluginQuality(Plugin plugin, int quality) {
+        native_setPluginQuality(plugin.getNativeHandle(), quality);
+    }
+
+    public void setQualityProfile(QualityProfile.Quality quality) {
+        for (Plugin plugin : pluginChain.getPlugins()) {
+            setPluginQuality(plugin, quality.ordinal());
+        }
+    }
+
     private static native long native_loadPlugin(String path);
     private static native void native_unloadPlugin(long nativeHandle);
     private static native int native_getParameterCount(long nativeHandle);
@@ -96,4 +107,5 @@ public class AvstHost {
     private static native byte[] native_savePreset(long nativeHandle);
     private static native void native_loadPreset(long nativeHandle, byte[] preset);
     private static native byte[] native_saveChain(long[] nativeHandles);
+    private static native void native_setPluginQuality(long nativeHandle, int quality);
 }

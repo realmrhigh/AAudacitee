@@ -396,3 +396,9 @@ Java_com_example_audioapp_avst_AvstHost_native_1saveChain(JNIEnv *env, jclass cl
     env->SetByteArrayRegion(byteArray, 0, chainState.size(), (const jbyte *) chainState.data());
     return byteArray;
 }
+
+extern "C" JNIEXPORT void JNICALL
+Java_com_example_audioapp_avst_AvstHost_native_1setPluginQuality(JNIEnv *env, jclass clazz, jlong native_handle, jint quality) {
+    avst::PluginHandle *pluginHandle = (avst::PluginHandle *) native_handle;
+    pluginHandle->plugin->setQuality(quality);
+}

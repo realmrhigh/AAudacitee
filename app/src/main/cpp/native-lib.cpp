@@ -2,7 +2,9 @@
 #include <string>
 #include <oboe/Oboe.h>
 #include <android/log.h>
+#include <sched.h>
 #include "AudioBuffer.h"
+#include "CircularBuffer.h"
 
 #define LOG_TAG "AudioApp"
 #define ALOGI(...) __android_log_print(ANDROID_LOG_INFO, LOG_TAG, __VA_ARGS__)
@@ -10,6 +12,8 @@
 
 class AudioEngine : public oboe::AudioStreamCallback {
 public:
+    AudioEngine() : circularBuffer(1024) {}
+
     void setAudioBuffer(float *data, int sampleRate, int channelCount, int frameCount) {
         if (audioBuffer != nullptr) {
             delete audioBuffer;
@@ -31,6 +35,21 @@ public:
             ALOGE("Failed to create stream. Error: %s", oboe::convertToText(result));
             return result;
         }
+
+        // Set CPU affinity
+        cpu_set_t cpuset;
+        CPU_ZERO(&cpuset);
+        CPU_SET(0, &cpuset);
+        sched_setaffinity(0, sizeof(cpu_set_t), &cpuset);
+
+        // Set thread priority
+        struct sched_param param;
+        param.sched_priority = sched_get_priority_max(SCHED_FIFO);
+        sched_setscheduler(0, SCHED_FIFO, &param);
+
+        // Log latency
+        double latency = stream_->calculateLatencyMillis();
+        ALOGI("Latency: %f ms", latency);
 
         sampleRate_ = stream_->getSampleRate();
         bufferSize_ = stream_->getFramesPerBurst() * 2;
@@ -68,12 +87,16 @@ public:
         if (isPlaying && audioBuffer != nullptr) {
             int frameCount = audioBuffer->getFrameCount();
             float *output = static_cast<float *>(audioData);
-            float *input = audioBuffer->getData();
             for (int i = 0; i < numFrames; ++i) {
-                if (playbackPosition < frameCount) {
-                    output[i] = input[playbackPosition++];
+                float sample;
+                if (circularBuffer.read(sample)) {
+                    output[i] = sample;
                 } else {
-                    output[i] = 0;
+                    if (playbackPosition < frameCount) {
+                        output[i] = audioBuffer->getData()[playbackPosition++];
+                    } else {
+                        output[i] = 0;
+                    }
                 }
             }
         } else {
@@ -88,7 +111,8 @@ private:
     int32_t bufferSize_ = 0;
     AudioBuffer *audioBuffer = nullptr;
     bool isPlaying = false;
-    int playbackPosition = 0;
+    std::atomic<int> playbackPosition;
+    CircularBuffer circularBuffer;
 };
 
 static AudioEngine engine;

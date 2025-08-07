@@ -6,7 +6,7 @@ public abstract class ProcessingEngine {
         OFFLINE
     }
 
-    private Mode mode = Mode.REALTIME;
+    private volatile Mode mode = Mode.REALTIME;
 
     public void setMode(Mode mode) {
         this.mode = mode;

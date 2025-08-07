@@ -49,6 +49,42 @@ public class AvstHost {
         return native_getCpuUsage(plugin.getNativeHandle());
     }
 
+    public byte[] savePreset(Plugin plugin) {
+        return native_savePreset(plugin.getNativeHandle());
+    }
+
+    public void loadPreset(Plugin plugin, byte[] preset) {
+        native_loadPreset(plugin.getNativeHandle(), preset);
+    }
+
+    public byte[] saveChain() {
+        long[] nativeHandles = new long[pluginChain.getPlugins().size()];
+        for (int i = 0; i < pluginChain.getPlugins().size(); i++) {
+            nativeHandles[i] = pluginChain.getPlugins().get(i).getNativeHandle();
+        }
+        return native_saveChain(nativeHandles);
+    }
+
+    public void loadChain(byte[] chain) {
+        // TODO: Implement this
+    }
+
+    public byte[] saveBypassState() {
+        byte[] bypassState = new byte[pluginChain.getPlugins().size()];
+        for (int i = 0; i < pluginChain.getPlugins().size(); i++) {
+            bypassState[i] = (byte) (pluginChain.getPlugins().get(i).isBypassed() ? 1 : 0);
+        }
+        return bypassState;
+    }
+
+    public void loadBypassState(byte[] bypassState) {
+        for (int i = 0; i < bypassState.length; i++) {
+            if (i < pluginChain.getPlugins().size()) {
+                pluginChain.getPlugins().get(i).setBypass(bypassState[i] == 1);
+            }
+        }
+    }
+
     private static native long native_loadPlugin(String path);
     private static native void native_unloadPlugin(long nativeHandle);
     private static native int native_getParameterCount(long nativeHandle);
@@ -57,4 +93,7 @@ public class AvstHost {
     private static native void native_setParameter(long nativeHandle, int index, float value);
     private static native void native_process(long[] nativeHandles, float[] buffer, int sampleRate);
     private static native float native_getCpuUsage(long nativeHandle);
+    private static native byte[] native_savePreset(long nativeHandle);
+    private static native void native_loadPreset(long nativeHandle, byte[] preset);
+    private static native byte[] native_saveChain(long[] nativeHandles);
 }

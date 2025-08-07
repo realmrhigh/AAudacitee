@@ -310,7 +310,6 @@ Java_com_example_audioapp_avst_AvstHost_native_1process(JNIEnv *env, jclass claz
         }
 
         if (!pluginHandle->bypassed) {
-            auto start = std::chrono::high_resolution_clock::now();
             try {
                 avst::ProcessContext context = {
                         .frameCount = (uint32_t) frameCount,
@@ -327,9 +326,6 @@ Java_com_example_audioapp_avst_AvstHost_native_1process(JNIEnv *env, jclass claz
                 ALOGE("Plugin %d threw an exception: %s", i, e.what());
                 pluginHandle->bypassed = true;
             }
-            auto end = std::chrono::high_resolution_clock::now();
-            std::chrono::duration<float, std::milli> duration = end - start;
-            pluginHandle->cpuUsage = duration.count();
         }
         currentChannels = pluginConfig.currentOutputChannels;
     }
@@ -352,4 +348,40 @@ extern "C" JNIEXPORT jfloat JNICALL
 Java_com_example_audioapp_avst_AvstHost_native_1getCpuUsage(JNIEnv *env, jclass clazz, jlong native_handle) {
     avst::PluginHandle *pluginHandle = (avst::PluginHandle *) native_handle;
     return pluginHandle->cpuUsage;
+}
+
+extern "C" JNIEXPORT jbyteArray JNICALL
+Java_com_example_audioapp_avst_AvstHost_native_1savePreset(JNIEnv *env, jclass clazz, jlong native_handle) {
+    avst::PluginHandle *pluginHandle = (avst::PluginHandle *) native_handle;
+    std::vector<uint8_t> state = pluginHandle->plugin->saveState();
+    jbyteArray byteArray = env->NewByteArray(state.size());
+    env->SetByteArrayRegion(byteArray, 0, state.size(), (const jbyte *) state.data());
+    return byteArray;
+}
+
+extern "C" JNIEXPORT void JNICALL
+Java_com_example_audioapp_avst_AvstHost_native_1loadPreset(JNIEnv *env, jclass clazz, jlong native_handle, jbyteArray preset) {
+    avst::PluginHandle *pluginHandle = (avst::PluginHandle *) native_handle;
+    jbyte *data = env->GetByteArrayElements(preset, nullptr);
+    int size = env->GetArrayLength(preset);
+    std::vector<uint8_t> state(data, data + size);
+    pluginHandle->plugin->loadState(state);
+    env->ReleaseByteArrayElements(preset, data, JNI_ABORT);
+}
+
+extern "C" JNIEXPORT jbyteArray JNICALL
+Java_com_example_audioapp_avst_AvstHost_native_1saveChain(JNIEnv *env, jclass clazz, jlongArray native_handles) {
+    jlong *handles = env->GetLongArrayElements(native_handles, nullptr);
+    int count = env->GetArrayLength(native_handles);
+
+    std::vector<uint8_t> chainState;
+    for (int i = 0; i < count; i++) {
+        avst::PluginHandle *pluginHandle = (avst::PluginHandle *) handles[i];
+        std::vector<uint8_t> pluginState = pluginHandle->plugin->saveState();
+        chainState.insert(chainState.end(), pluginState.begin(), pluginState.end());
+    }
+
+    jbyteArray byteArray = env->NewByteArray(chainState.size());
+    env->SetByteArrayRegion(byteArray, 0, chainState.size(), (const jbyte *) chainState.data());
+    return byteArray;
 }

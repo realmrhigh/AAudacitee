@@ -9,7 +9,6 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.widget.Button;
-import android.widget.TextView;
 import android.widget.Toast;
 import com.example.audioapp.R;
 import com.example.audioapp.audio.AudioBuffer;
@@ -21,6 +20,8 @@ public class MainActivity extends AppCompatActivity {
     private static final int AUDIO_PERMISSION_REQUEST_CODE = 1;
     private static final int FILE_PICKER_REQUEST_CODE = 2;
 
+    private TimelineView timelineView;
+
     // Used to load the 'audioapp' library on application startup.
     static {
         System.loadLibrary("audioapp");
@@ -31,9 +32,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Example of a call to a native method
-        TextView tv = findViewById(R.id.sample_text);
-        tv.setText(stringFromJNI());
+        timelineView = findViewById(R.id.timeline_view);
 
         Button loadFileButton = findViewById(R.id.button_load_file);
         loadFileButton.setOnClickListener(v -> {
@@ -74,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
                 Uri uri = data.getData();
                 AudioBuffer audioBuffer = AudioFileLoader.load(getContentResolver(), uri);
                 if (audioBuffer != null) {
-                    // TODO: Do something with the audio buffer
+                    timelineView.setAudioBuffer(audioBuffer);
                     Toast.makeText(this, "File loaded successfully", Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(this, "Failed to load file", Toast.LENGTH_SHORT).show();

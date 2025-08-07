@@ -4,6 +4,7 @@
 #include <android/log.h>
 #include <sched.h>
 #include <dlfcn.h>
+#include <chrono>
 #include "AudioBuffer.h"
 #include "CircularBuffer.h"
 #include "avst/avst.h"
@@ -309,17 +310,26 @@ Java_com_example_audioapp_avst_AvstHost_native_1process(JNIEnv *env, jclass claz
         }
 
         if (!pluginHandle->bypassed) {
-            avst::ProcessContext context = {
-                    .frameCount = (uint32_t) frameCount,
-                    .outputs = &output,
-                    .inputs = (const float **) &input
-            };
-            pluginHandle->plugin->processAudio(context);
-            input = output;
-            if (i < count - 1) {
-                output = engine.bufferPool[engine.currentBuffer];
-                engine.currentBuffer = (engine.currentBuffer + 1) % engine.bufferPool.size();
+            auto start = std::chrono::high_resolution_clock::now();
+            try {
+                avst::ProcessContext context = {
+                        .frameCount = (uint32_t) frameCount,
+                        .outputs = &output,
+                        .inputs = (const float **) &input
+                };
+                pluginHandle->plugin->processAudio(context);
+                input = output;
+                if (i < count - 1) {
+                    output = engine.bufferPool[engine.currentBuffer];
+                    engine.currentBuffer = (engine.currentBuffer + 1) % engine.bufferPool.size();
+                }
+            } catch (const std::exception &e) {
+                ALOGE("Plugin %d threw an exception: %s", i, e.what());
+                pluginHandle->bypassed = true;
             }
+            auto end = std::chrono::high_resolution_clock::now();
+            std::chrono::duration<float, std::milli> duration = end - start;
+            pluginHandle->cpuUsage = duration.count();
         }
         currentChannels = pluginConfig.currentOutputChannels;
     }
@@ -336,4 +346,10 @@ extern "C" JNIEXPORT void JNICALL
 Java_com_example_audioapp_avst_Plugin_native_1setBypass(JNIEnv *env, jclass clazz, jlong native_handle, jboolean bypass) {
     avst::PluginHandle *pluginHandle = (avst::PluginHandle *) native_handle;
     pluginHandle->bypassed = bypass;
+}
+
+extern "C" JNIEXPORT jfloat JNICALL
+Java_com_example_audioapp_avst_AvstHost_native_1getCpuUsage(JNIEnv *env, jclass clazz, jlong native_handle) {
+    avst::PluginHandle *pluginHandle = (avst::PluginHandle *) native_handle;
+    return pluginHandle->cpuUsage;
 }

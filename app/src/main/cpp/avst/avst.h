@@ -3,6 +3,7 @@
 
 #include <cstdint>
 #include <vector>
+#include <chrono>
 
 namespace avst {
 
@@ -75,10 +76,11 @@ typedef IAvstPlugin *(*CreateAvstPlugin_t)();
 
 class PluginHandle {
 public:
-    PluginHandle(IAvstPlugin *plugin, void *handle) : plugin(plugin), handle(handle), bypassed(false) {}
+    PluginHandle(IAvstPlugin *plugin, void *handle) : plugin(plugin), handle(handle), bypassed(false), cpuUsage(0.0f) {}
     IAvstPlugin *plugin;
     void *handle;
     bool bypassed;
+    std::atomic<float> cpuUsage;
 };
 
 } // namespace avst

@@ -1,0 +1,3 @@
+C:/Users/stant/AndroidStudioProjects/AAudacitee/app/.cxx/RelWithDebInfo/2i1b503o/x86/CMakeFiles/audioapp.dir
+C:/Users/stant/AndroidStudioProjects/AAudacitee/app/.cxx/RelWithDebInfo/2i1b503o/x86/CMakeFiles/edit_cache.dir
+C:/Users/stant/AndroidStudioProjects/AAudacitee/app/.cxx/RelWithDebInfo/2i1b503o/x86/CMakeFiles/rebuild_cache.dir

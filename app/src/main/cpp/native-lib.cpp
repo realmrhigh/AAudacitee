@@ -92,8 +92,13 @@ public:
         sched_setscheduler(0, SCHED_FIFO, &param);
 
         // Log latency
-        double latency = stream_->calculateLatencyMillis();
-        ALOGI("Latency: %f ms", latency);
+        auto latencyResult = stream_->calculateLatencyMillis();
+        if (latencyResult) {
+            double latency = latencyResult.value();
+            ALOGI("Latency: %f ms", latency);
+        } else {
+            ALOGE("Failed to calculate latency");
+        }
 
         sampleRate_ = stream_->getSampleRate();
         bufferSize_ = stream_->getFramesPerBurst() * 2;
@@ -237,7 +242,7 @@ Java_com_example_audioapp_avst_AvstHost_native_1loadPlugin(JNIEnv *env, jclass c
         return 0;
     }
 
-    avst::CreateAvstPlugin_t *createPlugin = (avst::CreateAvstPlugin_t *) dlsym(handle, "createAvstPlugin");
+    avst::CreateAvstPlugin_t createPlugin = (avst::CreateAvstPlugin_t) dlsym(handle, "createAvstPlugin");
     if (!createPlugin) {
         ALOGE("Failed to find createAvstPlugin function: %s", dlerror());
         dlclose(handle);

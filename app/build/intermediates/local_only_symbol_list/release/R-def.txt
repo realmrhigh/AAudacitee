@@ -1,0 +1,21 @@
+R_DEF: Internal format may change without notice
+local
+color colorAccent
+color colorPrimary
+color colorPrimaryDark
+drawable ic_launcher_background
+drawable ic_launcher_foreground
+id button_load_file
+id button_pause
+id button_play
+id button_stop
+id controls_layout
+id horizontal_scroll_view
+id timeline_view
+layout activity_main
+mipmap ic_launcher
+mipmap ic_launcher_round
+string app_name
+style Theme.AudioApp
+xml backup_rules
+xml data_extraction_rules

@@ -14,7 +14,7 @@ public class Plugin {
 
     public void setBypass(boolean bypass) {
         this.bypass = bypass;
-        AvstHost.native_setBypass(nativeHandle, bypass);
+        native_setBypass(nativeHandle, bypass);
     }
 
     public boolean isBypassed() {
@@ -36,4 +36,6 @@ public class Plugin {
     public void setParameter(int index, float value) {
         AvstHost.native_setParameter(nativeHandle, index, value);
     }
+
+    private static native void native_setBypass(long nativeHandle, boolean bypass);
 }

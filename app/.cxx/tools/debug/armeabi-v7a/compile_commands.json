@@ -1,0 +1,7 @@
+[
+{
+  "directory": "C:/Users/stant/AndroidStudioProjects/AAudacitee/app/.cxx/Debug/6f2a4r6c/armeabi-v7a",
+  "command": "C:\\Users\\stant\\AppData\\Local\\Android\\Sdk\\ndk\\25.1.8937393\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\clang++.exe --target=armv7-none-linux-androideabi21 --sysroot=C:/Users/stant/AppData/Local/Android/Sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/windows-x86_64/sysroot -Daudioapp_EXPORTS -isystem C:/Users/stant/.gradle/caches/transforms-3/750cd355f74f293a14287285b6361954/transformed/oboe-1.5.0/prefab/modules/oboe/include -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -march=armv7-a -mthumb -Wformat -Werror=format-security   -fno-limit-debug-info  -fPIC -o CMakeFiles\\audioapp.dir\\native-lib.cpp.o -c C:\\Users\\stant\\AndroidStudioProjects\\AAudacitee\\app\\src\\main\\cpp\\native-lib.cpp",
+  "file": "C:\\Users\\stant\\AndroidStudioProjects\\AAudacitee\\app\\src\\main\\cpp\\native-lib.cpp"
+}
+]

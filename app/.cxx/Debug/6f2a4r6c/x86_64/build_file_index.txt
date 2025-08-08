@@ -1,0 +1,1 @@
+C:\Users\stant\AndroidStudioProjects\AAudacitee\app\src\main\cpp\CMakeLists.txt

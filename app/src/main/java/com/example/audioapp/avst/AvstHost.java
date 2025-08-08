@@ -98,10 +98,10 @@ public class AvstHost {
 
     private static native long native_loadPlugin(String path);
     private static native void native_unloadPlugin(long nativeHandle);
-    private static native int native_getParameterCount(long nativeHandle);
-    private static native String native_getParameterName(long nativeHandle, int index);
-    private static native float native_getParameter(long nativeHandle, int index);
-    private static native void native_setParameter(long nativeHandle, int index, float value);
+    static native int native_getParameterCount(long nativeHandle);
+    static native String native_getParameterName(long nativeHandle, int index);
+    static native float native_getParameter(long nativeHandle, int index);
+    static native void native_setParameter(long nativeHandle, int index, float value);
     private static native void native_process(long[] nativeHandles, float[] buffer, int sampleRate);
     private static native float native_getCpuUsage(long nativeHandle);
     private static native byte[] native_savePreset(long nativeHandle);

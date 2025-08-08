@@ -1,0 +1,3 @@
+ninja: Entering directory `C:\Users\stant\AndroidStudioProjects\AAudacitee\app\.cxx\Debug\6f2a4r6c\x86'
+[1/2] Building CXX object CMakeFiles/audioapp.dir/native-lib.cpp.o
+[2/2] Linking CXX shared library C:\Users\stant\AndroidStudioProjects\AAudacitee\app\build\intermediates\cxx\Debug\6f2a4r6c\obj\x86\libaudioapp.so

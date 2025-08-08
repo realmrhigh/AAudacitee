@@ -30,9 +30,11 @@ public class MainActivity extends AppCompatActivity {
 
     private ParametricEQView parametricEQView;
     private CompressorView compressorView;
+    private LevelerView levelerView;
     private AvstHost avstHost;
     private Plugin eqPlugin;
     private Plugin compressorPlugin;
+    private Plugin levelerPlugin;
     private ProcessingModeDetector processingModeDetector;
 
     // Used to load the 'audioapp' library on application startup.
@@ -47,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
 
         parametricEQView = findViewById(R.id.parametric_eq_view);
         compressorView = findViewById(R.id.compressor_view);
+        levelerView = findViewById(R.id.leveler_view);
         avstHost = new AvstHost();
         processingModeDetector = new ProcessingModeDetector();
 
@@ -147,15 +150,29 @@ public class MainActivity extends AppCompatActivity {
         } else {
             Toast.makeText(this, "Failed to load Compressor plugin", Toast.LENGTH_SHORT).show();
         }
+
+        String levelerPath = getApplicationInfo().nativeLibraryDir + "/libleveler.so";
+        levelerPlugin = avstHost.loadPlugin(levelerPath);
+        if (levelerPlugin != null) {
+            levelerView.setPlugin(levelerPlugin);
+        } else {
+            Toast.makeText(this, "Failed to load Leveler plugin", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void switchPluginView() {
         if (parametricEQView.getVisibility() == View.VISIBLE) {
             parametricEQView.setVisibility(View.GONE);
             compressorView.setVisibility(View.VISIBLE);
+            levelerView.setVisibility(View.GONE);
+        } else if (compressorView.getVisibility() == View.VISIBLE) {
+            parametricEQView.setVisibility(View.GONE);
+            compressorView.setVisibility(View.GONE);
+            levelerView.setVisibility(View.VISIBLE);
         } else {
             parametricEQView.setVisibility(View.VISIBLE);
             compressorView.setVisibility(View.GONE);
+            levelerView.setVisibility(View.GONE);
         }
     }
 

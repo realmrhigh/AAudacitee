@@ -44,3 +44,10 @@ add_library(compressor SHARED
         dsp/Compressor.cpp)
 
 target_link_libraries(compressor log)
+
+# Add the leveler plugin
+add_library(leveler SHARED
+        plugins/leveler/LevelerPlugin.cpp
+        dsp/Leveler.cpp)
+
+target_link_libraries(leveler log)

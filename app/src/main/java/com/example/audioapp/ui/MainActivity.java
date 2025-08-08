@@ -4,32 +4,32 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import android.Manifest;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
-import android.widget.Button;
-import android.widget.Toast;
-import android.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioGroup;
+import android.widget.Toast;
+import com.example.audioapp.R;
 import com.example.audioapp.audio.AudioBuffer;
 import com.example.audioapp.audio.AudioEngine;
 import com.example.audioapp.audio.AudioFileLoader;
+import com.example.audioapp.avst.AvstHost;
+import com.example.audioapp.avst.Plugin;
 import com.example.audioapp.engine.ProcessingModeDetector;
 
 public class MainActivity extends AppCompatActivity {
 
     private static final int AUDIO_PERMISSION_REQUEST_CODE = 1;
     private static final int FILE_PICKER_REQUEST_CODE = 2;
-    private static final int TIMELINE_UPDATE_INTERVAL_MS = 100;
 
-    private TimelineView timelineView;
-    private Handler handler = new Handler();
-    private Runnable playbackPositionUpdater;
+    private ParametricEQView parametricEQView;
+    private AvstHost avstHost;
     private ProcessingModeDetector processingModeDetector;
 
     // Used to load the 'audioapp' library on application startup.
@@ -42,7 +42,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        timelineView = findViewById(R.id.timeline_view);
+        parametricEQView = findViewById(R.id.parametric_eq_view);
+        avstHost = new AvstHost();
         processingModeDetector = new ProcessingModeDetector();
 
         Button loadFileButton = findViewById(R.id.button_load_file);
@@ -75,15 +76,8 @@ public class MainActivity extends AppCompatActivity {
         } else {
             AudioEngine.native_create();
             AudioEngine.native_start();
+            loadEqPlugin();
         }
-
-        playbackPositionUpdater = new Runnable() {
-            @Override
-            public void run() {
-                timelineView.setPlaybackPosition(AudioEngine.native_getPlaybackPosition());
-                handler.postDelayed(this, TIMELINE_UPDATE_INTERVAL_MS);
-            }
-        };
     }
 
     @Override
@@ -93,6 +87,7 @@ public class MainActivity extends AppCompatActivity {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 AudioEngine.native_create();
                 AudioEngine.native_start();
+                loadEqPlugin();
             } else {
                 Toast.makeText(this, "Audio permission is required for this app", Toast.LENGTH_SHORT).show();
             }
@@ -108,7 +103,6 @@ public class MainActivity extends AppCompatActivity {
                 AudioBuffer audioBuffer = AudioFileLoader.load(getContentResolver(), uri);
                 if (audioBuffer != null) {
                     AudioEngine.native_setAudioBuffer(audioBuffer);
-                    timelineView.setAudioBuffer(audioBuffer);
                     Toast.makeText(this, "File loaded successfully", Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(this, "Failed to load file", Toast.LENGTH_SHORT).show();
@@ -121,15 +115,23 @@ public class MainActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         processingModeDetector.setInForeground(true);
-        handler.post(playbackPositionUpdater);
     }
 
     @Override
     protected void onStop() {
         super.onStop();
         processingModeDetector.setInForeground(false);
-        handler.removeCallbacks(playbackPositionUpdater);
         AudioEngine.native_stop();
+    }
+
+    private void loadEqPlugin() {
+        String path = getApplicationInfo().nativeLibraryDir + "/libparametric_eq.so";
+        Plugin plugin = avstHost.loadPlugin(path);
+        if (plugin != null) {
+            parametricEQView.setPlugin(plugin);
+        } else {
+            Toast.makeText(this, "Failed to load Parametric EQ plugin", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void showExportDialog() {

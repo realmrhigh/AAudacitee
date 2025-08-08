@@ -30,17 +30,25 @@ void FrequencyResponse::calculateResponse(const Biquad* filters, int num_filters
     }
 
     // 1. Process impulse through filters
-    std::fill(impulse_response.begin(), impulse_response.end(), 0.0f);
-    for (int i = 0; i < fft_size; ++i) {
-        float sample = impulse[i];
-        for (int j = 0; j < num_filters; ++j) {
-            // Create a temporary copy of the filter to not modify its state
-            Biquad temp_filter = filters[j];
-            temp_filter.reset(); // Reset state before processing
-            sample = temp_filter.process(sample);
-        }
-        impulse_response[i] = sample;
+    std::vector<Biquad> temp_filters;
+    for(int i = 0; i < num_filters; ++i) {
+        temp_filters.push_back(filters[i]);
+        temp_filters.back().reset();
     }
+
+    std::vector<float> temp_buf1 = impulse;
+    std::vector<float> temp_buf2(fft_size);
+
+    float* in_ptr = temp_buf1.data();
+    float* out_ptr = temp_buf2.data();
+
+    for (int j = 0; j < num_filters; ++j) {
+        temp_filters[j].process(in_ptr, out_ptr, fft_size);
+        std::swap(in_ptr, out_ptr);
+    }
+
+    // The final result is in in_ptr
+    memcpy(impulse_response.data(), in_ptr, fft_size * sizeof(float));
 
     // 2. Prepare for FFT
     for (int i = 0; i < fft_size; ++i) {

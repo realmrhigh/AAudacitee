@@ -14,7 +14,9 @@ enum class BiquadFilterType {
     HIGHPASS,
     PEAK,
     LOW_SHELF,
-    HIGH_SHELF
+    HIGH_SHELF,
+    BANDPASS,
+    NOTCH
 };
 
 class Biquad {

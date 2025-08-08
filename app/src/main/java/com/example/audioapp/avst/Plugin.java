@@ -36,4 +36,8 @@ public class Plugin {
     public void setParameter(int index, float value) {
         AvstHost.native_setParameter(nativeHandle, index, value);
     }
+
+    public float[] getFrequencyResponse() {
+        return AvstHost.native_getFrequencyResponse(nativeHandle);
+    }
 }

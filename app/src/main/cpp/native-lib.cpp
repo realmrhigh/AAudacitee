@@ -534,6 +534,25 @@ Java_com_example_audioapp_avst_AvstHost_native_1loadChain(JNIEnv *env, jclass cl
     return result;
 }
 
+extern "C" JNIEXPORT jfloatArray JNICALL
+Java_com_example_audioapp_avst_AvstHost_native_1getFrequencyResponse(JNIEnv *env, jclass clazz, jlong native_handle) {
+    avst::PluginHandle *pluginHandle = (avst::PluginHandle *) native_handle;
+    if (!pluginHandle) {
+        return nullptr;
+    }
+
+    std::vector<float> magnitudes;
+    pluginHandle->plugin->getFrequencyResponse(magnitudes);
+
+    jfloatArray result = env->NewFloatArray(magnitudes.size());
+    if (result == nullptr) {
+        return nullptr; // out of memory error thrown
+    }
+
+    env->SetFloatArrayRegion(result, 0, magnitudes.size(), magnitudes.data());
+    return result;
+}
+
 void writeWavHeader(std::ofstream& file, int sampleRate, int channelCount, int frameCount) {
     int bitsPerSample = 16;
     int byteRate = sampleRate * channelCount * bitsPerSample / 8;

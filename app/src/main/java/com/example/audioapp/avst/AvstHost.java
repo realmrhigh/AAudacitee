@@ -116,4 +116,5 @@ public class AvstHost {
     private static native byte[] native_saveChain(long[] nativeHandles);
     private static native long[] native_loadChain(byte[] chain);
     private static native void native_setPluginQuality(long nativeHandle, int quality);
+    public static native float[] native_getFrequencyResponse(long nativeHandle);
 }

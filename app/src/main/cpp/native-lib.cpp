@@ -243,7 +243,7 @@ Java_com_example_audioapp_avst_AvstHost_native_1loadPlugin(JNIEnv *env, jclass c
     }
 
     avst::IAvstPlugin *plugin = createPlugin();
-    avst::PluginHandle *pluginHandle = new avst::PluginHandle(plugin, handle);
+    avst::PluginHandle *pluginHandle = new avst::PluginHandle(plugin, handle, pathStr);
     engine.addPlugin(pluginHandle);
     return (jlong) pluginHandle;
 }
@@ -392,12 +392,23 @@ Java_com_example_audioapp_avst_AvstHost_native_1saveChain(JNIEnv *env, jclass cl
     std::vector<uint8_t> chainState;
     for (int i = 0; i < count; i++) {
         avst::PluginHandle *pluginHandle = (avst::PluginHandle *) handles[i];
+
+        // Path
+        uint32_t pathLen = pluginHandle->path.length();
+        chainState.insert(chainState.end(), (uint8_t*)&pathLen, (uint8_t*)&pathLen + sizeof(pathLen));
+        chainState.insert(chainState.end(), pluginHandle->path.begin(), pluginHandle->path.end());
+
+        // State
         std::vector<uint8_t> pluginState = pluginHandle->plugin->saveState();
+        uint32_t stateLen = pluginState.size();
+        chainState.insert(chainState.end(), (uint8_t*)&stateLen, (uint8_t*)&stateLen + sizeof(stateLen));
         chainState.insert(chainState.end(), pluginState.begin(), pluginState.end());
     }
 
     jbyteArray byteArray = env->NewByteArray(chainState.size());
     env->SetByteArrayRegion(byteArray, 0, chainState.size(), (const jbyte *) chainState.data());
+
+    env->ReleaseLongArrayElements(native_handles, handles, JNI_ABORT);
     return byteArray;
 }
 
@@ -405,4 +416,55 @@ extern "C" JNIEXPORT void JNICALL
 Java_com_example_audioapp_avst_AvstHost_native_1setPluginQuality(JNIEnv *env, jclass clazz, jlong native_handle, jint quality) {
     avst::PluginHandle *pluginHandle = (avst::PluginHandle *) native_handle;
     pluginHandle->plugin->setQuality(quality);
+}
+
+extern "C" JNIEXPORT jlongArray JNICALL
+Java_com_example_audioapp_avst_AvstHost_native_1loadChain(JNIEnv *env, jclass clazz, jbyteArray chain_data) {
+    jbyte *data = env->GetByteArrayElements(chain_data, nullptr);
+    int size = env->GetArrayLength(chain_data);
+
+    std::vector<jlong> handles;
+    uint8_t* current = (uint8_t*)data;
+    uint8_t* end = current + size;
+
+    while (current < end) {
+        // Path
+        uint32_t pathLen = *(uint32_t*)current;
+        current += sizeof(pathLen);
+        std::string path((char*)current, pathLen);
+        current += pathLen;
+
+        // State
+        uint32_t stateLen = *(uint32_t*)current;
+        current += sizeof(stateLen);
+        std::vector<uint8_t> state(current, current + stateLen);
+        current += stateLen;
+
+        // Load plugin
+        void *handle = dlopen(path.c_str(), RTLD_LAZY);
+        if (!handle) {
+            ALOGE("Failed to load plugin: %s", dlerror());
+            continue;
+        }
+
+        avst::CreateAvstPlugin_t *createPlugin = (avst::CreateAvstPlugin_t *) dlsym(handle, "createAvstPlugin");
+        if (!createPlugin) {
+            ALOGE("Failed to find createAvstPlugin function: %s", dlerror());
+            dlclose(handle);
+            continue;
+        }
+
+        avst::IAvstPlugin *plugin = createPlugin();
+        plugin->loadState(state);
+
+        avst::PluginHandle *pluginHandle = new avst::PluginHandle(plugin, handle, path);
+        engine.addPlugin(pluginHandle);
+        handles.push_back((jlong)pluginHandle);
+    }
+
+    jlongArray result = env->NewLongArray(handles.size());
+    env->SetLongArrayRegion(result, 0, handles.size(), handles.data());
+
+    env->ReleaseByteArrayElements(chain_data, data, JNI_ABORT);
+    return result;
 }

@@ -21,6 +21,7 @@ public class MainActivity extends AppCompatActivity {
 
     private static final int AUDIO_PERMISSION_REQUEST_CODE = 1;
     private static final int FILE_PICKER_REQUEST_CODE = 2;
+    private static final int TIMELINE_UPDATE_INTERVAL_MS = 100;
 
     private TimelineView timelineView;
     private Handler handler = new Handler();
@@ -73,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void run() {
                 timelineView.setPlaybackPosition(AudioEngine.native_getPlaybackPosition());
-                handler.postDelayed(this, 100);
+                handler.postDelayed(this, TIMELINE_UPDATE_INTERVAL_MS);
             }
         };
     }

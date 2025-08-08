@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="#2a2a2a"
+    android:padding="16dp"
+    android:layout_margin="8dp">
+
+    <!-- Band Title -->
+    <TextView
+        android:id="@+id/band_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Band 1 - 80 Hz (Low Shelf)"
+        android:textColor="#ffffff"
+        android:textSize="16sp"
+        android:textStyle="bold" />
+
+    <!-- Enable/Disable Toggle -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginTop="8dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Enable:"
+            android:textColor="#cccccc"
+            android:layout_marginEnd="8dp" />
+
+        <Switch
+            android:id="@+id/band_enable"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="true" />
+
+    </LinearLayout>
+
+    <!-- Frequency Control -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginTop="8dp">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Frequency:"
+            android:textColor="#cccccc" />
+
+        <TextView
+            android:id="@+id/frequency_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="80 Hz"
+            android:textColor="#ffffff"
+            android:minWidth="60dp"
+            android:gravity="end" />
+
+    </LinearLayout>
+
+    <SeekBar
+        android:id="@+id/frequency_slider"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:max="100"
+        android:progress="20" />
+
+    <!-- Gain Control -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginTop="8dp">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Gain:"
+            android:textColor="#cccccc" />
+
+        <TextView
+            android:id="@+id/gain_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0.0 dB"
+            android:textColor="#ffffff"
+            android:minWidth="60dp"
+            android:gravity="end" />
+
+    </LinearLayout>
+
+    <SeekBar
+        android:id="@+id/gain_slider"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:max="240"
+        android:progress="120" />
+
+    <!-- Q Factor Control -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginTop="8dp">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Q Factor:"
+            android:textColor="#cccccc" />
+
+        <TextView
+            android:id="@+id/q_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0.7"
+            android:textColor="#ffffff"
+            android:minWidth="60dp"
+            android:gravity="end" />
+
+    </LinearLayout>
+
+    <SeekBar
+        android:id="@+id/q_slider"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:max="100"
+        android:progress="35" />
+
+</LinearLayout>

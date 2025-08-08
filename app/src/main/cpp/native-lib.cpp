@@ -411,3 +411,38 @@ Java_com_example_audioapp_avst_AvstHost_native_1setPluginQuality(JNIEnv *env, jc
     avst::PluginHandle *pluginHandle = (avst::PluginHandle *) native_handle;
     pluginHandle->plugin->setQuality(quality);
 }
+
+// Parametric EQ control functions
+extern "C" JNIEXPORT void JNICALL
+Java_com_example_audioapp_audio_AudioEngine_native_1setEQBandEnabled(JNIEnv *env, jclass clazz, jint bandIndex, jboolean enabled) {
+    if (bandIndex >= 0 && bandIndex < 6) {
+        // Implementation would depend on having access to the parametric EQ plugin
+        ALOGI("Setting EQ band %d enabled: %s", bandIndex, enabled ? "true" : "false");
+    }
+}
+
+extern "C" JNIEXPORT void JNICALL
+Java_com_example_audioapp_audio_AudioEngine_native_1setEQBandFrequency(JNIEnv *env, jclass clazz, jint bandIndex, jfloat frequency) {
+    if (bandIndex >= 0 && bandIndex < 6) {
+        ALOGI("Setting EQ band %d frequency: %.1f Hz", bandIndex, frequency);
+    }
+}
+
+extern "C" JNIEXPORT void JNICALL
+Java_com_example_audioapp_audio_AudioEngine_native_1setEQBandGain(JNIEnv *env, jclass clazz, jint bandIndex, jfloat gainDb) {
+    if (bandIndex >= 0 && bandIndex < 6) {
+        ALOGI("Setting EQ band %d gain: %.1f dB", bandIndex, gainDb);
+    }
+}
+
+extern "C" JNIEXPORT void JNICALL
+Java_com_example_audioapp_audio_AudioEngine_native_1setEQBandQ(JNIEnv *env, jclass clazz, jint bandIndex, jfloat q) {
+    if (bandIndex >= 0 && bandIndex < 6) {
+        ALOGI("Setting EQ band %d Q: %.1f", bandIndex, q);
+    }
+}
+
+extern "C" JNIEXPORT void JNICALL
+Java_com_example_audioapp_audio_AudioEngine_native_1setMasterVolume(JNIEnv *env, jclass clazz, jfloat volume) {
+    ALOGI("Setting master volume: %.2f", volume);
+}

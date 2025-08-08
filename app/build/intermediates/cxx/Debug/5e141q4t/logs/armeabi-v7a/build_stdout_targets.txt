@@ -1,8 +1,3 @@
 ninja: Entering directory `C:\Users\stant\AndroidStudioProjects\AAudacitee\app\.cxx\Debug\5e141q4t\armeabi-v7a'
-[1/7] Building CXX object CMakeFiles/parametric_eq.dir/dsp/Biquad.cpp.o
-[2/7] Building CXX object CMakeFiles/parametric_eq.dir/dsp/FFT.cpp.o
-[3/7] Building CXX object CMakeFiles/parametric_eq.dir/plugins/parametric_eq/ParametricEQ.cpp.o
-[4/7] Building CXX object CMakeFiles/parametric_eq.dir/dsp/FrequencyResponse.cpp.o
-[5/7] Linking CXX shared library C:\Users\stant\AndroidStudioProjects\AAudacitee\app\build\intermediates\cxx\Debug\5e141q4t\obj\armeabi-v7a\libparametric_eq.so
-[6/7] Building CXX object CMakeFiles/audioapp.dir/native-lib.cpp.o
-[7/7] Linking CXX shared library C:\Users\stant\AndroidStudioProjects\AAudacitee\app\build\intermediates\cxx\Debug\5e141q4t\obj\armeabi-v7a\libaudioapp.so
+[1/2] Building CXX object CMakeFiles/audioapp.dir/native-lib.cpp.o
+[2/2] Linking CXX shared library C:\Users\stant\AndroidStudioProjects\AAudacitee\app\build\intermediates\cxx\Debug\5e141q4t\obj\armeabi-v7a\libaudioapp.so

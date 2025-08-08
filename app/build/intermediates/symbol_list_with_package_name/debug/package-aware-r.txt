@@ -2879,6 +2879,7 @@ id animateToEnd
 id animateToStart
 id antiClockwise
 id anticipate
+id app_title
 id arc
 id asConfigured
 id async
@@ -2886,6 +2887,8 @@ id auto
 id autoComplete
 id autoCompleteToEnd
 id autoCompleteToStart
+id band_enable
+id band_title
 id barrier
 id baseline
 id beginOnFirstDraw
@@ -2932,7 +2935,6 @@ id content
 id contentPanel
 id contiguous
 id continuousVelocity
-id controls_layout
 id coordinator
 id cos
 id counterclockwise
@@ -2981,6 +2983,15 @@ id end
 id endToStart
 id enterAlways
 id enterAlwaysCollapsed
+id eq_band_1
+id eq_band_2
+id eq_band_3
+id eq_band_4
+id eq_band_5
+id eq_band_6
+id eq_controls_container
+id eq_scroll_view
+id eq_title
 id exitUntilCollapsed
 id expand_activities_button
 id expanded_menu
@@ -2999,8 +3010,12 @@ id flip
 id floating
 id forever
 id fragment_container_view_tag
+id frequency_slider
+id frequency_value
 id frost
 id fullscreen_header
+id gain_slider
+id gain_value
 id ghost_view
 id ghost_view_holder
 id gone
@@ -3045,6 +3060,7 @@ id list_item
 id m3_side_sheet
 id marquee
 id masked
+id master_volume
 id match_constraint
 id match_parent
 id material_clock_display
@@ -3143,6 +3159,8 @@ id postLayout
 id pressed
 id progress_circular
 id progress_horizontal
+id q_slider
+id q_value
 id radio
 id ratio
 id rectangles
@@ -3274,6 +3292,7 @@ id transition_layout_save
 id transition_position
 id transition_scene_layoutid_cache
 id transition_transform
+id transport_controls
 id triangle
 id unchecked
 id uniform
@@ -3421,6 +3440,7 @@ layout design_navigation_menu
 layout design_navigation_menu_item
 layout design_text_input_end_icon
 layout design_text_input_start_icon
+layout eq_band_control
 layout m3_alert_dialog
 layout m3_alert_dialog_actions
 layout m3_alert_dialog_title

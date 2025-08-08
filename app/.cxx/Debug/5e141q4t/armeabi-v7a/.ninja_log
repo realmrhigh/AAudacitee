@@ -1,8 +1,14 @@
 # ninja log v5
 10	383	7763930401585666	CMakeFiles/parametric_eq.dir/dsp/Biquad.cpp.o	7728cb44bf100d17
+1	1349	7763930411179923	CMakeFiles/audioapp.dir/native-lib.cpp.o	b715fbf14dd585be
 14	871	7763930406466767	CMakeFiles/parametric_eq.dir/dsp/FFT.cpp.o	8fe2f36977a20ce7
 5	1200	7763930409689600	CMakeFiles/parametric_eq.dir/plugins/parametric_eq/ParametricEQ.cpp.o	2f4a819ec2355ca5
 20	1205	7763930409759615	CMakeFiles/parametric_eq.dir/dsp/FrequencyResponse.cpp.o	139cdad1d269ca0a
-1205	1342	7763930411119909	C:/Users/stant/AndroidStudioProjects/AAudacitee/app/build/intermediates/cxx/Debug/5e141q4t/obj/armeabi-v7a/libparametric_eq.so	f37d9f56a306bb31
-1	1349	7763930411179923	CMakeFiles/audioapp.dir/native-lib.cpp.o	b715fbf14dd585be
 1350	1470	7763930412410200	C:/Users/stant/AndroidStudioProjects/AAudacitee/app/build/intermediates/cxx/Debug/5e141q4t/obj/armeabi-v7a/libaudioapp.so	6d8a1c8a7d1b441f
+1205	1342	7763930411119909	C:/Users/stant/AndroidStudioProjects/AAudacitee/app/build/intermediates/cxx/Debug/5e141q4t/obj/armeabi-v7a/libparametric_eq.so	f37d9f56a306bb31
+3	293	7763932232368902	CMakeFiles/parametric_eq.dir/dsp/Biquad.cpp.o	7728cb44bf100d17
+13	1074	7763932240140677	CMakeFiles/parametric_eq.dir/dsp/FrequencyResponse.cpp.o	139cdad1d269ca0a
+8	1126	7763932240650778	CMakeFiles/parametric_eq.dir/plugins/parametric_eq/ParametricEQ.cpp.o	2f4a819ec2355ca5
+1126	1252	7763932241901059	C:/Users/stant/AndroidStudioProjects/AAudacitee/app/build/intermediates/cxx/Debug/5e141q4t/obj/armeabi-v7a/libparametric_eq.so	f37d9f56a306bb31
+4	1427	7763936655754562	CMakeFiles/audioapp.dir/native-lib.cpp.o	b715fbf14dd585be
+1428	1573	7763936657244915	C:/Users/stant/AndroidStudioProjects/AAudacitee/app/build/intermediates/cxx/Debug/5e141q4t/obj/armeabi-v7a/libaudioapp.so	6d8a1c8a7d1b441f

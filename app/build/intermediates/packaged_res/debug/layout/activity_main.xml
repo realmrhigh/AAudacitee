@@ -4,16 +4,33 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#1a1a1a"
     tools:context=".ui.MainActivity">
 
+    <!-- Header -->
+    <TextView
+        android:id="@+id/app_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="AAudacitee"
+        android:textColor="#ffffff"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:layout_margin="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- Timeline View -->
     <HorizontalScrollView
         android:id="@+id/horizontal_scroll_view"
         android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/controls_layout"
+        android:layout_height="120dp"
+        android:background="#2a2a2a"
+        android:layout_margin="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toBottomOf="@+id/app_title">
 
         <com.example.audioapp.ui.TimelineView
             android:id="@+id/timeline_view"
@@ -21,39 +38,135 @@
             android:layout_height="match_parent" />
     </HorizontalScrollView>
 
+    <!-- Transport Controls -->
     <LinearLayout
-        android:id="@+id/controls_layout"
+        android:id="@+id/transport_controls"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:gravity="center"
+        android:padding="16dp"
+        android:background="#333333"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
-
-        <Button
-            android:id="@+id/button_play"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Play" />
-
-        <Button
-            android:id="@+id/button_pause"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Pause" />
-
-        <Button
-            android:id="@+id/button_stop"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Stop" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/horizontal_scroll_view">
 
         <Button
             android:id="@+id/button_load_file"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Load File" />
+            android:layout_margin="4dp"
+            android:text="Load"
+            android:backgroundTint="#4CAF50" />
+
+        <Button
+            android:id="@+id/button_play"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            android:text="▶"
+            android:backgroundTint="#2196F3" />
+
+        <Button
+            android:id="@+id/button_pause"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            android:text="⏸"
+            android:backgroundTint="#FF9800" />
+
+        <Button
+            android:id="@+id/button_stop"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            android:text="⏹"
+            android:backgroundTint="#F44336" />
 
     </LinearLayout>
+
+    <!-- Parametric EQ Section -->
+    <TextView
+        android:id="@+id/eq_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="6-Band Parametric EQ"
+        android:textColor="#ffffff"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:layout_margin="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/transport_controls" />
+
+    <ScrollView
+        android:id="@+id/eq_scroll_view"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_margin="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/eq_title">
+
+        <LinearLayout
+            android:id="@+id/eq_controls_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <!-- EQ Band 1: Low Shelf (80 Hz) -->
+            <include layout="@layout/eq_band_control"
+                android:id="@+id/eq_band_1" />
+
+            <!-- EQ Band 2: Peak (200 Hz) -->
+            <include layout="@layout/eq_band_control"
+                android:id="@+id/eq_band_2" />
+
+            <!-- EQ Band 3: Peak (800 Hz) -->
+            <include layout="@layout/eq_band_control"
+                android:id="@+id/eq_band_3" />
+
+            <!-- EQ Band 4: Peak (2 kHz) -->
+            <include layout="@layout/eq_band_control"
+                android:id="@+id/eq_band_4" />
+
+            <!-- EQ Band 5: Peak (5 kHz) -->
+            <include layout="@layout/eq_band_control"
+                android:id="@+id/eq_band_5" />
+
+            <!-- EQ Band 6: High Shelf (10 kHz) -->
+            <include layout="@layout/eq_band_control"
+                android:id="@+id/eq_band_6" />
+
+            <!-- Master Volume -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="#2a2a2a"
+                android:padding="16dp"
+                android:layout_margin="8dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Master Volume"
+                    android:textColor="#ffffff"
+                    android:textSize="16sp" />
+
+                <SeekBar
+                    android:id="@+id/master_volume"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:max="100"
+                    android:progress="75" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </ScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

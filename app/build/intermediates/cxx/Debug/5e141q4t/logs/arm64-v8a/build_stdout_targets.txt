@@ -1,11 +1,5 @@
 ninja: Entering directory `C:\Users\stant\AndroidStudioProjects\AAudacitee\app\.cxx\Debug\5e141q4t\arm64-v8a'
-[1/4] Building CXX object CMakeFiles/parametric_eq.dir/dsp/Biquad.cpp.o
+[1/2] Building CXX object CMakeFiles/audioapp.dir/native-lib.cpp.o
 clang++: warning: argument unused during compilation: '-mfloat-abi=softfp' [-Wunused-command-line-argument]
 clang++: warning: argument unused during compilation: '-mfpu=neon' [-Wunused-command-line-argument]
-[2/4] Building CXX object CMakeFiles/parametric_eq.dir/dsp/FrequencyResponse.cpp.o
-clang++: warning: argument unused during compilation: '-mfloat-abi=softfp' [-Wunused-command-line-argument]
-clang++: warning: argument unused during compilation: '-mfpu=neon' [-Wunused-command-line-argument]
-[3/4] Building CXX object CMakeFiles/parametric_eq.dir/plugins/parametric_eq/ParametricEQ.cpp.o
-clang++: warning: argument unused during compilation: '-mfloat-abi=softfp' [-Wunused-command-line-argument]
-clang++: warning: argument unused during compilation: '-mfpu=neon' [-Wunused-command-line-argument]
-[4/4] Linking CXX shared library C:\Users\stant\AndroidStudioProjects\AAudacitee\app\build\intermediates\cxx\Debug\5e141q4t\obj\arm64-v8a\libparametric_eq.so
+[2/2] Linking CXX shared library C:\Users\stant\AndroidStudioProjects\AAudacitee\app\build\intermediates\cxx\Debug\5e141q4t\obj\arm64-v8a\libaudioapp.so

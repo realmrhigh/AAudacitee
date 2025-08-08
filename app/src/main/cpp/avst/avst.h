@@ -45,6 +45,7 @@ struct ProcessContext {
     uint32_t frameCount;
     float **outputs;
     const float **inputs;
+    const float **sidechain_inputs;
 };
 
 struct MidiMessage {

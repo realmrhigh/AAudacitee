@@ -15,6 +15,16 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <com.example.audioapp.ui.CompressorView
+        android:id="@+id/compressor_view"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/controls_layout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <LinearLayout
         android:id="@+id/controls_layout"
         android:layout_width="0dp"
@@ -53,6 +63,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Export" />
+
+        <Button
+            android:id="@+id/button_switch_plugin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Switch Plugin" />
 
     </LinearLayout>
 

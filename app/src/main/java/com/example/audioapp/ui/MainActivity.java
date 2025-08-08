@@ -29,7 +29,10 @@ public class MainActivity extends AppCompatActivity {
     private static final int FILE_PICKER_REQUEST_CODE = 2;
 
     private ParametricEQView parametricEQView;
+    private CompressorView compressorView;
     private AvstHost avstHost;
+    private Plugin eqPlugin;
+    private Plugin compressorPlugin;
     private ProcessingModeDetector processingModeDetector;
 
     // Used to load the 'audioapp' library on application startup.
@@ -43,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         parametricEQView = findViewById(R.id.parametric_eq_view);
+        compressorView = findViewById(R.id.compressor_view);
         avstHost = new AvstHost();
         processingModeDetector = new ProcessingModeDetector();
 
@@ -69,6 +73,9 @@ public class MainActivity extends AppCompatActivity {
         Button exportButton = findViewById(R.id.button_export);
         exportButton.setOnClickListener(v -> showExportDialog());
 
+        Button switchPluginButton = findViewById(R.id.button_switch_plugin);
+        switchPluginButton.setOnClickListener(v -> switchPluginView());
+
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO)
                 != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.RECORD_AUDIO},
@@ -76,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
         } else {
             AudioEngine.native_create();
             AudioEngine.native_start();
-            loadEqPlugin();
+            loadPlugins();
         }
     }
 
@@ -87,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 AudioEngine.native_create();
                 AudioEngine.native_start();
-                loadEqPlugin();
+                loadPlugins();
             } else {
                 Toast.makeText(this, "Audio permission is required for this app", Toast.LENGTH_SHORT).show();
             }
@@ -124,13 +131,31 @@ public class MainActivity extends AppCompatActivity {
         AudioEngine.native_stop();
     }
 
-    private void loadEqPlugin() {
-        String path = getApplicationInfo().nativeLibraryDir + "/libparametric_eq.so";
-        Plugin plugin = avstHost.loadPlugin(path);
-        if (plugin != null) {
-            parametricEQView.setPlugin(plugin);
+    private void loadPlugins() {
+        String eqPath = getApplicationInfo().nativeLibraryDir + "/libparametric_eq.so";
+        eqPlugin = avstHost.loadPlugin(eqPath);
+        if (eqPlugin != null) {
+            parametricEQView.setPlugin(eqPlugin);
         } else {
             Toast.makeText(this, "Failed to load Parametric EQ plugin", Toast.LENGTH_SHORT).show();
+        }
+
+        String compressorPath = getApplicationInfo().nativeLibraryDir + "/libcompressor.so";
+        compressorPlugin = avstHost.loadPlugin(compressorPath);
+        if (compressorPlugin != null) {
+            compressorView.setPlugin(compressorPlugin);
+        } else {
+            Toast.makeText(this, "Failed to load Compressor plugin", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void switchPluginView() {
+        if (parametricEQView.getVisibility() == View.VISIBLE) {
+            parametricEQView.setVisibility(View.GONE);
+            compressorView.setVisibility(View.VISIBLE);
+        } else {
+            parametricEQView.setVisibility(View.VISIBLE);
+            compressorView.setVisibility(View.GONE);
         }
     }
 

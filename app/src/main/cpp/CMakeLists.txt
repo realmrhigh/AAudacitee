@@ -37,3 +37,10 @@ add_library(parametric_eq SHARED
         dsp/FFT.cpp)
 
 target_link_libraries(parametric_eq log)
+
+# Add the compressor plugin
+add_library(compressor SHARED
+        plugins/compressor/CompressorPlugin.cpp
+        dsp/Compressor.cpp)
+
+target_link_libraries(compressor log)

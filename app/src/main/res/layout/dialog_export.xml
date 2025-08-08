@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <EditText
+        android:id="@+id/edit_text_filename"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Filename (e.g., output.wav)" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Format:" />
+
+    <RadioGroup
+        android:id="@+id/radio_group_format"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <RadioButton
+            android:id="@+id/radio_button_wav"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:text="WAV" />
+
+        <RadioButton
+            android:id="@+id/radio_button_mp3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="MP3" />
+    </RadioGroup>
+
+    <EditText
+        android:id="@+id/edit_text_target_loudness"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Target Loudness (LUFS, e.g., -14.0)"
+        android:inputType="numberDecimal|numberSigned" />
+
+    <EditText
+        android:id="@+id/edit_text_bitrate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Bitrate (kbps, for MP3 only)"
+        android:inputType="number" />
+
+</LinearLayout>

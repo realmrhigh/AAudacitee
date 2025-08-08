@@ -11,7 +11,11 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.widget.Button;
 import android.widget.Toast;
-import com.example.audioapp.R;
+import android.app.AlertDialog;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.RadioGroup;
 import com.example.audioapp.audio.AudioBuffer;
 import com.example.audioapp.audio.AudioEngine;
 import com.example.audioapp.audio.AudioFileLoader;
@@ -60,6 +64,9 @@ public class MainActivity extends AppCompatActivity {
             AudioEngine.native_setPlaying(false);
             AudioEngine.native_setPlaybackPosition(0);
         });
+
+        Button exportButton = findViewById(R.id.button_export);
+        exportButton.setOnClickListener(v -> showExportDialog());
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO)
                 != PackageManager.PERMISSION_GRANTED) {
@@ -123,5 +130,55 @@ public class MainActivity extends AppCompatActivity {
         processingModeDetector.setInForeground(false);
         handler.removeCallbacks(playbackPositionUpdater);
         AudioEngine.native_stop();
+    }
+
+    private void showExportDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        LayoutInflater inflater = this.getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.dialog_export, null);
+        builder.setView(dialogView);
+
+        final EditText filenameEditText = dialogView.findViewById(R.id.edit_text_filename);
+        final RadioGroup formatRadioGroup = dialogView.findViewById(R.id.radio_group_format);
+        final EditText targetLoudnessEditText = dialogView.findViewById(R.id.edit_text_target_loudness);
+        final EditText bitrateEditText = dialogView.findViewById(R.id.edit_text_bitrate);
+
+        builder.setTitle("Export Audio")
+                .setPositiveButton("Export", (dialog, which) -> {
+                    String filename = filenameEditText.getText().toString();
+                    if (filename.isEmpty()) {
+                        Toast.makeText(this, "Filename cannot be empty", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                    int format = formatRadioGroup.getCheckedRadioButtonId() == R.id.radio_button_wav ?
+                            AudioEngine.FORMAT_WAV : AudioEngine.FORMAT_MP3;
+
+                    double targetLoudness = -100.0; // Default to no normalization
+                    try {
+                        targetLoudness = Double.parseDouble(targetLoudnessEditText.getText().toString());
+                    } catch (NumberFormatException e) {
+                        // Keep default
+                    }
+
+                    int bitrate = 192; // Default bitrate
+                    try {
+                        bitrate = Integer.parseInt(bitrateEditText.getText().toString());
+                    } catch (NumberFormatException e) {
+                        // Keep default
+                    }
+
+                    String filePath = getExternalFilesDir(null).getAbsolutePath() + "/" + filename;
+
+                    boolean success = AudioEngine.native_exportFile(filePath, format, targetLoudness, bitrate);
+                    if (success) {
+                        Toast.makeText(this, "File exported successfully to " + filePath, Toast.LENGTH_LONG).show();
+                    } else {
+                        Toast.makeText(this, "Failed to export file", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
+
+        builder.create().show();
     }
 }

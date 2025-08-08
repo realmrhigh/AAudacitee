@@ -5,6 +5,12 @@ project("audioapp")
 # Find Oboe
 find_package(oboe REQUIRED CONFIG)
 
+# Add libebur128
+add_subdirectory(libebur128)
+
+# Add LAME
+add_subdirectory(lame)
+
 add_library( # Sets the name of the library.
         audioapp
 
@@ -20,6 +26,8 @@ target_link_libraries( # Specifies the target library.
         # Links the target library to the log library
         # and allows it to call functions from that library.
         oboe::oboe
+        ebur128
+        lame
         log)
 
 # Add the parametric EQ plugin

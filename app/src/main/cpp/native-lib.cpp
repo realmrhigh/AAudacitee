@@ -5,8 +5,12 @@
 #include <sched.h>
 #include <dlfcn.h>
 #include <chrono>
+#include <cmath>
+#include <fstream>
 #include "AudioBuffer.h"
 #include "CircularBuffer.h"
+#include "ebur128.h"
+#include "lame/lame.h"
 #include "avst/avst.h"
 #include "LockFreeQueue.h"
 #include "ObjectPool.h"
@@ -49,6 +53,8 @@ public:
         ParameterChange change = {pluginIndex, paramIndex, value};
         paramQueue.push(change);
     }
+
+    AudioBuffer* getAudioBuffer() { return audioBuffer; }
 
     void setAudioBuffer(float *data, int sampleRate, int channelCount, int frameCount) {
         if (audioBuffer != nullptr) {
@@ -418,6 +424,65 @@ Java_com_example_audioapp_avst_AvstHost_native_1setPluginQuality(JNIEnv *env, jc
     pluginHandle->plugin->setQuality(quality);
 }
 
+double getLoudnessDb() {
+    AudioBuffer* audioBuffer = engine.getAudioBuffer();
+    if (!audioBuffer) {
+        return -70.0; // Return a default value if no audio is loaded
+    }
+
+    // This code is based on an assumed API for libebur128.
+    // It needs to be verified against the actual library documentation.
+    ebur128_state* st = ebur128_init(
+        audioBuffer->getChannelCount(),
+        audioBuffer->getSampleRate(),
+        EBUR128_MODE_I
+    );
+
+    if (!st) {
+        ALOGE("Failed to initialize libebur128");
+        return -70.0;
+    }
+
+    ebur128_add_frames_float(st, audioBuffer->getData(), audioBuffer->getFrameCount());
+
+    double loudness = 0.0;
+    ebur128_loudness_global(st, &loudness);
+
+    ebur128_destroy(&st);
+
+    return loudness;
+}
+
+extern "C" JNIEXPORT jdouble JNICALL
+Java_com_example_audioapp_audio_AudioEngine_native_1getLoudness(JNIEnv *env, jclass clazz) {
+    return getLoudnessDb();
+}
+
+extern "C" JNIEXPORT void JNICALL
+Java_com_example_audioapp_audio_AudioEngine_native_1normalizeLoudness(JNIEnv *env, jclass clazz, jdouble target_loudness) {
+    AudioBuffer* audioBuffer = engine.getAudioBuffer();
+    if (!audioBuffer) {
+        return;
+    }
+
+    double currentLoudness = getLoudnessDb();
+    if (currentLoudness < -70.0) { // Check for silence or error
+        return;
+    }
+
+    double gainDb = target_loudness - currentLoudness;
+    float gainLinear = pow(10.0, gainDb / 20.0);
+
+    float* data = audioBuffer->getData();
+    int frameCount = audioBuffer->getFrameCount();
+    int channelCount = audioBuffer->getChannelCount();
+    int totalSamples = frameCount * channelCount;
+
+    for (int i = 0; i < totalSamples; ++i) {
+        data[i] *= gainLinear;
+    }
+}
+
 extern "C" JNIEXPORT jlongArray JNICALL
 Java_com_example_audioapp_avst_AvstHost_native_1loadChain(JNIEnv *env, jclass clazz, jbyteArray chain_data) {
     jbyte *data = env->GetByteArrayElements(chain_data, nullptr);
@@ -467,4 +532,149 @@ Java_com_example_audioapp_avst_AvstHost_native_1loadChain(JNIEnv *env, jclass cl
 
     env->ReleaseByteArrayElements(chain_data, data, JNI_ABORT);
     return result;
+}
+
+void writeWavHeader(std::ofstream& file, int sampleRate, int channelCount, int frameCount) {
+    int bitsPerSample = 16;
+    int byteRate = sampleRate * channelCount * bitsPerSample / 8;
+    int blockAlign = channelCount * bitsPerSample / 8;
+    int subchunk2Size = frameCount * channelCount * bitsPerSample / 8;
+    int chunkSize = 36 + subchunk2Size;
+
+    file.write("RIFF", 4);
+    file.write(reinterpret_cast<const char*>(&chunkSize), 4);
+    file.write("WAVE", 4);
+    file.write("fmt ", 4);
+    int subchunk1Size = 16;
+    file.write(reinterpret_cast<const char*>(&subchunk1Size), 4);
+    short audioFormat = 1;
+    file.write(reinterpret_cast<const char*>(&audioFormat), 2);
+    file.write(reinterpret_cast<const char*>(&channelCount), 2);
+    file.write(reinterpret_cast<const char*>(&sampleRate), 4);
+    file.write(reinterpret_cast<const char*>(&byteRate), 4);
+    file.write(reinterpret_cast<const char*>(&blockAlign), 2);
+    file.write(reinterpret_cast<const char*>(&bitsPerSample), 2);
+    file.write("data", 4);
+    file.write(reinterpret_cast<const char*>(&subchunk2Size), 4);
+}
+
+bool exportWav(const char* path, float* audioData, int sampleRate, int channelCount, int frameCount) {
+    std::ofstream file(path, std::ios::binary);
+    if (!file.is_open()) {
+        ALOGE("Failed to open file for writing: %s", path);
+        return false;
+    }
+
+    writeWavHeader(file, sampleRate, channelCount, frameCount);
+
+    std::vector<short> intBuffer(frameCount * channelCount);
+    for (int i = 0; i < frameCount * channelCount; ++i) {
+        intBuffer[i] = static_cast<short>(audioData[i] * 32767.0f);
+    }
+    file.write(reinterpret_cast<const char*>(intBuffer.data()), intBuffer.size() * sizeof(short));
+
+    file.close();
+    return true;
+}
+
+bool exportMp3(const char* path, float* audioData, int sampleRate, int channelCount, int frameCount, int bitrate) {
+    FILE* file = fopen(path, "wb");
+    if (!file) {
+        ALOGE("Failed to open file for writing: %s", path);
+        return false;
+    }
+
+    lame_t lame = lame_init();
+    lame_set_in_samplerate(lame, sampleRate);
+    lame_set_num_channels(lame, channelCount);
+    lame_set_VBR(lame, vbr_off);
+    lame_set_brate(lame, bitrate);
+    lame_set_quality(lame, 2); // 2=high, 5=medium, 7=low
+    lame_init_params(lame);
+
+    int pcm_buffer_size = 1024;
+    std::vector<float> pcm_buffer(pcm_buffer_size * channelCount);
+    std::vector<float> left_buffer(pcm_buffer_size);
+    std::vector<float> right_buffer(pcm_buffer_size);
+    int mp3_buffer_size = 1.25 * pcm_buffer_size + 7200;
+    std::vector<unsigned char> mp3_buffer(mp3_buffer_size);
+
+    int read = 0;
+    int write = 0;
+
+    while (read < frameCount) {
+        int to_read = std::min(pcm_buffer_size, frameCount - read);
+        for(int i = 0; i < to_read; ++i) {
+            if (channelCount == 1) {
+                left_buffer[i] = audioData[(read + i) * channelCount];
+            } else {
+                left_buffer[i] = audioData[(read + i) * channelCount];
+                right_buffer[i] = audioData[(read + i) * channelCount + 1];
+            }
+        }
+
+        int encoded_bytes = lame_encode_buffer_float(
+            lame,
+            left_buffer.data(),
+            channelCount == 2 ? right_buffer.data() : nullptr,
+            to_read,
+            mp3_buffer.data(),
+            mp3_buffer_size
+        );
+
+        if (encoded_bytes < 0) {
+            ALOGE("LAME encoding failed with error code: %d", encoded_bytes);
+            break;
+        }
+
+        fwrite(mp3_buffer.data(), 1, encoded_bytes, file);
+        read += to_read;
+    }
+
+    int encoded_bytes = lame_encode_flush(lame, mp3_buffer.data(), mp3_buffer_size);
+    fwrite(mp3_buffer.data(), 1, encoded_bytes, file);
+
+    lame_close(lame);
+    fclose(file);
+    return true;
+}
+
+extern "C" JNIEXPORT jboolean JNICALL
+Java_com_example_audioapp_audio_AudioEngine_native_1exportFile(JNIEnv *env, jclass clazz, jstring path, jint format, jdouble target_loudness, jint bitrate) {
+    AudioBuffer* audioBuffer = engine.getAudioBuffer();
+    if (!audioBuffer) {
+        return false;
+    }
+
+    int frameCount = audioBuffer->getFrameCount();
+    int channelCount = audioBuffer->getChannelCount();
+    int totalSamples = frameCount * channelCount;
+
+    // Create a temporary buffer for normalized audio
+    float* tempBuffer = new float[totalSamples];
+    memcpy(tempBuffer, audioBuffer->getData(), totalSamples * sizeof(float));
+
+    if (target_loudness > -70.0) { // Apply normalization if target is not silent
+        double currentLoudness = getLoudnessDb();
+        if (currentLoudness > -70.0) {
+            double gainDb = target_loudness - currentLoudness;
+            float gainLinear = pow(10.0, gainDb / 20.0);
+            for (int i = 0; i < totalSamples; ++i) {
+                tempBuffer[i] *= gainLinear;
+            }
+        }
+    }
+
+    const char *pathStr = env->GetStringUTFChars(path, nullptr);
+
+    bool success = false;
+    if (format == 0) { // WAV
+        success = exportWav(pathStr, tempBuffer, audioBuffer->getSampleRate(), channelCount, frameCount);
+    } else if (format == 1) { // MP3
+        success = exportMp3(pathStr, tempBuffer, audioBuffer->getSampleRate(), channelCount, frameCount, bitrate);
+    }
+
+    env->ReleaseStringUTFChars(path, pathStr);
+    delete[] tempBuffer;
+    return success;
 }

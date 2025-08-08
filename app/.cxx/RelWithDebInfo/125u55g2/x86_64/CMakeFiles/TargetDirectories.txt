@@ -1,0 +1,4 @@
+C:/Users/stant/AndroidStudioProjects/AAudacitee/app/.cxx/RelWithDebInfo/125u55g2/x86_64/CMakeFiles/audioapp.dir
+C:/Users/stant/AndroidStudioProjects/AAudacitee/app/.cxx/RelWithDebInfo/125u55g2/x86_64/CMakeFiles/parametric_eq.dir
+C:/Users/stant/AndroidStudioProjects/AAudacitee/app/.cxx/RelWithDebInfo/125u55g2/x86_64/CMakeFiles/edit_cache.dir
+C:/Users/stant/AndroidStudioProjects/AAudacitee/app/.cxx/RelWithDebInfo/125u55g2/x86_64/CMakeFiles/rebuild_cache.dir

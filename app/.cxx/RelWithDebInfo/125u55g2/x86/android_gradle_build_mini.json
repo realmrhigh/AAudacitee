@@ -1,0 +1,35 @@
+{
+  "buildFiles": [
+    "C:\\Users\\stant\\AndroidStudioProjects\\AAudacitee\\app\\src\\main\\cpp\\CMakeLists.txt"
+  ],
+  "cleanCommandsComponents": [
+    [
+      "C:\\Users\\stant\\AppData\\Local\\Android\\Sdk\\cmake\\3.22.1\\bin\\ninja.exe",
+      "-C",
+      "C:\\Users\\stant\\AndroidStudioProjects\\AAudacitee\\app\\.cxx\\RelWithDebInfo\\125u55g2\\x86",
+      "clean"
+    ]
+  ],
+  "buildTargetsCommandComponents": [
+    "C:\\Users\\stant\\AppData\\Local\\Android\\Sdk\\cmake\\3.22.1\\bin\\ninja.exe",
+    "-C",
+    "C:\\Users\\stant\\AndroidStudioProjects\\AAudacitee\\app\\.cxx\\RelWithDebInfo\\125u55g2\\x86",
+    "{LIST_OF_TARGETS_TO_BUILD}"
+  ],
+  "libraries": {
+    "parametric_eq::@6890427a1f51a3e7e1df": {
+      "artifactName": "parametric_eq",
+      "abi": "x86",
+      "output": "C:\\Users\\stant\\AndroidStudioProjects\\AAudacitee\\app\\build\\intermediates\\cxx\\RelWithDebInfo\\125u55g2\\obj\\x86\\libparametric_eq.so",
+      "runtimeFiles": []
+    },
+    "audioapp::@6890427a1f51a3e7e1df": {
+      "artifactName": "audioapp",
+      "abi": "x86",
+      "output": "C:\\Users\\stant\\AndroidStudioProjects\\AAudacitee\\app\\build\\intermediates\\cxx\\RelWithDebInfo\\125u55g2\\obj\\x86\\libaudioapp.so",
+      "runtimeFiles": [
+        "C:\\Users\\stant\\.gradle\\caches\\transforms-3\\750cd355f74f293a14287285b6361954\\transformed\\oboe-1.5.0\\prefab\\modules\\oboe\\libs\\android.x86\\liboboe.so"
+      ]
+    }
+  }
+}

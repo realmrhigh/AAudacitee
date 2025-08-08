@@ -1,0 +1,8 @@
+# ninja log v5
+7	221	7763930590679210	CMakeFiles/parametric_eq.dir/dsp/Biquad.cpp.o	b0746f433c513a66
+16	871	7763930597170676	CMakeFiles/parametric_eq.dir/dsp/FFT.cpp.o	305a69c52e1cb7fe
+21	1117	7763930599641219	CMakeFiles/parametric_eq.dir/dsp/FrequencyResponse.cpp.o	9d8f59616b184279
+12	1182	7763930600261360	CMakeFiles/parametric_eq.dir/plugins/parametric_eq/ParametricEQ.cpp.o	dbb6a1ff2a5351e
+1182	1308	7763930601521648	C:/Users/stant/AndroidStudioProjects/AAudacitee/app/build/intermediates/cxx/RelWithDebInfo/125u55g2/obj/x86_64/libparametric_eq.so	5f28d8e2397f7890
+1	1527	7763930603702140	CMakeFiles/audioapp.dir/native-lib.cpp.o	e3b52779716ef671
+1528	1643	7763930604889686	C:/Users/stant/AndroidStudioProjects/AAudacitee/app/build/intermediates/cxx/RelWithDebInfo/125u55g2/obj/x86_64/libaudioapp.so	51743b4a537a2b0d

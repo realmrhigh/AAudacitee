@@ -1,0 +1,69 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"jsonFile" : "directory-.-Debug-d0094a50bb2071803777.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.6.0"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						0,
+						1
+					]
+				}
+			],
+			"name" : "Debug",
+			"projects" : 
+			[
+				{
+					"directoryIndexes" : 
+					[
+						0
+					],
+					"name" : "audioapp",
+					"targetIndexes" : 
+					[
+						0,
+						1
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 0,
+					"id" : "audioapp::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-audioapp-Debug-0bd7b638cfcc801a3f26.json",
+					"name" : "audioapp",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "parametric_eq::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-parametric_eq-Debug-1be8a2e340e9c68404b3.json",
+					"name" : "parametric_eq",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "C:/Users/stant/AndroidStudioProjects/AAudacitee/app/.cxx/Debug/5e141q4t/arm64-v8a",
+		"source" : "C:/Users/stant/AndroidStudioProjects/AAudacitee/app/src/main/cpp"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 3
+	}
+}

@@ -51,3 +51,10 @@ add_library(leveler SHARED
         dsp/Leveler.cpp)
 
 target_link_libraries(leveler log)
+
+# Add the transient shaper plugin
+add_library(transient_shaper SHARED
+        plugins/transient_shaper/TransientShaperPlugin.cpp
+        dsp/TransientShaper.cpp)
+
+target_link_libraries(transient_shaper log)

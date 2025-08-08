@@ -31,10 +31,12 @@ public class MainActivity extends AppCompatActivity {
     private ParametricEQView parametricEQView;
     private CompressorView compressorView;
     private LevelerView levelerView;
+    private TransientShaperView transientShaperView;
     private AvstHost avstHost;
     private Plugin eqPlugin;
     private Plugin compressorPlugin;
     private Plugin levelerPlugin;
+    private Plugin transientShaperPlugin;
     private ProcessingModeDetector processingModeDetector;
 
     // Used to load the 'audioapp' library on application startup.
@@ -50,6 +52,7 @@ public class MainActivity extends AppCompatActivity {
         parametricEQView = findViewById(R.id.parametric_eq_view);
         compressorView = findViewById(R.id.compressor_view);
         levelerView = findViewById(R.id.leveler_view);
+        transientShaperView = findViewById(R.id.transient_shaper_view);
         avstHost = new AvstHost();
         processingModeDetector = new ProcessingModeDetector();
 
@@ -158,6 +161,14 @@ public class MainActivity extends AppCompatActivity {
         } else {
             Toast.makeText(this, "Failed to load Leveler plugin", Toast.LENGTH_SHORT).show();
         }
+
+        String transientShaperPath = getApplicationInfo().nativeLibraryDir + "/libtransient_shaper.so";
+        transientShaperPlugin = avstHost.loadPlugin(transientShaperPath);
+        if (transientShaperPlugin != null) {
+            transientShaperView.setPlugin(transientShaperPlugin);
+        } else {
+            Toast.makeText(this, "Failed to load Transient Shaper plugin", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void switchPluginView() {
@@ -165,14 +176,22 @@ public class MainActivity extends AppCompatActivity {
             parametricEQView.setVisibility(View.GONE);
             compressorView.setVisibility(View.VISIBLE);
             levelerView.setVisibility(View.GONE);
+            transientShaperView.setVisibility(View.GONE);
         } else if (compressorView.getVisibility() == View.VISIBLE) {
             parametricEQView.setVisibility(View.GONE);
             compressorView.setVisibility(View.GONE);
             levelerView.setVisibility(View.VISIBLE);
+            transientShaperView.setVisibility(View.GONE);
+        } else if (levelerView.getVisibility() == View.VISIBLE) {
+            parametricEQView.setVisibility(View.GONE);
+            compressorView.setVisibility(View.GONE);
+            levelerView.setVisibility(View.GONE);
+            transientShaperView.setVisibility(View.VISIBLE);
         } else {
             parametricEQView.setVisibility(View.VISIBLE);
             compressorView.setVisibility(View.GONE);
             levelerView.setVisibility(View.GONE);
+            transientShaperView.setVisibility(View.GONE);
         }
     }
 

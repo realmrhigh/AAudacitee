@@ -67,15 +67,20 @@ bool ParametricEQ::setAudioIOConfig(const AudioIOConfig &config) {
 }
 
 void ParametricEQ::processAudio(ProcessContext &context) {
-    for (uint32_t i = 0; i < context.frameCount; ++i) {
-        for (int j = 0; j < config.currentOutputChannels; ++j) {
-            float sample = context.inputs[j][i];
-            for (int k = 0; k < NUM_BANDS; ++k) {
-                if (bands[k].enabled) {
-                    sample = bands[k].filter.process(sample);
-                }
+    for (int j = 0; j < config.currentOutputChannels; ++j) {
+        float* in = (float*)context.inputs[j];
+        float* out = context.outputs[j];
+
+        for (int k = 0; k < NUM_BANDS; ++k) {
+            if (bands[k].enabled) {
+                bands[k].filter.process(in, out, context.frameCount);
+                in = out; // Chain the output of one filter to the input of the next
             }
-            context.outputs[j][i] = sample;
+        }
+
+        // If the last filter was disabled, we need to copy the input to the output
+        if (in != out) {
+            memcpy(out, in, context.frameCount * sizeof(float));
         }
     }
 }

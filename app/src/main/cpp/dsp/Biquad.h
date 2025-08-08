@@ -3,6 +3,10 @@
 
 #include <cmath>
 
+#if defined(__ARM_NEON__)
+#include <arm_neon.h>
+#endif
+
 namespace dsp {
 
 enum class BiquadFilterType {
@@ -20,7 +24,7 @@ public:
 
     void setType(BiquadFilterType type);
     void setCoefficients(double sampleRate, double frequency, double q, double gain);
-    float process(float in);
+    void process(float* in, float* out, int num_samples);
     void reset();
 
 private:

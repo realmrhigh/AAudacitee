@@ -156,6 +156,15 @@ void Biquad::process(float* in, float* out, int num_samples) {
 }
 #endif
 
+float Biquad::process(float input) {
+    double y = b0 * input + b1 * x1 + b2 * x2 - a1 * y1 - a2 * y2;
+    x2 = x1;
+    x1 = input;
+    y2 = y1;
+    y1 = y;
+    return static_cast<float>(y);
+}
+
 void Biquad::reset() {
     x1 = x2 = y1 = y2 = 0.0;
 }

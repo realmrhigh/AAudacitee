@@ -25,6 +25,7 @@ public:
     void setType(BiquadFilterType type);
     void setCoefficients(double sampleRate, double frequency, double q, double gain);
     void process(float* in, float* out, int num_samples);
+    float process(float input);  // Single sample version
     void reset();
 
 private:

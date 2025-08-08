@@ -5,6 +5,9 @@
 
 namespace avst {
 
+// Static member definition
+constexpr int ParametricEQ::NUM_BANDS;
+
 ParametricEQ::ParametricEQ() {
     config.sampleRate = 44100;
     config.currentInputChannels = 1;

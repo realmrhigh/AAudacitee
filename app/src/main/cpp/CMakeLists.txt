@@ -25,6 +25,7 @@ target_link_libraries( # Specifies the target library.
 # Add the parametric EQ plugin
 add_library(parametric_eq SHARED
         plugins/parametric_eq/ParametricEQ.cpp
-        dsp/Biquad.cpp)
+        dsp/Biquad.cpp
+        dsp/FFT.cpp)
 
 target_link_libraries(parametric_eq log)

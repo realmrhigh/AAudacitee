@@ -1,6 +1,7 @@
 #include "ParametricEQ.h"
 #include <vector>
 #include <string>
+#include <memory>
 
 namespace avst {
 
@@ -8,6 +9,8 @@ ParametricEQ::ParametricEQ() {
     config.sampleRate = 44100;
     config.currentInputChannels = 1;
     config.currentOutputChannels = 1;
+
+    frequencyResponse = std::make_unique<dsp::FrequencyResponse>(NUM_BANDS, config.sampleRate);
 
     // Initialize bands with some default values
     bands[0] = { {}, 80.0f, 0.707f, 0.0f, dsp::BiquadFilterType::LOW_SHELF, true };
@@ -43,6 +46,7 @@ PluginInfo ParametricEQ::getPluginInfo() const {
 
 bool ParametricEQ::initialize(const AudioIOConfig &config) {
     this->config = config;
+    frequencyResponse = std::make_unique<dsp::FrequencyResponse>(NUM_BANDS, config.sampleRate);
     for (int i = 0; i < NUM_BANDS; ++i) {
         bands[i].filter.setCoefficients(config.sampleRate, bands[i].frequency, bands[i].q, bands[i].gain);
     }
@@ -55,6 +59,7 @@ void ParametricEQ::shutdown() {
 
 bool ParametricEQ::setAudioIOConfig(const AudioIOConfig &config) {
     this->config = config;
+    frequencyResponse = std::make_unique<dsp::FrequencyResponse>(NUM_BANDS, config.sampleRate);
     for (int i = 0; i < NUM_BANDS; ++i) {
         bands[i].filter.setCoefficients(config.sampleRate, bands[i].frequency, bands[i].q, bands[i].gain);
     }
@@ -179,6 +184,10 @@ void ParametricEQ::setParameter(int index, float value) {
             break;
     }
     bands[band].filter.setCoefficients(config.sampleRate, bands[band].frequency, bands[band].q, bands[band].gain);
+
+    if (frequencyResponse) {
+        frequencyResponse->invalidate();
+    }
 }
 
 AudioIOConfig ParametricEQ::getAudioIOConfig() const {
@@ -191,6 +200,18 @@ IAvstUI *ParametricEQ::getUI() {
 
 void ParametricEQ::setQuality(int quality) {
     // Not used
+}
+
+void ParametricEQ::getFrequencyResponse(std::vector<float>& magnitudes) {
+    if (frequencyResponse) {
+        std::vector<dsp::Biquad> active_filters;
+        for(int i = 0; i < NUM_BANDS; ++i) {
+            if(bands[i].enabled) {
+                active_filters.push_back(bands[i].filter);
+            }
+        }
+        frequencyResponse->calculateResponse(active_filters.data(), active_filters.size(), magnitudes);
+    }
 }
 
 extern "C" __attribute__((visibility("default"))) IAvstPlugin *createAvstPlugin() {

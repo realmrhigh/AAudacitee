@@ -3,6 +3,7 @@
 
 #include "../../avst/avst.h"
 #include "../../dsp/Biquad.h"
+#include "../../dsp/FrequencyResponse.h"
 
 namespace avst {
 
@@ -28,8 +29,10 @@ public:
     AudioIOConfig getAudioIOConfig() const override;
     IAvstUI *getUI() override;
     void setQuality(int quality) override;
+    void getFrequencyResponse(std::vector<float>& magnitudes) override;
 
 private:
+    std::unique_ptr<dsp::FrequencyResponse> frequencyResponse;
     static constexpr int NUM_BANDS = 6;
 
     struct Band {

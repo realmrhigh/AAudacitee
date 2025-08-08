@@ -74,6 +74,7 @@ public:
     virtual AudioIOConfig getAudioIOConfig() const = 0;
     virtual IAvstUI *getUI() = 0;
     virtual void setQuality(int quality) = 0;
+    virtual void getFrequencyResponse(std::vector<float>& magnitudes) = 0;
 };
 
 class IAvstUI {

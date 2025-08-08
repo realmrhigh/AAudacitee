@@ -3,6 +3,7 @@
 
 #include "Biquad.h"
 #include <vector>
+#include <complex>
 
 namespace dsp {
 
@@ -24,6 +25,8 @@ private:
     int fft_size;
     std::vector<float> impulse;
     std::vector<float> impulse_response;
+    std::vector<std::complex<double>> fft_buffer;
+    std::vector<float> smoothing_buffer;
 };
 
 } // namespace dsp

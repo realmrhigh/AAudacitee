@@ -15,6 +15,8 @@ FrequencyResponse::FrequencyResponse(int num_bands, double sample_rate) :
     impulse[0] = 1.0f;
     impulse_response.resize(fft_size);
     magnitudes_cache.resize(fft_size / 2 + 1);
+    fft_buffer.resize(fft_size);
+    smoothing_buffer.resize(fft_size / 2 + 1);
 }
 
 void FrequencyResponse::invalidate() {
@@ -34,13 +36,13 @@ void FrequencyResponse::calculateResponse(const Biquad* filters, int num_filters
         for (int j = 0; j < num_filters; ++j) {
             // Create a temporary copy of the filter to not modify its state
             Biquad temp_filter = filters[j];
+            temp_filter.reset(); // Reset state before processing
             sample = temp_filter.process(sample);
         }
         impulse_response[i] = sample;
     }
 
     // 2. Prepare for FFT
-    std::vector<std::complex<double>> fft_buffer(fft_size);
     for (int i = 0; i < fft_size; ++i) {
         fft_buffer[i] = {impulse_response[i], 0.0};
     }
@@ -66,11 +68,10 @@ void FrequencyResponse::smooth(std::vector<float>& magnitudes) {
     if (magnitudes.size() < 3) {
         return;
     }
-    std::vector<float> smoothed = magnitudes;
+    smoothing_buffer = magnitudes;
     for (size_t i = 1; i < magnitudes.size() - 1; ++i) {
-        smoothed[i] = (magnitudes[i-1] + magnitudes[i] + magnitudes[i+1]) / 3.0f;
+        magnitudes[i] = (smoothing_buffer[i-1] + smoothing_buffer[i] + smoothing_buffer[i+1]) / 3.0f;
     }
-    magnitudes = smoothed;
 }
 
 } // namespace dsp

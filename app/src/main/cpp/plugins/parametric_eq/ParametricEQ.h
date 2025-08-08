@@ -46,6 +46,7 @@ private:
 
     Band bands[NUM_BANDS];
     AudioIOConfig config;
+    std::vector<dsp::Biquad> active_filters_cache;
 
     enum Parameter {
         P_FREQ,

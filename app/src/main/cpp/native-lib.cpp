@@ -9,6 +9,7 @@
 #include "CircularBuffer.h"
 #include "avst/avst.h"
 #include "LockFreeQueue.h"
+#include "ObjectPool.h"
 
 #define LOG_TAG "AudioApp"
 #define ALOGI(...) __android_log_print(ANDROID_LOG_INFO, LOG_TAG, __VA_ARGS__)
@@ -23,16 +24,13 @@ struct ParameterChange {
 class AudioEngine : public oboe::AudioStreamCallback {
 public:
     AudioEngine() : circularBuffer(1024), paramQueue(128) {
-        for (int i = 0; i < 2; ++i) {
-            bufferPool.push_back(new float[4096]);
+        for (int i = 0; i < 4; ++i) {
+            auto buffer = std::make_unique<std::vector<float>>(4096);
+            bufferPool.release(std::move(buffer));
         }
     }
 
-    ~AudioEngine() {
-        for (auto buffer : bufferPool) {
-            delete[] buffer;
-        }
-    }
+    ~AudioEngine() = default;
 
     void addPlugin(avst::PluginHandle *plugin) {
         plugins.push_back(plugin);
@@ -157,8 +155,8 @@ public:
     }
 
     std::vector<avst::PluginHandle *> plugins;
-    std::vector<float *> bufferPool;
-    int currentBuffer = 0;
+    ObjectPool<std::vector<float>> bufferPool;
+
 private:
     oboe::AudioStream *stream_ = nullptr;
     int32_t sampleRate_ = 0;
@@ -307,8 +305,10 @@ Java_com_example_audioapp_avst_AvstHost_native_1process(JNIEnv *env, jclass claz
     };
 
     float *input = data;
-    float *output = engine.bufferPool[engine.currentBuffer];
-    engine.currentBuffer = (engine.currentBuffer + 1) % engine.bufferPool.size();
+    auto output_buffer_ptr = engine.bufferPool.get();
+    output_buffer_ptr->resize(frameCount);
+    float* output = output_buffer_ptr->data();
+
     int currentChannels = 1;
 
     for (int i = 0; i < count; i++) {
@@ -330,8 +330,9 @@ Java_com_example_audioapp_avst_AvstHost_native_1process(JNIEnv *env, jclass claz
                 pluginHandle->plugin->processAudio(context);
                 input = output;
                 if (i < count - 1) {
-                    output = engine.bufferPool[engine.currentBuffer];
-                    engine.currentBuffer = (engine.currentBuffer + 1) % engine.bufferPool.size();
+                    auto next_output_buffer_ptr = engine.bufferPool.get();
+                    next_output_buffer_ptr->resize(frameCount);
+                    output = next_output_buffer_ptr->data();
                 }
             } catch (const std::exception &e) {
                 ALOGE("Plugin %d threw an exception: %s", i, e.what());
@@ -344,6 +345,9 @@ Java_com_example_audioapp_avst_AvstHost_native_1process(JNIEnv *env, jclass claz
     if (input != data) {
         memcpy(data, input, frameCount * sizeof(float));
     }
+
+    engine.bufferPool.release(std::move(output_buffer_ptr));
+
 
     env->ReleaseLongArrayElements(native_handles, handles, JNI_ABORT);
     env->ReleaseFloatArrayElements(buffer, data, 0);

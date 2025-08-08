@@ -209,13 +209,13 @@ void ParametricEQ::setQuality(int quality) {
 
 void ParametricEQ::getFrequencyResponse(std::vector<float>& magnitudes) {
     if (frequencyResponse) {
-        std::vector<dsp::Biquad> active_filters;
+        active_filters_cache.clear();
         for(int i = 0; i < NUM_BANDS; ++i) {
             if(bands[i].enabled) {
-                active_filters.push_back(bands[i].filter);
+                active_filters_cache.push_back(bands[i].filter);
             }
         }
-        frequencyResponse->calculateResponse(active_filters.data(), active_filters.size(), magnitudes);
+        frequencyResponse->calculateResponse(active_filters_cache.data(), active_filters_cache.size(), magnitudes);
     }
 }
 

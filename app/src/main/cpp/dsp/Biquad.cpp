@@ -63,16 +63,34 @@ void Biquad::calculateCoefficients() {
                 b0 = (1 + V/q * K + K_squared) * norm;
                 b1 = 2 * (K_squared - 1) * norm;
                 b2 = (1 - V/q * K + K_squared) * norm;
-                a1 = b1;
+                a1 = 2 * (K_squared - 1) * norm;
                 a2 = (1 - 1/q * K + K_squared) * norm;
             } else { // Cut
                 norm = 1 / (1 + V/q * K + K_squared);
                 b0 = (1 + 1/q * K + K_squared) * norm;
                 b1 = 2 * (K_squared - 1) * norm;
                 b2 = (1 - 1/q * K + K_squared) * norm;
-                a1 = b1;
+                a1 = 2 * (K_squared - 1) * norm;
                 a2 = (1 - V/q * K + K_squared) * norm;
             }
+            break;
+
+        case BiquadFilterType::BANDPASS:
+            norm = 1 / (1 + K / q + K_squared);
+            b0 = K / q * norm;
+            b1 = 0;
+            b2 = -b0;
+            a1 = 2 * (K_squared - 1) * norm;
+            a2 = (1 - K / q + K_squared) * norm;
+            break;
+
+        case BiquadFilterType::NOTCH:
+            norm = 1 / (1 + K / q + K_squared);
+            b0 = (1 + K_squared) * norm;
+            b1 = 2 * (K_squared - 1) * norm;
+            b2 = b0;
+            a1 = b1;
+            a2 = (1 - K / q + K_squared) * norm;
             break;
 
         case BiquadFilterType::LOW_SHELF:

@@ -1,6 +1,9 @@
 package com.example.audioapp.audio;
 
 public class AudioEngine {
+    public static final int FORMAT_WAV = 0;
+    public static final int FORMAT_MP3 = 1;
+
     static {
         System.loadLibrary("audioapp");
     }
@@ -20,4 +23,9 @@ public class AudioEngine {
     public static native void native_setEQBandGain(int bandIndex, float gainDb);
     public static native void native_setEQBandQ(int bandIndex, float q);
     public static native void native_setMasterVolume(float volume);
+    
+    // Export and loudness analysis
+    public static native double native_getLoudness();
+    public static native void native_normalizeLoudness(double targetLoudness);
+    public static native boolean native_exportFile(String path, int format, double targetLoudness, int bitrate);
 }

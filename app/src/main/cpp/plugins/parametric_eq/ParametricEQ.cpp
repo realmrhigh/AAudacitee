@@ -24,8 +24,8 @@ ParametricEQ::ParametricEQ() {
     bands[5] = { {}, 10000.0f, 0.707f, 0.0f, dsp::BiquadFilterType::HIGH_SHELF, true };
 
     for (int i = 0; i < NUM_BANDS; ++i) {
-        bands[i].filter.setCoefficients(config.sampleRate, bands[i].frequency, bands[i].q, bands[i].gain);
         bands[i].filter.setType(bands[i].type);
+        bands[i].filter.setCoefficients(config.sampleRate, bands[i].frequency, bands[i].q, bands[i].gain);
     }
 }
 

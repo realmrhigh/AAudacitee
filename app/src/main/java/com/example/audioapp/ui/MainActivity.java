@@ -4,13 +4,17 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import android.Manifest;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.RadioGroup;
 import android.widget.SeekBar;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -19,6 +23,8 @@ import com.example.audioapp.R;
 import com.example.audioapp.audio.AudioBuffer;
 import com.example.audioapp.audio.AudioEngine;
 import com.example.audioapp.audio.AudioFileLoader;
+import com.example.audioapp.avst.AvstHost;
+import com.example.audioapp.avst.Plugin;
 import com.example.audioapp.engine.ProcessingModeDetector;
 
 public class MainActivity extends AppCompatActivity {
@@ -26,10 +32,18 @@ public class MainActivity extends AppCompatActivity {
     private static final int AUDIO_PERMISSION_REQUEST_CODE = 1;
     private static final int FILE_PICKER_REQUEST_CODE = 2;
 
-    private TimelineView timelineView;
+    private ParametricEQView parametricEQView;
+    private CompressorView compressorView;
+    private LevelerView levelerView;
+    private TransientShaperView transientShaperView;
+    private AvstHost avstHost;
+    private Plugin eqPlugin;
+    private Plugin compressorPlugin;
+    private Plugin levelerPlugin;
+    private Plugin transientShaperPlugin;
+    private ProcessingModeDetector processingModeDetector;
     private Handler handler = new Handler();
     private Runnable playbackPositionUpdater;
-    private ProcessingModeDetector processingModeDetector;
 
     // EQ Band configurations
     private static final String[] BAND_NAMES = {
@@ -55,7 +69,11 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        timelineView = findViewById(R.id.timeline_view);
+        parametricEQView = findViewById(R.id.parametric_eq_view);
+        compressorView = findViewById(R.id.compressor_view);
+        levelerView = findViewById(R.id.leveler_view);
+        transientShaperView = findViewById(R.id.transient_shaper_view);
+        avstHost = new AvstHost();
         processingModeDetector = new ProcessingModeDetector();
 
         setupTransportControls();
@@ -69,12 +87,13 @@ public class MainActivity extends AppCompatActivity {
         } else {
             AudioEngine.native_create();
             AudioEngine.native_start();
+            loadPlugins();
         }
 
         playbackPositionUpdater = new Runnable() {
             @Override
             public void run() {
-                timelineView.setPlaybackPosition(AudioEngine.native_getPlaybackPosition());
+                // timelineView.setPlaybackPosition(AudioEngine.native_getPlaybackPosition());
                 handler.postDelayed(this, 100);
             }
         };
@@ -100,102 +119,35 @@ public class MainActivity extends AppCompatActivity {
             AudioEngine.native_setPlaying(false);
             AudioEngine.native_setPlaybackPosition(0);
         });
+
+        Button exportButton = findViewById(R.id.button_export);
+        exportButton.setOnClickListener(v -> showExportDialog());
+
+        Button switchPluginButton = findViewById(R.id.button_switch_plugin);
+        switchPluginButton.setOnClickListener(v -> switchPluginView());
     }
 
     private void setupEQControls() {
-        int[] bandIds = {R.id.eq_band_1, R.id.eq_band_2, R.id.eq_band_3, 
-                        R.id.eq_band_4, R.id.eq_band_5, R.id.eq_band_6};
-        
-        for (int i = 0; i < 6; i++) {
-            final int bandIndex = i;
-            View bandView = findViewById(bandIds[i]);
-            
-            // Set band title
-            TextView bandTitle = bandView.findViewById(R.id.band_title);
-            bandTitle.setText(BAND_NAMES[i]);
-            
-            // Setup enable/disable switch
-            Switch enableSwitch = bandView.findViewById(R.id.band_enable);
-            enableSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> 
-                AudioEngine.native_setEQBandEnabled(bandIndex, isChecked));
-            
-            // Setup frequency control
-            SeekBar frequencySlider = bandView.findViewById(R.id.frequency_slider);
-            TextView frequencyValue = bandView.findViewById(R.id.frequency_value);
-            
-            frequencySlider.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-                @Override
-                public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                    if (fromUser) {
-                        float frequency = MIN_FREQUENCIES[bandIndex] + 
-                            (MAX_FREQUENCIES[bandIndex] - MIN_FREQUENCIES[bandIndex]) * progress / 100f;
-                        AudioEngine.native_setEQBandFrequency(bandIndex, frequency);
-                        updateFrequencyDisplay(frequencyValue, frequency);
-                    }
-                }
-                
-                @Override public void onStartTrackingTouch(SeekBar seekBar) {}
-                @Override public void onStopTrackingTouch(SeekBar seekBar) {}
-            });
-            
-            // Setup gain control (-12dB to +12dB)
-            SeekBar gainSlider = bandView.findViewById(R.id.gain_slider);
-            TextView gainValue = bandView.findViewById(R.id.gain_value);
-            
-            gainSlider.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-                @Override
-                public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                    if (fromUser) {
-                        float gain = (progress - 120) / 10f; // -12dB to +12dB
-                        AudioEngine.native_setEQBandGain(bandIndex, gain);
-                        gainValue.setText(String.format("%.1f dB", gain));
-                    }
-                }
-                
-                @Override public void onStartTrackingTouch(SeekBar seekBar) {}
-                @Override public void onStopTrackingTouch(SeekBar seekBar) {}
-            });
-            
-            // Setup Q factor control (0.1 to 10.0)
-            SeekBar qSlider = bandView.findViewById(R.id.q_slider);
-            TextView qValue = bandView.findViewById(R.id.q_value);
-            
-            qSlider.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-                @Override
-                public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                    if (fromUser) {
-                        float q = 0.1f + (progress / 100f) * 9.9f; // 0.1 to 10.0
-                        AudioEngine.native_setEQBandQ(bandIndex, q);
-                        qValue.setText(String.format("%.1f", q));
-                    }
-                }
-                
-                @Override public void onStartTrackingTouch(SeekBar seekBar) {}
-                @Override public void onStopTrackingTouch(SeekBar seekBar) {}
-            });
-            
-            // Set initial values
-            int freqProgress = (int)((DEFAULT_FREQUENCIES[i] - MIN_FREQUENCIES[i]) / 
-                (MAX_FREQUENCIES[i] - MIN_FREQUENCIES[i]) * 100);
-            frequencySlider.setProgress(freqProgress);
-            updateFrequencyDisplay(frequencyValue, DEFAULT_FREQUENCIES[i]);
-        }
+        // For now, we'll use the ParametricEQView instead of individual controls
+        // The detailed EQ controls are now handled by the ParametricEQView class
     }
     
     private void setupMasterVolume() {
         SeekBar masterVolume = findViewById(R.id.master_volume);
-        masterVolume.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                if (fromUser) {
-                    float volume = progress / 100f;
-                    AudioEngine.native_setMasterVolume(volume);
+        if (masterVolume != null) {
+            masterVolume.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                @Override
+                public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                    if (fromUser) {
+                        float volume = progress / 100f;
+                        AudioEngine.native_setMasterVolume(volume);
+                    }
                 }
-            }
-            
-            @Override public void onStartTrackingTouch(SeekBar seekBar) {}
-            @Override public void onStopTrackingTouch(SeekBar seekBar) {}
-        });
+                
+                @Override public void onStartTrackingTouch(SeekBar seekBar) {}
+                @Override public void onStopTrackingTouch(SeekBar seekBar) {}
+            });
+        }
     }
     
     private void updateFrequencyDisplay(TextView textView, float frequency) {
@@ -213,6 +165,7 @@ public class MainActivity extends AppCompatActivity {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 AudioEngine.native_create();
                 AudioEngine.native_start();
+                loadPlugins();
             } else {
                 Toast.makeText(this, "Audio permission is required for this app", Toast.LENGTH_SHORT).show();
             }
@@ -228,7 +181,6 @@ public class MainActivity extends AppCompatActivity {
                 AudioBuffer audioBuffer = AudioFileLoader.load(getContentResolver(), uri);
                 if (audioBuffer != null) {
                     AudioEngine.native_setAudioBuffer(audioBuffer);
-                    timelineView.setAudioBuffer(audioBuffer);
                     Toast.makeText(this, "File loaded successfully", Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(this, "Failed to load file", Toast.LENGTH_SHORT).show();
@@ -241,14 +193,120 @@ public class MainActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         processingModeDetector.setInForeground(true);
-        handler.post(playbackPositionUpdater);
     }
 
     @Override
     protected void onStop() {
         super.onStop();
         processingModeDetector.setInForeground(false);
-        handler.removeCallbacks(playbackPositionUpdater);
         AudioEngine.native_stop();
+    }
+
+    private void loadPlugins() {
+        String eqPath = getApplicationInfo().nativeLibraryDir + "/libparametric_eq.so";
+        eqPlugin = avstHost.loadPlugin(eqPath);
+        if (eqPlugin != null) {
+            parametricEQView.setPlugin(eqPlugin);
+        } else {
+            Toast.makeText(this, "Failed to load Parametric EQ plugin", Toast.LENGTH_SHORT).show();
+        }
+
+        String compressorPath = getApplicationInfo().nativeLibraryDir + "/libcompressor.so";
+        compressorPlugin = avstHost.loadPlugin(compressorPath);
+        if (compressorPlugin != null) {
+            compressorView.setPlugin(compressorPlugin);
+        } else {
+            Toast.makeText(this, "Failed to load Compressor plugin", Toast.LENGTH_SHORT).show();
+        }
+
+        String levelerPath = getApplicationInfo().nativeLibraryDir + "/libleveler.so";
+        levelerPlugin = avstHost.loadPlugin(levelerPath);
+        if (levelerPlugin != null) {
+            levelerView.setPlugin(levelerPlugin);
+        } else {
+            Toast.makeText(this, "Failed to load Leveler plugin", Toast.LENGTH_SHORT).show();
+        }
+
+        String transientShaperPath = getApplicationInfo().nativeLibraryDir + "/libtransient_shaper.so";
+        transientShaperPlugin = avstHost.loadPlugin(transientShaperPath);
+        if (transientShaperPlugin != null) {
+            transientShaperView.setPlugin(transientShaperPlugin);
+        } else {
+            Toast.makeText(this, "Failed to load Transient Shaper plugin", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void switchPluginView() {
+        if (parametricEQView.getVisibility() == View.VISIBLE) {
+            parametricEQView.setVisibility(View.GONE);
+            compressorView.setVisibility(View.VISIBLE);
+            levelerView.setVisibility(View.GONE);
+            transientShaperView.setVisibility(View.GONE);
+        } else if (compressorView.getVisibility() == View.VISIBLE) {
+            parametricEQView.setVisibility(View.GONE);
+            compressorView.setVisibility(View.GONE);
+            levelerView.setVisibility(View.VISIBLE);
+            transientShaperView.setVisibility(View.GONE);
+        } else if (levelerView.getVisibility() == View.VISIBLE) {
+            parametricEQView.setVisibility(View.GONE);
+            compressorView.setVisibility(View.GONE);
+            levelerView.setVisibility(View.GONE);
+            transientShaperView.setVisibility(View.VISIBLE);
+        } else {
+            parametricEQView.setVisibility(View.VISIBLE);
+            compressorView.setVisibility(View.GONE);
+            levelerView.setVisibility(View.GONE);
+            transientShaperView.setVisibility(View.GONE);
+        }
+    }
+
+    private void showExportDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        LayoutInflater inflater = this.getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.dialog_export, null);
+        builder.setView(dialogView);
+
+        final EditText filenameEditText = dialogView.findViewById(R.id.edit_text_filename);
+        final RadioGroup formatRadioGroup = dialogView.findViewById(R.id.radio_group_format);
+        final EditText targetLoudnessEditText = dialogView.findViewById(R.id.edit_text_target_loudness);
+        final EditText bitrateEditText = dialogView.findViewById(R.id.edit_text_bitrate);
+
+        builder.setTitle("Export Audio")
+                .setPositiveButton("Export", (dialog, which) -> {
+                    String filename = filenameEditText.getText().toString();
+                    if (filename.isEmpty()) {
+                        Toast.makeText(this, "Filename cannot be empty", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                    int format = formatRadioGroup.getCheckedRadioButtonId() == R.id.radio_button_wav ?
+                            AudioEngine.FORMAT_WAV : AudioEngine.FORMAT_MP3;
+
+                    double targetLoudness = -100.0; // Default to no normalization
+                    try {
+                        targetLoudness = Double.parseDouble(targetLoudnessEditText.getText().toString());
+                    } catch (NumberFormatException e) {
+                        // Keep default
+                    }
+
+                    int bitrate = 192; // Default bitrate
+                    try {
+                        bitrate = Integer.parseInt(bitrateEditText.getText().toString());
+                    } catch (NumberFormatException e) {
+                        // Keep default
+                    }
+
+                    String filePath = getExternalFilesDir(null).getAbsolutePath() + "/" + filename;
+
+                    boolean success = AudioEngine.native_exportFile(filePath, format, targetLoudness, bitrate);
+                    if (success) {
+                        Toast.makeText(this, "File exported successfully to " + filePath, Toast.LENGTH_LONG).show();
+                    } else {
+                        Toast.makeText(this, "Failed to export file", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
+
+        builder.create().show();
     }
 }

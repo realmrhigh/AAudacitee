@@ -67,7 +67,14 @@ public class AvstHost {
     }
 
     public void loadChain(byte[] chain) {
-        // TODO: Implement this
+        for (Plugin plugin : new ArrayList<>(pluginChain.getPlugins())) {
+            unloadPlugin(plugin);
+        }
+        long[] nativeHandles = native_loadChain(chain);
+        for (long nativeHandle : nativeHandles) {
+            Plugin plugin = new Plugin(nativeHandle);
+            pluginChain.add(plugin);
+        }
     }
 
     public byte[] saveBypassState() {
@@ -107,5 +114,7 @@ public class AvstHost {
     private static native byte[] native_savePreset(long nativeHandle);
     private static native void native_loadPreset(long nativeHandle, byte[] preset);
     private static native byte[] native_saveChain(long[] nativeHandles);
+    private static native long[] native_loadChain(byte[] chain);
     private static native void native_setPluginQuality(long nativeHandle, int quality);
+    public static native float[] native_getFrequencyResponse(long nativeHandle);
 }

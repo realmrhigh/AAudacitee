@@ -1,0 +1,5 @@
+ninja: Entering directory `C:\Users\stant\AndroidStudioProjects\AAudacitee\app\.cxx\Debug\5e141q4t\x86'
+[1/2] Building CXX object CMakeFiles/audioapp.dir/native-lib.cpp.o
+clang++: warning: argument unused during compilation: '-mfloat-abi=softfp' [-Wunused-command-line-argument]
+clang++: warning: argument unused during compilation: '-mfpu=neon' [-Wunused-command-line-argument]
+[2/2] Linking CXX shared library C:\Users\stant\AndroidStudioProjects\AAudacitee\app\build\intermediates\cxx\Debug\5e141q4t\obj\x86\libaudioapp.so

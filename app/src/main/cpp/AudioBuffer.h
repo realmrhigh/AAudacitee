@@ -4,7 +4,13 @@
 class AudioBuffer {
 public:
     AudioBuffer(float *data, int sampleRate, int channelCount, int frameCount)
-            : data(data), sampleRate(sampleRate), channelCount(channelCount), frameCount(frameCount) {}
+            : data(data), sampleRate(sampleRate), channelCount(channelCount), frameCount(frameCount), ownsData(true) {}
+
+    ~AudioBuffer() {
+        if (ownsData && data != nullptr) {
+            delete[] data;
+        }
+    }
 
     float *getData() {
         return data;
@@ -27,6 +33,7 @@ private:
     int sampleRate;
     int channelCount;
     int frameCount;
+    bool ownsData;
 };
 
 #endif //AUDIOAPP_AUDIOBUFFER_H

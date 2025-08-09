@@ -1,8 +1,6 @@
 {
   "buildFiles": [
-    "C:\\Users\\stant\\AndroidStudioProjects\\AAudacitee\\app\\src\\main\\cpp\\CMakeLists.txt",
-    "C:\\Users\\stant\\AndroidStudioProjects\\AAudacitee\\app\\src\\main\\cpp\\lame\\CMakeLists.txt",
-    "C:\\Users\\stant\\AndroidStudioProjects\\AAudacitee\\app\\src\\main\\cpp\\libebur128\\CMakeLists.txt"
+    "C:\\Users\\stant\\AndroidStudioProjects\\AAudacitee\\app\\src\\main\\cpp\\CMakeLists.txt"
   ],
   "cleanCommandsComponents": [
     [
@@ -19,42 +17,6 @@
     "{LIST_OF_TARGETS_TO_BUILD}"
   ],
   "libraries": {
-    "ebur128::@30f546d5a4e978394388": {
-      "artifactName": "ebur128",
-      "abi": "arm64-v8a",
-      "output": "C:\\Users\\stant\\AndroidStudioProjects\\AAudacitee\\app\\.cxx\\Debug\\5e141q4t\\arm64-v8a\\libebur128\\libebur128.a",
-      "runtimeFiles": []
-    },
-    "lame::@63a1ef5fc29c7872ba9a": {
-      "artifactName": "lame",
-      "abi": "arm64-v8a",
-      "output": "C:\\Users\\stant\\AndroidStudioProjects\\AAudacitee\\app\\.cxx\\Debug\\5e141q4t\\arm64-v8a\\lame\\liblame.a",
-      "runtimeFiles": []
-    },
-    "transient_shaper::@6890427a1f51a3e7e1df": {
-      "artifactName": "transient_shaper",
-      "abi": "arm64-v8a",
-      "output": "C:\\Users\\stant\\AndroidStudioProjects\\AAudacitee\\app\\build\\intermediates\\cxx\\Debug\\5e141q4t\\obj\\arm64-v8a\\libtransient_shaper.so",
-      "runtimeFiles": []
-    },
-    "leveler::@6890427a1f51a3e7e1df": {
-      "artifactName": "leveler",
-      "abi": "arm64-v8a",
-      "output": "C:\\Users\\stant\\AndroidStudioProjects\\AAudacitee\\app\\build\\intermediates\\cxx\\Debug\\5e141q4t\\obj\\arm64-v8a\\libleveler.so",
-      "runtimeFiles": []
-    },
-    "parametric_eq::@6890427a1f51a3e7e1df": {
-      "artifactName": "parametric_eq",
-      "abi": "arm64-v8a",
-      "output": "C:\\Users\\stant\\AndroidStudioProjects\\AAudacitee\\app\\build\\intermediates\\cxx\\Debug\\5e141q4t\\obj\\arm64-v8a\\libparametric_eq.so",
-      "runtimeFiles": []
-    },
-    "compressor::@6890427a1f51a3e7e1df": {
-      "artifactName": "compressor",
-      "abi": "arm64-v8a",
-      "output": "C:\\Users\\stant\\AndroidStudioProjects\\AAudacitee\\app\\build\\intermediates\\cxx\\Debug\\5e141q4t\\obj\\arm64-v8a\\libcompressor.so",
-      "runtimeFiles": []
-    },
     "audioapp::@6890427a1f51a3e7e1df": {
       "artifactName": "audioapp",
       "abi": "arm64-v8a",

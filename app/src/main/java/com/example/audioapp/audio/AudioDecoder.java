@@ -10,39 +10,75 @@ import java.nio.ByteBuffer;
 public class AudioDecoder {
 
     public static AudioBuffer decode(ContentResolver contentResolver, Uri uri) {
+        MediaExtractor extractor = null;
+        MediaCodec codec = null;
+        
         try {
-            MediaExtractor extractor = new MediaExtractor();
-            extractor.setDataSource(contentResolver.openFileDescriptor(uri, "r").getFileDescriptor());
+            extractor = new MediaExtractor();
+            
+            // Set data source with better error handling
+            try {
+                extractor.setDataSource(contentResolver.openFileDescriptor(uri, "r").getFileDescriptor());
+            } catch (Exception e) {
+                throw new RuntimeException("Failed to open file: " + e.getMessage(), e);
+            }
 
             MediaFormat format = null;
+            int audioTrackIndex = -1;
+            
+            // Find audio track
             for (int i = 0; i < extractor.getTrackCount(); i++) {
                 MediaFormat f = extractor.getTrackFormat(i);
                 String mime = f.getString(MediaFormat.KEY_MIME);
-                if (mime.startsWith("audio/")) {
+                if (mime != null && mime.startsWith("audio/")) {
                     format = f;
+                    audioTrackIndex = i;
                     extractor.selectTrack(i);
                     break;
                 }
             }
 
-            if (format == null) {
-                return null; // No audio track found
+            if (format == null || audioTrackIndex == -1) {
+                throw new RuntimeException("No audio track found in file");
+            }
+            
+            // Validate format parameters
+            if (!format.containsKey(MediaFormat.KEY_SAMPLE_RATE) || 
+                !format.containsKey(MediaFormat.KEY_CHANNEL_COUNT)) {
+                throw new RuntimeException("Invalid audio format - missing sample rate or channel count");
             }
 
+            
+            // Get codec information
             String mime = format.getString(MediaFormat.KEY_MIME);
-            MediaCodec codec = MediaCodec.createDecoderByType(mime);
+            if (mime == null) {
+                throw new RuntimeException("No MIME type found for audio track");
+            }
+            
+            // Create and configure codec
+            codec = MediaCodec.createDecoderByType(mime);
             codec.configure(format, null, null, 0);
             codec.start();
 
+            // Get buffers
             ByteBuffer[] inputBuffers = codec.getInputBuffers();
             ByteBuffer[] outputBuffers = codec.getOutputBuffers();
             MediaCodec.BufferInfo info = new MediaCodec.BufferInfo();
 
+            // Get audio properties
             int sampleRate = format.getInteger(MediaFormat.KEY_SAMPLE_RATE);
             int channelCount = format.getInteger(MediaFormat.KEY_CHANNEL_COUNT);
+            
+            // Validate audio properties
+            if (sampleRate <= 0 || sampleRate > 192000) {
+                throw new RuntimeException("Invalid sample rate: " + sampleRate);
+            }
+            if (channelCount <= 0 || channelCount > 8) {
+                throw new RuntimeException("Invalid channel count: " + channelCount);
+            }
+            
             int totalSize = 0;
-
-            byte[] allData = new byte[1024 * 1024]; // 1MB buffer
+            byte[] allData = new byte[1024 * 1024]; // Start with 1MB buffer
 
             boolean sawInputEOS = false;
             boolean sawOutputEOS = false;
@@ -92,13 +128,28 @@ public class AudioDecoder {
                 }
             }
 
-            codec.stop();
-            codec.release();
-            extractor.release();
+            // Clean up resources
+            if (codec != null) {
+                codec.stop();
+                codec.release();
+            }
+            if (extractor != null) {
+                extractor.release();
+            }
 
-            // Convert to float
+            // Validate we got some data
+            if (totalSize == 0) {
+                throw new RuntimeException("No audio data decoded from file");
+            }
+
+            // Convert to float with bounds checking
+            if (totalSize % 2 != 0) {
+                totalSize--; // Make sure we have even number of bytes for 16-bit samples
+            }
+            
             float[] floatData = new float[totalSize / 2];
             ByteBuffer dataBuffer = ByteBuffer.wrap(allData, 0, totalSize).order(java.nio.ByteOrder.LITTLE_ENDIAN);
+            
             for (int i = 0; i < floatData.length; i++) {
                 floatData[i] = dataBuffer.getShort() / 32768.0f;
             }
@@ -106,8 +157,21 @@ public class AudioDecoder {
             return new AudioBuffer(floatData, sampleRate, channelCount);
 
         } catch (Exception e) {
-            e.printStackTrace();
-            return null;
+            // Clean up resources on error
+            if (codec != null) {
+                try {
+                    codec.stop();
+                    codec.release();
+                } catch (Exception ignored) {}
+            }
+            if (extractor != null) {
+                try {
+                    extractor.release();
+                } catch (Exception ignored) {}
+            }
+            
+            // Re-throw with more context
+            throw new RuntimeException("Audio decoding failed: " + e.getMessage(), e);
         }
     }
 }

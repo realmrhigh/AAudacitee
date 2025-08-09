@@ -2906,7 +2906,6 @@ id button_load_file
 id button_pause
 id button_play
 id button_stop
-id button_switch_plugin
 id cache_measures
 id callMeasure
 id cancel_button
@@ -2930,7 +2929,6 @@ id clockwise
 id closest
 id collapseActionView
 id compress
-id compressor_view
 id confirm_button
 id constraint
 id container
@@ -2943,6 +2941,7 @@ id cos
 id counterclockwise
 id cradle
 id currentState
+id current_time
 id custom
 id customPanel
 id cut
@@ -2989,10 +2988,13 @@ id end
 id endToStart
 id enterAlways
 id enterAlwaysCollapsed
+id eq_controls_layout
+id eq_controls_scroll
 id exitUntilCollapsed
 id expand_activities_button
 id expanded_menu
 id fade
+id file_info
 id fill
 id fill_horizontal
 id fill_vertical
@@ -3048,7 +3050,6 @@ id layout
 id left
 id leftToRight
 id legacy
-id leveler_view
 id line1
 id line3
 id linear
@@ -3140,7 +3141,6 @@ id outward
 id overshoot
 id packed
 id parallax
-id parametric_eq_view
 id parent
 id parentPanel
 id parentRelative
@@ -3151,9 +3151,16 @@ id pathRelative
 id peekHeight
 id percent
 id pin
+id plugin_bypass_switch
+id plugin_content_frame
+id plugin_controls_container
+id plugin_placeholder
+id plugin_selector_container
+id plugin_spinner
 id position
 id postLayout
 id pressed
+id progress_bar
 id progress_circular
 id progress_horizontal
 id q_slider
@@ -3277,14 +3284,15 @@ id textinput_placeholder
 id textinput_prefix_text
 id textinput_suffix_text
 id time
+id timeline_view
 id title
 id titleDividerNoCustom
 id title_template
 id toggle
 id top
 id topPanel
+id total_time
 id touch_outside
-id transient_shaper_view
 id transitionToEnd
 id transitionToStart
 id transition_current_scene
@@ -3308,6 +3316,8 @@ id view_tree_saved_state_registry_owner
 id view_tree_view_model_store_owner
 id visible
 id visible_removing_fragment_view_tag
+id waveform_container
+id waveform_scroll
 id west
 id withText
 id with_icon

@@ -2,57 +2,44 @@
 #include <string>
 #include <oboe/Oboe.h>
 #include <android/log.h>
-#include <sched.h>
-#include <dlfcn.h>
 #include <chrono>
 #include <cmath>
 #include <fstream>
+#include <cstring>
 #include "AudioBuffer.h"
 #include "CircularBuffer.h"
-// #include "ebur128.h"  // TODO: Add proper libebur128 header
-// #include "lame/lame.h" // TODO: Add proper LAME header
-#include "avst/avst.h"
-#include "LockFreeQueue.h"
-#include "ObjectPool.h"
+#include "Biquad.h"
+#include "Compressor.h"
+#include "Leveler.h"
+#include "TransientShaper.h"
 
 #define LOG_TAG "AudioApp"
 #define ALOGI(...) __android_log_print(ANDROID_LOG_INFO, LOG_TAG, __VA_ARGS__)
 #define ALOGE(...) __android_log_print(ANDROID_LOG_ERROR, LOG_TAG, __VA_ARGS__)
 
-struct ParameterChange {
-    int pluginIndex;
-    int paramIndex;
-    float value;
-};
-
 class AudioEngine : public oboe::AudioStreamCallback {
 public:
-    AudioEngine() : circularBuffer(1024), paramQueue(128) {
-        for (int i = 0; i < 4; ++i) {
-            auto buffer = std::make_unique<std::vector<float>>(4096);
-            bufferPool.release(std::move(buffer));
+    AudioEngine() : circularBuffer(1024) {
+        // Initialize 6-band parametric EQ
+        for (int i = 0; i < 6; i++) {
+            eqBands[i].setType(dsp::BiquadFilterType::PEAK);
+            eqBandEnabled[i] = true;
         }
+        
+        // Set default EQ frequencies
+        setEQBandFrequency(0, 80.0f);   // Low shelf
+        setEQBandFrequency(1, 200.0f);  // Peak
+        setEQBandFrequency(2, 800.0f);  // Peak
+        setEQBandFrequency(3, 2000.0f); // Peak
+        setEQBandFrequency(4, 5000.0f); // Peak
+        setEQBandFrequency(5, 10000.0f); // High shelf
+        
+        // Set shelf filters for first and last bands
+        eqBands[0].setType(dsp::BiquadFilterType::LOW_SHELF);
+        eqBands[5].setType(dsp::BiquadFilterType::HIGH_SHELF);
     }
 
     ~AudioEngine() = default;
-
-    void addPlugin(avst::PluginHandle *plugin) {
-        plugins.push_back(plugin);
-    }
-
-    void removePlugin(avst::PluginHandle *plugin) {
-        for (int i = 0; i < plugins.size(); ++i) {
-            if (plugins[i] == plugin) {
-                plugins.erase(plugins.begin() + i);
-                break;
-            }
-        }
-    }
-
-    void setParameter(int pluginIndex, int paramIndex, float value) {
-        ParameterChange change = {pluginIndex, paramIndex, value};
-        paramQueue.push(change);
-    }
 
     AudioBuffer* getAudioBuffer() { return audioBuffer; }
 
@@ -61,6 +48,29 @@ public:
             delete audioBuffer;
         }
         audioBuffer = new AudioBuffer(data, sampleRate, channelCount, frameCount);
+        playbackPosition = 0;
+        
+        // Update DSP components with new sample rate
+        updateDSPSampleRate(sampleRate);
+        
+        ALOGI("AudioBuffer set in engine: %d frames, %d channels, %d Hz", frameCount, channelCount, sampleRate);
+    }
+
+    void updateDSPSampleRate(int sampleRate) {
+        // Update EQ bands
+        for (int i = 0; i < 6; i++) {
+            eqBands[i].setCoefficients(sampleRate, eqFrequencies[i], eqQValues[i], eqGains[i]);
+        }
+        
+        // Update compressor
+        compressor.setParameters(sampleRate, compressorThreshold, compressorRatio, 
+                               compressorAttack, compressorRelease, compressorMakeupGain);
+        
+        // Update leveler
+        leveler.setParameters(sampleRate, levelerTarget, levelerSpeed);
+        
+        // Update transient shaper
+        transientShaper.setParameters(sampleRate, transientAttack, transientSustain);
     }
 
     void setBufferSize(int bufferSize) {
@@ -69,13 +79,134 @@ public:
         }
     }
 
+    // EQ Control Functions
+    void setEQBandEnabled(int bandIndex, bool enabled) {
+        if (bandIndex >= 0 && bandIndex < 6) {
+            eqBandEnabled[bandIndex] = enabled;
+            ALOGI("EQ Band %d enabled: %s", bandIndex, enabled ? "true" : "false");
+        }
+    }
+    
+    void setEQBandFrequency(int bandIndex, float frequency) {
+        if (bandIndex >= 0 && bandIndex < 6 && audioBuffer != nullptr) {
+            eqFrequencies[bandIndex] = frequency;
+            eqBands[bandIndex].setCoefficients(audioBuffer->getSampleRate(), frequency, eqQValues[bandIndex], eqGains[bandIndex]);
+            ALOGI("EQ Band %d frequency: %.1f Hz", bandIndex, frequency);
+        }
+    }
+    
+    void setEQBandGain(int bandIndex, float gainDb) {
+        if (bandIndex >= 0 && bandIndex < 6 && audioBuffer != nullptr) {
+            eqGains[bandIndex] = gainDb;
+            eqBands[bandIndex].setCoefficients(audioBuffer->getSampleRate(), eqFrequencies[bandIndex], eqQValues[bandIndex], gainDb);
+            ALOGI("EQ Band %d gain: %.1f dB", bandIndex, gainDb);
+        }
+    }
+    
+    void setEQBandQ(int bandIndex, float q) {
+        if (bandIndex >= 0 && bandIndex < 6 && audioBuffer != nullptr) {
+            eqQValues[bandIndex] = q;
+            eqBands[bandIndex].setCoefficients(audioBuffer->getSampleRate(), eqFrequencies[bandIndex], q, eqGains[bandIndex]);
+            ALOGI("EQ Band %d Q: %.1f", bandIndex, q);
+        }
+    }
+    
+    // Compressor Control Functions
+    void setCompressorThreshold(float thresholdDb) {
+        compressorThreshold = thresholdDb;
+        if (audioBuffer != nullptr) {
+            compressor.setParameters(audioBuffer->getSampleRate(), thresholdDb, compressorRatio, 
+                                   compressorAttack, compressorRelease, compressorMakeupGain);
+        }
+        ALOGI("Compressor threshold: %.1f dB", thresholdDb);
+    }
+    
+    void setCompressorRatio(float ratio) {
+        compressorRatio = ratio;
+        if (audioBuffer != nullptr) {
+            compressor.setParameters(audioBuffer->getSampleRate(), compressorThreshold, ratio, 
+                                   compressorAttack, compressorRelease, compressorMakeupGain);
+        }
+        ALOGI("Compressor ratio: %.1f:1", ratio);
+    }
+    
+    void setCompressorAttack(float attackMs) {
+        compressorAttack = attackMs;
+        if (audioBuffer != nullptr) {
+            compressor.setParameters(audioBuffer->getSampleRate(), compressorThreshold, compressorRatio, 
+                                   attackMs, compressorRelease, compressorMakeupGain);
+        }
+        ALOGI("Compressor attack: %.1f ms", attackMs);
+    }
+    
+    void setCompressorRelease(float releaseMs) {
+        compressorRelease = releaseMs;
+        if (audioBuffer != nullptr) {
+            compressor.setParameters(audioBuffer->getSampleRate(), compressorThreshold, compressorRatio, 
+                                   compressorAttack, releaseMs, compressorMakeupGain);
+        }
+        ALOGI("Compressor release: %.1f ms", releaseMs);
+    }
+    
+    // Leveler Control Functions
+    void setLevelerTarget(float targetDb) {
+        levelerTarget = targetDb;
+        if (audioBuffer != nullptr) {
+            leveler.setParameters(audioBuffer->getSampleRate(), targetDb, levelerSpeed);
+        }
+        ALOGI("Leveler target: %.1f dB", targetDb);
+    }
+    
+    void setLevelerSpeed(float speed) {
+        levelerSpeed = speed;
+        if (audioBuffer != nullptr) {
+            leveler.setParameters(audioBuffer->getSampleRate(), levelerTarget, speed);
+        }
+        ALOGI("Leveler speed: %.1fx", speed);
+    }
+    
+    // Transient Shaper Control Functions
+    void setTransientAttack(float attackDb) {
+        transientAttack = attackDb;
+        if (audioBuffer != nullptr) {
+            transientShaper.setParameters(audioBuffer->getSampleRate(), attackDb, transientSustain);
+        }
+        ALOGI("Transient attack: %.1f dB", attackDb);
+    }
+    
+    void setTransientSustain(float sustainDb) {
+        transientSustain = sustainDb;
+        if (audioBuffer != nullptr) {
+            transientShaper.setParameters(audioBuffer->getSampleRate(), transientAttack, sustainDb);
+        }
+        ALOGI("Transient sustain: %.1f dB", sustainDb);
+    }
+    
+    // Enable/disable functions
+    void setCompressorEnabled(bool enabled) {
+        compressorEnabled = enabled;
+    }
+    
+    void setLevelerEnabled(bool enabled) {
+        levelerEnabled = enabled;
+    }
+    
+    void setTransientShaperEnabled(bool enabled) {
+        transientShaperEnabled = enabled;
+    }
+    
+    void setMasterVolume(float volume) {
+        masterVolume = volume;
+        ALOGI("Master volume: %.2f", volume);
+    }
+
     oboe::Result start() {
         oboe::AudioStreamBuilder builder;
         builder.setDirection(oboe::Direction::Output);
         builder.setPerformanceMode(oboe::PerformanceMode::LowLatency);
         builder.setSharingMode(oboe::SharingMode::Exclusive);
         builder.setFormat(oboe::AudioFormat::Float);
-        builder.setChannelCount(oboe::ChannelCount::Mono);
+        builder.setChannelCount(oboe::ChannelCount::Stereo);
         builder.setCallback(this);
 
         oboe::Result result = builder.openStream(&stream_);
@@ -83,17 +214,6 @@ public:
             ALOGE("Failed to create stream. Error: %s", oboe::convertToText(result));
             return result;
         }
-
-        // Set CPU affinity
-        cpu_set_t cpuset;
-        CPU_ZERO(&cpuset);
-        CPU_SET(0, &cpuset);
-        sched_setaffinity(0, sizeof(cpu_set_t), &cpuset);
-
-        // Set thread priority
-        struct sched_param param;
-        param.sched_priority = sched_get_priority_max(SCHED_FIFO);
-        sched_setscheduler(0, SCHED_FIFO, &param);
 
         // Log latency
         auto latencyResult = stream_->calculateLatencyMillis();
@@ -125,11 +245,14 @@ public:
     }
 
     void setPlaying(bool isPlaying) {
+        ALOGI("setPlaying called with: %s", isPlaying ? "true" : "false");
         this->isPlaying = isPlaying;
+        ALOGI("Playback set to: %s", isPlaying ? "PLAYING" : "STOPPED");
     }
 
     void setPlaybackPosition(int position) {
         playbackPosition = position;
+        ALOGI("Playback position set to: %d", position);
     }
 
     int getPlaybackPosition() {
@@ -137,38 +260,119 @@ public:
     }
 
     oboe::DataCallbackResult onAudioReady(oboe::AudioStream *oboeStream, void *audioData, int32_t numFrames) override {
-        ParameterChange change;
-        while(paramQueue.pop(change)) {
-            if (change.pluginIndex < plugins.size()) {
-                plugins[change.pluginIndex]->plugin->setParameter(change.paramIndex, change.value);
-            }
+        // Fast exit if not playing to avoid unnecessary processing
+        if (!isPlaying || audioBuffer == nullptr) {
+            memset(audioData, 0, numFrames * oboeStream->getChannelCount() * sizeof(float));
+            return oboe::DataCallbackResult::Continue;
         }
 
-        if (isPlaying && audioBuffer != nullptr) {
-            int frameCount = audioBuffer->getFrameCount();
-            float *output = static_cast<float *>(audioData);
-            for (int i = 0; i < numFrames; ++i) {
-                float sample;
-                if (circularBuffer.read(sample)) {
-                    output[i] = sample;
+        float *output = static_cast<float *>(audioData);
+        
+        int frameCount = audioBuffer->getFrameCount();
+        int channelCount = audioBuffer->getChannelCount();
+        int outputChannels = oboeStream->getChannelCount();
+        float* audioDataPtr = audioBuffer->getData();
+        
+        // Additional safety checks
+        if (audioDataPtr == nullptr || frameCount <= 0 || channelCount <= 0 || outputChannels <= 0) {
+            memset(audioData, 0, numFrames * outputChannels * sizeof(float));
+            return oboe::DataCallbackResult::Continue;
+        }
+        
+        int totalSamples = frameCount * channelCount;
+        
+        // Create temporary buffers for DSP processing
+        float leftBuffer[numFrames];
+        float rightBuffer[numFrames];
+        
+        // Fill buffers with audio data
+        for (int i = 0; i < numFrames; ++i) {
+            // Check if we've reached the end of the audio
+            if (playbackPosition >= frameCount) {
+                // Fill remaining frames with silence
+                for (int j = i; j < numFrames; ++j) {
+                    leftBuffer[j] = 0.0f;
+                    rightBuffer[j] = 0.0f;
+                }
+                break;
+            }
+            
+            if (channelCount == 1) {
+                // Mono: duplicate to both channels
+                if (playbackPosition < totalSamples) {
+                    float sample = audioDataPtr[playbackPosition];
+                    leftBuffer[i] = sample;
+                    rightBuffer[i] = sample;
                 } else {
-                    if (playbackPosition < frameCount) {
-                        output[i] = audioBuffer->getData()[playbackPosition++];
-                    } else {
-                        output[i] = 0;
-                    }
+                    leftBuffer[i] = 0.0f;
+                    rightBuffer[i] = 0.0f;
+                }
+            } else if (channelCount == 2) {
+                // Stereo: copy left and right channels with bounds checking
+                int leftIndex = playbackPosition * 2;
+                int rightIndex = playbackPosition * 2 + 1;
+                if (rightIndex < totalSamples) {
+                    leftBuffer[i] = audioDataPtr[leftIndex];
+                    rightBuffer[i] = audioDataPtr[rightIndex];
+                } else {
+                    leftBuffer[i] = 0.0f;
+                    rightBuffer[i] = 0.0f;
                 }
             }
-        } else {
-            memset(audioData, 0, numFrames * sizeof(float));
+            playbackPosition++;
         }
+        
+        // Apply DSP processing to the buffers
+        processDSP(leftBuffer, rightBuffer, numFrames);
+        
+        // Apply master volume and copy to output
+        for (int i = 0; i < numFrames; ++i) {
+            if (outputChannels == 1) {
+                // Mix down to mono
+                output[i] = (leftBuffer[i] + rightBuffer[i]) * 0.5f * masterVolume;
+            } else if (outputChannels == 2) {
+                // Stereo output
+                output[i * 2] = leftBuffer[i] * masterVolume;        // Left
+                output[i * 2 + 1] = rightBuffer[i] * masterVolume;   // Right
+            }
+        }
+        
         return oboe::DataCallbackResult::Continue;
     }
 
-    std::vector<avst::PluginHandle *> plugins;
-    ObjectPool<std::vector<float>> bufferPool;
-
 private:
+    void processDSP(float* left, float* right, int numFrames) {
+        // Apply EQ bands
+        for (int band = 0; band < 6; band++) {
+            if (eqBandEnabled[band]) {
+                eqBands[band].process(left, left, numFrames);
+                eqBands[band].process(right, right, numFrames);
+            }
+        }
+        
+        // Apply compressor if enabled
+        if (compressorEnabled) {
+            // Calculate gain reduction
+            float gainBuffer[numFrames];
+            compressor.calculate_gain(left, gainBuffer, numFrames);
+            compressor.apply_gain(left, gainBuffer, left, numFrames);
+            
+            compressor.calculate_gain(right, gainBuffer, numFrames);
+            compressor.apply_gain(right, gainBuffer, right, numFrames);
+        }
+        
+        // Apply leveler if enabled
+        if (levelerEnabled) {
+            leveler.process(left, left, numFrames);
+            leveler.process(right, right, numFrames);
+        }
+        
+        // Apply transient shaper if enabled
+        if (transientShaperEnabled) {
+            transientShaper.process(left, left, numFrames);
+            transientShaper.process(right, right, numFrames);
+        }
+    }
     oboe::AudioStream *stream_ = nullptr;
     int32_t sampleRate_ = 0;
     int32_t bufferSize_ = 0;
@@ -176,19 +380,63 @@ private:
     bool isPlaying = false;
     std::atomic<int> playbackPosition;
     CircularBuffer<float> circularBuffer;
-    LockFreeQueue<ParameterChange> paramQueue;
+    
+    // DSP Components
+    dsp::Biquad eqBands[6];
+    dsp::Compressor compressor;
+    dsp::Leveler leveler;
+    dsp::TransientShaper transientShaper;
+    
+    // EQ Parameters
+    bool eqBandEnabled[6] = {true, true, true, true, true, true};
+    float eqFrequencies[6] = {80.0f, 200.0f, 800.0f, 2000.0f, 5000.0f, 10000.0f};
+    float eqGains[6] = {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f};
+    float eqQValues[6] = {1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f};
+    
+    // Compressor Parameters
+    bool compressorEnabled = false;
+    float compressorThreshold = -12.0f;
+    float compressorRatio = 4.0f;
+    float compressorAttack = 10.0f;
+    float compressorRelease = 100.0f;
+    float compressorMakeupGain = 0.0f;
+    
+    // Leveler Parameters
+    bool levelerEnabled = false;
+    float levelerTarget = -12.0f;
+    float levelerSpeed = 1.0f;
+    
+    // Transient Shaper Parameters
+    bool transientShaperEnabled = false;
+    float transientAttack = 0.0f;
+    float transientSustain = 0.0f;
+    
+    // Master Volume
+    float masterVolume = 1.0f;
 };
 
 static AudioEngine engine;
 
 extern "C" JNIEXPORT void JNICALL
 Java_com_example_audioapp_audio_AudioEngine_native_1create(JNIEnv *env, jclass clazz) {
-    // Nothing to do here for now
+    ALOGI("JNI native_create called");
+    // Initialize any required state here if needed
+    ALOGI("JNI native_create completed");
 }
 
 extern "C" JNIEXPORT void JNICALL
 Java_com_example_audioapp_audio_AudioEngine_native_1start(JNIEnv *env, jclass clazz) {
-    engine.start();
+    ALOGI("JNI native_start called");
+    try {
+        oboe::Result result = engine.start();
+        if (result == oboe::Result::OK) {
+            ALOGI("Audio engine started successfully");
+        } else {
+            ALOGE("Failed to start audio engine: %s", oboe::convertToText(result));
+        }
+    } catch (...) {
+        ALOGE("Exception in JNI native_start");
+    }
 }
 
 extern "C" JNIEXPORT void JNICALL
@@ -198,7 +446,13 @@ Java_com_example_audioapp_audio_AudioEngine_native_1stop(JNIEnv *env, jclass cla
 
 extern "C" JNIEXPORT void JNICALL
 Java_com_example_audioapp_audio_AudioEngine_native_1setPlaying(JNIEnv *env, jclass clazz, jboolean is_playing) {
-    engine.setPlaying(is_playing);
+    ALOGI("JNI setPlaying called with: %s", is_playing ? "true" : "false");
+    try {
+        engine.setPlaying(is_playing);
+        ALOGI("JNI setPlaying completed successfully");
+    } catch (...) {
+        ALOGE("Exception in JNI setPlaying");
+    }
 }
 
 extern "C" JNIEXPORT void JNICALL
@@ -208,26 +462,86 @@ Java_com_example_audioapp_audio_AudioEngine_native_1setPlaybackPosition(JNIEnv *
 
 extern "C" JNIEXPORT jint JNICALL
 Java_com_example_audioapp_audio_AudioEngine_native_1getPlaybackPosition(JNIEnv *env, jclass clazz) {
-    return engine.getPlaybackPosition();
+    try {
+        int position = engine.getPlaybackPosition();
+        // Only log occasionally to reduce spam
+        static int logCounter = 0;
+        if (++logCounter % 50 == 0) {  // Log every 50th call
+            ALOGI("JNI getPlaybackPosition returning: %d", position);
+        }
+        return position;
+    } catch (...) {
+        ALOGE("Exception in JNI getPlaybackPosition");
+        return 0;
+    }
 }
 
 extern "C" JNIEXPORT void JNICALL
 Java_com_example_audioapp_audio_AudioEngine_native_1setAudioBuffer(JNIEnv *env, jclass clazz, jobject buffer) {
+    if (buffer == nullptr) {
+        ALOGE("AudioBuffer is null");
+        return;
+    }
+    
     jclass bufferClass = env->GetObjectClass(buffer);
+    if (bufferClass == nullptr) {
+        ALOGE("Failed to get AudioBuffer class");
+        return;
+    }
+    
     jmethodID getDataMethod = env->GetMethodID(bufferClass, "getData", "()[F");
     jmethodID getSampleRateMethod = env->GetMethodID(bufferClass, "getSampleRate", "()I");
     jmethodID getChannelCountMethod = env->GetMethodID(bufferClass, "getChannelCount", "()I");
     jmethodID getFrameCountMethod = env->GetMethodID(bufferClass, "getFrameCount", "()I");
 
+    if (getDataMethod == nullptr || getSampleRateMethod == nullptr || 
+        getChannelCountMethod == nullptr || getFrameCountMethod == nullptr) {
+        ALOGE("Failed to get AudioBuffer methods");
+        return;
+    }
+
     jfloatArray dataArray = (jfloatArray) env->CallObjectMethod(buffer, getDataMethod);
-    jfloat *data = env->GetFloatArrayElements(dataArray, nullptr);
+    if (dataArray == nullptr) {
+        ALOGE("AudioBuffer data array is null");
+        return;
+    }
+    
     jint sampleRate = env->CallIntMethod(buffer, getSampleRateMethod);
     jint channelCount = env->CallIntMethod(buffer, getChannelCountMethod);
     jint frameCount = env->CallIntMethod(buffer, getFrameCountMethod);
+    
+    if (sampleRate <= 0 || channelCount <= 0 || frameCount <= 0) {
+        ALOGE("Invalid audio parameters: sampleRate=%d, channelCount=%d, frameCount=%d", 
+              sampleRate, channelCount, frameCount);
+        return;
+    }
 
-    engine.setAudioBuffer(data, sampleRate, channelCount, frameCount);
+    // Get the data and length
+    jsize arrayLength = env->GetArrayLength(dataArray);
+    if (arrayLength <= 0) {
+        ALOGE("Audio data array is empty");
+        return;
+    }
+    
+    jfloat *data = env->GetFloatArrayElements(dataArray, nullptr);
+    if (data == nullptr) {
+        ALOGE("Failed to get float array elements");
+        return;
+    }
 
+    ALOGI("Setting audio buffer: sampleRate=%d, channelCount=%d, frameCount=%d, arrayLength=%d", 
+          sampleRate, channelCount, frameCount, arrayLength);
+
+    // Copy the data to ensure it persists after JNI call
+    float *dataCopy = new float[arrayLength];
+    memcpy(dataCopy, data, arrayLength * sizeof(float));
+    
+    engine.setAudioBuffer(dataCopy, sampleRate, channelCount, frameCount);
+
+    // Release the original data (we made our own copy)
     env->ReleaseFloatArrayElements(dataArray, data, JNI_ABORT);
+    
+    ALOGI("Audio buffer set successfully");
 }
 
 extern "C" JNIEXPORT void JNICALL
@@ -235,233 +549,90 @@ Java_com_example_audioapp_audio_AudioEngine_native_1setBufferSize(JNIEnv *env, j
     engine.setBufferSize(buffer_size);
 }
 
-extern "C" JNIEXPORT jlong JNICALL
-Java_com_example_audioapp_avst_AvstHost_native_1loadPlugin(JNIEnv *env, jclass clazz, jstring path) {
-    const char *pathStr = env->GetStringUTFChars(path, nullptr);
-    void *handle = dlopen(pathStr, RTLD_LAZY);
-    env->ReleaseStringUTFChars(path, pathStr);
-
-    if (!handle) {
-        ALOGE("Failed to load plugin: %s", dlerror());
-        return 0;
-    }
-
-    avst::CreateAvstPlugin_t createPlugin = (avst::CreateAvstPlugin_t) dlsym(handle, "createAvstPlugin");
-    if (!createPlugin) {
-        ALOGE("Failed to find createAvstPlugin function: %s", dlerror());
-        dlclose(handle);
-        return 0;
-    }
-
-    avst::IAvstPlugin *plugin = (*createPlugin)();
-    avst::PluginHandle *pluginHandle = new avst::PluginHandle(plugin, handle, pathStr);
-    engine.addPlugin(pluginHandle);
-    return (jlong) pluginHandle;
-}
-
-extern "C" JNIEXPORT void JNICALL
-Java_com_example_audioapp_avst_AvstHost_native_1unloadPlugin(JNIEnv *env, jclass clazz, jlong native_handle) {
-    avst::PluginHandle *pluginHandle = (avst::PluginHandle *) native_handle;
-    engine.removePlugin(pluginHandle);
-    delete pluginHandle->plugin;
-    dlclose(pluginHandle->handle);
-    delete pluginHandle;
-}
-
-extern "C" JNIEXPORT jint JNICALL
-Java_com_example_audioapp_avst_AvstHost_native_1getParameterCount(JNIEnv *env, jclass clazz, jlong native_handle) {
-    avst::PluginHandle *pluginHandle = (avst::PluginHandle *) native_handle;
-    return pluginHandle->plugin->getParameterCount();
-}
-
-extern "C" JNIEXPORT jstring JNICALL
-Java_com_example_audioapp_avst_AvstHost_native_1getParameterName(JNIEnv *env, jclass clazz, jlong native_handle, jint index) {
-    avst::PluginHandle *pluginHandle = (avst::PluginHandle *) native_handle;
-    const char *name = pluginHandle->plugin->getParameterName(index);
-    return env->NewStringUTF(name);
-}
-
-extern "C" JNIEXPORT jfloat JNICALL
-Java_com_example_audioapp_avst_AvstHost_native_1getParameter(JNIEnv *env, jclass clazz, jlong native_handle, jint index) {
-    avst::PluginHandle *pluginHandle = (avst::PluginHandle *) native_handle;
-    return pluginHandle->plugin->getParameter(index);
-}
-
-extern "C" JNIEXPORT void JNICALL
-Java_com_example_audioapp_avst_AvstHost_native_1setParameter(JNIEnv *env, jclass clazz, jlong native_handle, jint index, jfloat value) {
-    avst::PluginHandle *pluginHandle = (avst::PluginHandle *) native_handle;
-    int pluginIndex = -1;
-    for (int i = 0; i < engine.plugins.size(); ++i) {
-        if (engine.plugins[i] == pluginHandle) {
-            pluginIndex = i;
-            break;
-        }
-    }
-    if (pluginIndex != -1) {
-        engine.setParameter(pluginIndex, index, value);
-    }
-}
-
-extern "C" JNIEXPORT void JNICALL
-Java_com_example_audioapp_avst_AvstHost_native_1process(JNIEnv *env, jclass clazz, jlongArray native_handles, jfloatArray buffer, jint sample_rate) {
-    jlong *handles = env->GetLongArrayElements(native_handles, nullptr);
-    jfloat *data = env->GetFloatArrayElements(buffer, nullptr);
-    int count = env->GetArrayLength(native_handles);
-    int frameCount = env->GetArrayLength(buffer);
-
-    avst::AudioIOConfig config = {
-            .sampleRate = (float) sample_rate,
-            .currentOutputChannels = 1,
-            .currentInputChannels = 1
-    };
-
-    float *input = data;
-    auto output_buffer_ptr = engine.bufferPool.get();
-    output_buffer_ptr->resize(frameCount);
-    float* output = output_buffer_ptr->data();
-
-    int currentChannels = 1;
-
-    for (int i = 0; i < count; i++) {
-        avst::PluginHandle *pluginHandle = (avst::PluginHandle *) handles[i];
-        avst::AudioIOConfig pluginConfig = pluginHandle->plugin->getAudioIOConfig();
-
-        if (pluginConfig.currentInputChannels != currentChannels) {
-            ALOGE("Plugin %d has incompatible input channels", i);
-            // Here I should handle the error, but for now I will just log it.
-        }
-
-        if (!pluginHandle->bypassed) {
-            try {
-                avst::ProcessContext context = {
-                        .frameCount = (uint32_t) frameCount,
-                        .outputs = &output,
-                        .inputs = (const float **) &input
-                };
-                pluginHandle->plugin->processAudio(context);
-                input = output;
-                if (i < count - 1) {
-                    auto next_output_buffer_ptr = engine.bufferPool.get();
-                    next_output_buffer_ptr->resize(frameCount);
-                    output = next_output_buffer_ptr->data();
-                }
-            } catch (const std::exception &e) {
-                ALOGE("Plugin %d threw an exception: %s", i, e.what());
-                pluginHandle->bypassed = true;
-            }
-        }
-        currentChannels = pluginConfig.currentOutputChannels;
-    }
-
-    if (input != data) {
-        memcpy(data, input, frameCount * sizeof(float));
-    }
-
-    engine.bufferPool.release(std::move(output_buffer_ptr));
-
-
-    env->ReleaseLongArrayElements(native_handles, handles, JNI_ABORT);
-    env->ReleaseFloatArrayElements(buffer, data, 0);
-}
-
-extern "C" JNIEXPORT void JNICALL
-Java_com_example_audioapp_avst_Plugin_native_1setBypass(JNIEnv *env, jclass clazz, jlong native_handle, jboolean bypass) {
-    avst::PluginHandle *pluginHandle = (avst::PluginHandle *) native_handle;
-    pluginHandle->bypassed = bypass;
-}
-
-extern "C" JNIEXPORT jfloat JNICALL
-Java_com_example_audioapp_avst_AvstHost_native_1getCpuUsage(JNIEnv *env, jclass clazz, jlong native_handle) {
-    avst::PluginHandle *pluginHandle = (avst::PluginHandle *) native_handle;
-    return pluginHandle->cpuUsage;
-}
-
-extern "C" JNIEXPORT jbyteArray JNICALL
-Java_com_example_audioapp_avst_AvstHost_native_1savePreset(JNIEnv *env, jclass clazz, jlong native_handle) {
-    avst::PluginHandle *pluginHandle = (avst::PluginHandle *) native_handle;
-    std::vector<uint8_t> state = pluginHandle->plugin->saveState();
-    jbyteArray byteArray = env->NewByteArray(state.size());
-    env->SetByteArrayRegion(byteArray, 0, state.size(), (const jbyte *) state.data());
-    return byteArray;
-}
-
-extern "C" JNIEXPORT void JNICALL
-Java_com_example_audioapp_avst_AvstHost_native_1loadPreset(JNIEnv *env, jclass clazz, jlong native_handle, jbyteArray preset) {
-    avst::PluginHandle *pluginHandle = (avst::PluginHandle *) native_handle;
-    jbyte *data = env->GetByteArrayElements(preset, nullptr);
-    int size = env->GetArrayLength(preset);
-    std::vector<uint8_t> state(data, data + size);
-    pluginHandle->plugin->loadState(state);
-    env->ReleaseByteArrayElements(preset, data, JNI_ABORT);
-}
-
-extern "C" JNIEXPORT jbyteArray JNICALL
-Java_com_example_audioapp_avst_AvstHost_native_1saveChain(JNIEnv *env, jclass clazz, jlongArray native_handles) {
-    jlong *handles = env->GetLongArrayElements(native_handles, nullptr);
-    int count = env->GetArrayLength(native_handles);
-
-    std::vector<uint8_t> chainState;
-    for (int i = 0; i < count; i++) {
-        avst::PluginHandle *pluginHandle = (avst::PluginHandle *) handles[i];
-
-        // Path
-        uint32_t pathLen = pluginHandle->path.length();
-        chainState.insert(chainState.end(), (uint8_t*)&pathLen, (uint8_t*)&pathLen + sizeof(pathLen));
-        chainState.insert(chainState.end(), pluginHandle->path.begin(), pluginHandle->path.end());
-
-        // State
-        std::vector<uint8_t> pluginState = pluginHandle->plugin->saveState();
-        uint32_t stateLen = pluginState.size();
-        chainState.insert(chainState.end(), (uint8_t*)&stateLen, (uint8_t*)&stateLen + sizeof(stateLen));
-        chainState.insert(chainState.end(), pluginState.begin(), pluginState.end());
-    }
-
-    jbyteArray byteArray = env->NewByteArray(chainState.size());
-    env->SetByteArrayRegion(byteArray, 0, chainState.size(), (const jbyte *) chainState.data());
-
-    env->ReleaseLongArrayElements(native_handles, handles, JNI_ABORT);
-    return byteArray;
-}
-
-extern "C" JNIEXPORT void JNICALL
-Java_com_example_audioapp_avst_AvstHost_native_1setPluginQuality(JNIEnv *env, jclass clazz, jlong native_handle, jint quality) {
-    avst::PluginHandle *pluginHandle = (avst::PluginHandle *) native_handle;
-    pluginHandle->plugin->setQuality(quality);
-}
-
-// Parametric EQ control functions
 extern "C" JNIEXPORT void JNICALL
 Java_com_example_audioapp_audio_AudioEngine_native_1setEQBandEnabled(JNIEnv *env, jclass clazz, jint bandIndex, jboolean enabled) {
-    if (bandIndex >= 0 && bandIndex < 6) {
-        // Implementation would depend on having access to the parametric EQ plugin
-        ALOGI("Setting EQ band %d enabled: %s", bandIndex, enabled ? "true" : "false");
-    }
+    engine.setEQBandEnabled(bandIndex, enabled);
 }
 
 extern "C" JNIEXPORT void JNICALL
 Java_com_example_audioapp_audio_AudioEngine_native_1setEQBandFrequency(JNIEnv *env, jclass clazz, jint bandIndex, jfloat frequency) {
-    if (bandIndex >= 0 && bandIndex < 6) {
-        ALOGI("Setting EQ band %d frequency: %.1f Hz", bandIndex, frequency);
-    }
+    engine.setEQBandFrequency(bandIndex, frequency);
 }
 
 extern "C" JNIEXPORT void JNICALL
 Java_com_example_audioapp_audio_AudioEngine_native_1setEQBandGain(JNIEnv *env, jclass clazz, jint bandIndex, jfloat gainDb) {
-    if (bandIndex >= 0 && bandIndex < 6) {
-        ALOGI("Setting EQ band %d gain: %.1f dB", bandIndex, gainDb);
-    }
+    engine.setEQBandGain(bandIndex, gainDb);
 }
 
 extern "C" JNIEXPORT void JNICALL
 Java_com_example_audioapp_audio_AudioEngine_native_1setEQBandQ(JNIEnv *env, jclass clazz, jint bandIndex, jfloat q) {
-    if (bandIndex >= 0 && bandIndex < 6) {
-        ALOGI("Setting EQ band %d Q: %.1f", bandIndex, q);
-    }
+    engine.setEQBandQ(bandIndex, q);
 }
 
 extern "C" JNIEXPORT void JNICALL
 Java_com_example_audioapp_audio_AudioEngine_native_1setMasterVolume(JNIEnv *env, jclass clazz, jfloat volume) {
-    ALOGI("Setting master volume: %.2f", volume);
+    engine.setMasterVolume(volume);
+}
+
+// Compressor Controls
+extern "C" JNIEXPORT void JNICALL
+Java_com_example_audioapp_audio_AudioEngine_native_1setCompressorEnabled(JNIEnv *env, jclass clazz, jboolean enabled) {
+    engine.setCompressorEnabled(enabled);
+    ALOGI("Compressor enabled: %s", enabled ? "true" : "false");
+}
+
+extern "C" JNIEXPORT void JNICALL
+Java_com_example_audioapp_audio_AudioEngine_native_1setCompressorThreshold(JNIEnv *env, jclass clazz, jfloat thresholdDb) {
+    engine.setCompressorThreshold(thresholdDb);
+}
+
+extern "C" JNIEXPORT void JNICALL
+Java_com_example_audioapp_audio_AudioEngine_native_1setCompressorRatio(JNIEnv *env, jclass clazz, jfloat ratio) {
+    engine.setCompressorRatio(ratio);
+}
+
+extern "C" JNIEXPORT void JNICALL
+Java_com_example_audioapp_audio_AudioEngine_native_1setCompressorAttack(JNIEnv *env, jclass clazz, jfloat attackMs) {
+    engine.setCompressorAttack(attackMs);
+}
+
+extern "C" JNIEXPORT void JNICALL
+Java_com_example_audioapp_audio_AudioEngine_native_1setCompressorRelease(JNIEnv *env, jclass clazz, jfloat releaseMs) {
+    engine.setCompressorRelease(releaseMs);
+}
+
+// Leveler Controls
+extern "C" JNIEXPORT void JNICALL
+Java_com_example_audioapp_audio_AudioEngine_native_1setLevelerEnabled(JNIEnv *env, jclass clazz, jboolean enabled) {
+    engine.setLevelerEnabled(enabled);
+    ALOGI("Leveler enabled: %s", enabled ? "true" : "false");
+}
+
+extern "C" JNIEXPORT void JNICALL
+Java_com_example_audioapp_audio_AudioEngine_native_1setLevelerTarget(JNIEnv *env, jclass clazz, jfloat targetDb) {
+    engine.setLevelerTarget(targetDb);
+}
+
+extern "C" JNIEXPORT void JNICALL
+Java_com_example_audioapp_audio_AudioEngine_native_1setLevelerSpeed(JNIEnv *env, jclass clazz, jfloat speed) {
+    engine.setLevelerSpeed(speed);
+}
+
+// Transient Shaper Controls
+extern "C" JNIEXPORT void JNICALL
+Java_com_example_audioapp_audio_AudioEngine_native_1setTransientShaperEnabled(JNIEnv *env, jclass clazz, jboolean enabled) {
+    engine.setTransientShaperEnabled(enabled);
+    ALOGI("Transient Shaper enabled: %s", enabled ? "true" : "false");
+}
+
+extern "C" JNIEXPORT void JNICALL
+Java_com_example_audioapp_audio_AudioEngine_native_1setTransientAttack(JNIEnv *env, jclass clazz, jfloat attackDb) {
+    engine.setTransientAttack(attackDb);
+}
+
+extern "C" JNIEXPORT void JNICALL
+Java_com_example_audioapp_audio_AudioEngine_native_1setTransientSustain(JNIEnv *env, jclass clazz, jfloat sustainDb) {
+    engine.setTransientSustain(sustainDb);
 }
 double getLoudnessDb() {
     // TODO: Implement with proper libebur128 library
@@ -525,76 +696,6 @@ Java_com_example_audioapp_audio_AudioEngine_native_1normalizeLoudness(JNIEnv *en
     for (int i = 0; i < totalSamples; ++i) {
         data[i] *= gainLinear;
     }
-}
-
-extern "C" JNIEXPORT jlongArray JNICALL
-Java_com_example_audioapp_avst_AvstHost_native_1loadChain(JNIEnv *env, jclass clazz, jbyteArray chain_data) {
-    jbyte *data = env->GetByteArrayElements(chain_data, nullptr);
-    int size = env->GetArrayLength(chain_data);
-
-    std::vector<jlong> handles;
-    uint8_t* current = (uint8_t*)data;
-    uint8_t* end = current + size;
-
-    while (current < end) {
-        // Path
-        uint32_t pathLen = *(uint32_t*)current;
-        current += sizeof(pathLen);
-        std::string path((char*)current, pathLen);
-        current += pathLen;
-
-        // State
-        uint32_t stateLen = *(uint32_t*)current;
-        current += sizeof(stateLen);
-        std::vector<uint8_t> state(current, current + stateLen);
-        current += stateLen;
-
-        // Load plugin
-        void *handle = dlopen(path.c_str(), RTLD_LAZY);
-        if (!handle) {
-            ALOGE("Failed to load plugin: %s", dlerror());
-            continue;
-        }
-
-        avst::CreateAvstPlugin_t *createPlugin = (avst::CreateAvstPlugin_t *) dlsym(handle, "createAvstPlugin");
-        if (!createPlugin) {
-            ALOGE("Failed to find createAvstPlugin function: %s", dlerror());
-            dlclose(handle);
-            continue;
-        }
-
-        avst::IAvstPlugin *plugin = (*createPlugin)();
-        plugin->loadState(state);
-
-        avst::PluginHandle *pluginHandle = new avst::PluginHandle(plugin, handle, path);
-        engine.addPlugin(pluginHandle);
-        handles.push_back((jlong)pluginHandle);
-    }
-
-    jlongArray result = env->NewLongArray(handles.size());
-    env->SetLongArrayRegion(result, 0, handles.size(), handles.data());
-
-    env->ReleaseByteArrayElements(chain_data, data, JNI_ABORT);
-    return result;
-}
-
-extern "C" JNIEXPORT jfloatArray JNICALL
-Java_com_example_audioapp_avst_AvstHost_native_1getFrequencyResponse(JNIEnv *env, jclass clazz, jlong native_handle) {
-    avst::PluginHandle *pluginHandle = (avst::PluginHandle *) native_handle;
-    if (!pluginHandle) {
-        return nullptr;
-    }
-
-    std::vector<float> magnitudes;
-    pluginHandle->plugin->getFrequencyResponse(magnitudes);
-
-    jfloatArray result = env->NewFloatArray(magnitudes.size());
-    if (result == nullptr) {
-        return nullptr; // out of memory error thrown
-    }
-
-    env->SetFloatArrayRegion(result, 0, magnitudes.size(), magnitudes.data());
-    return result;
 }
 
 void writeWavHeader(std::ofstream& file, int sampleRate, int channelCount, int frameCount) {

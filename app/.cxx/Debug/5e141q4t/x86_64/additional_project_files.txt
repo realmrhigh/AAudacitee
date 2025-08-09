@@ -1,0 +1,10 @@
+C:\Users\stant\AndroidStudioProjects\AAudacitee\app\src\main\cpp\dsp\Biquad.h
+C:\Users\stant\AndroidStudioProjects\AAudacitee\app\src\main\cpp\dsp\Compressor.h
+C:\Users\stant\AndroidStudioProjects\AAudacitee\app\src\main\cpp\dsp\FFT.h
+C:\Users\stant\AndroidStudioProjects\AAudacitee\app\src\main\cpp\dsp\FrequencyResponse.h
+C:\Users\stant\AndroidStudioProjects\AAudacitee\app\src\main\cpp\dsp\Leveler.h
+C:\Users\stant\AndroidStudioProjects\AAudacitee\app\src\main\cpp\dsp\TransientShaper.h
+C:\Users\stant\AndroidStudioProjects\AAudacitee\app\src\main\cpp\AudioBuffer.h
+C:\Users\stant\AndroidStudioProjects\AAudacitee\app\src\main\cpp\CircularBuffer.h
+C:\Users\stant\AndroidStudioProjects\AAudacitee\app\src\main\cpp\LockFreeQueue.h
+C:\Users\stant\AndroidStudioProjects\AAudacitee\app\src\main\cpp\ObjectPool.h

@@ -1,13 +1,3 @@
 C:/Users/stant/AndroidStudioProjects/AAudacitee/app/.cxx/RelWithDebInfo/125u55g2/arm64-v8a/CMakeFiles/audioapp.dir
-C:/Users/stant/AndroidStudioProjects/AAudacitee/app/.cxx/RelWithDebInfo/125u55g2/arm64-v8a/CMakeFiles/parametric_eq.dir
-C:/Users/stant/AndroidStudioProjects/AAudacitee/app/.cxx/RelWithDebInfo/125u55g2/arm64-v8a/CMakeFiles/compressor.dir
-C:/Users/stant/AndroidStudioProjects/AAudacitee/app/.cxx/RelWithDebInfo/125u55g2/arm64-v8a/CMakeFiles/leveler.dir
-C:/Users/stant/AndroidStudioProjects/AAudacitee/app/.cxx/RelWithDebInfo/125u55g2/arm64-v8a/CMakeFiles/transient_shaper.dir
 C:/Users/stant/AndroidStudioProjects/AAudacitee/app/.cxx/RelWithDebInfo/125u55g2/arm64-v8a/CMakeFiles/edit_cache.dir
 C:/Users/stant/AndroidStudioProjects/AAudacitee/app/.cxx/RelWithDebInfo/125u55g2/arm64-v8a/CMakeFiles/rebuild_cache.dir
-C:/Users/stant/AndroidStudioProjects/AAudacitee/app/.cxx/RelWithDebInfo/125u55g2/arm64-v8a/libebur128/CMakeFiles/ebur128.dir
-C:/Users/stant/AndroidStudioProjects/AAudacitee/app/.cxx/RelWithDebInfo/125u55g2/arm64-v8a/libebur128/CMakeFiles/edit_cache.dir
-C:/Users/stant/AndroidStudioProjects/AAudacitee/app/.cxx/RelWithDebInfo/125u55g2/arm64-v8a/libebur128/CMakeFiles/rebuild_cache.dir
-C:/Users/stant/AndroidStudioProjects/AAudacitee/app/.cxx/RelWithDebInfo/125u55g2/arm64-v8a/lame/CMakeFiles/lame.dir
-C:/Users/stant/AndroidStudioProjects/AAudacitee/app/.cxx/RelWithDebInfo/125u55g2/arm64-v8a/lame/CMakeFiles/edit_cache.dir
-C:/Users/stant/AndroidStudioProjects/AAudacitee/app/.cxx/RelWithDebInfo/125u55g2/arm64-v8a/lame/CMakeFiles/rebuild_cache.dir

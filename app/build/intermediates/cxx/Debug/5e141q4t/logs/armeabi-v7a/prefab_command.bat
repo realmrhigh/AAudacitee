@@ -16,5 +16,5 @@
   --ndk-version ^
   25 ^
   --output ^
-  "C:\\Users\\stant\\AppData\\Local\\Temp\\agp-prefab-staging3383232275951301659\\staged-cli-output" ^
+  "C:\\Users\\stant\\AppData\\Local\\Temp\\agp-prefab-staging6366270364581800889\\staged-cli-output" ^
   "C:\\Users\\stant\\.gradle\\caches\\transforms-3\\750cd355f74f293a14287285b6361954\\transformed\\oboe-1.5.0\\prefab"

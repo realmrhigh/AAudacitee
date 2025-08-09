@@ -2,14 +2,14 @@ cmake_minimum_required(VERSION 3.22.1)
 
 project("audioapp")
 
-# Find Oboe
+# Find required packages
 find_package(oboe REQUIRED CONFIG)
 
-# Add libebur128
-add_subdirectory(libebur128)
-
-# Add LAME
-add_subdirectory(lame)
+# Add DSP source files
+file(GLOB DSP_SOURCES 
+    "dsp/*.cpp"
+    "dsp/*.h"
+)
 
 add_library( # Sets the name of the library.
         audioapp
@@ -18,7 +18,19 @@ add_library( # Sets the name of the library.
         SHARED
 
         # Provides a relative path to your source file(s).
-        native-lib.cpp)
+        native-lib.cpp
+        ${DSP_SOURCES}
+        AudioBuffer.h
+        CircularBuffer.h
+        LockFreeQueue.h
+        ObjectPool.h)
+
+# Include directories for headers
+target_include_directories(audioapp PRIVATE
+    ${CMAKE_SOURCE_DIR}
+    ${CMAKE_SOURCE_DIR}/dsp
+    ${CMAKE_SOURCE_DIR}/avst
+)
 
 target_link_libraries( # Specifies the target library.
         audioapp
@@ -26,36 +38,4 @@ target_link_libraries( # Specifies the target library.
         # Links the target library to the log library
         # and allows it to call functions from that library.
         oboe::oboe
-        ebur128
-        lame
         log)
-
-# Add the parametric EQ plugin
-add_library(parametric_eq SHARED
-        plugins/parametric_eq/ParametricEQ.cpp
-        dsp/Biquad.cpp
-        dsp/FFT.cpp
-        dsp/FrequencyResponse.cpp)
-
-target_link_libraries(parametric_eq log)
-
-# Add the compressor plugin
-add_library(compressor SHARED
-        plugins/compressor/CompressorPlugin.cpp
-        dsp/Compressor.cpp)
-
-target_link_libraries(compressor log)
-
-# Add the leveler plugin
-add_library(leveler SHARED
-        plugins/leveler/LevelerPlugin.cpp
-        dsp/Leveler.cpp)
-
-target_link_libraries(leveler log)
-
-# Add the transient shaper plugin
-add_library(transient_shaper SHARED
-        plugins/transient_shaper/TransientShaperPlugin.cpp
-        dsp/TransientShaper.cpp)
-
-target_link_libraries(transient_shaper log)

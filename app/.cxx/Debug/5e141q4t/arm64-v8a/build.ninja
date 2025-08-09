@@ -47,15 +47,63 @@ cmake_ninja_workdir = C$:/Users/stant/AndroidStudioProjects/AAudacitee/app/.cxx/
 #############################################
 # Order-only phony target for audioapp
 
-build cmake_object_order_depends_target_audioapp: phony || cmake_object_order_depends_target_ebur128 cmake_object_order_depends_target_lame
+build cmake_object_order_depends_target_audioapp: phony || CMakeFiles/audioapp.dir
 
 build CMakeFiles/audioapp.dir/native-lib.cpp.o: CXX_COMPILER__audioapp_Debug C$:/Users/stant/AndroidStudioProjects/AAudacitee/app/src/main/cpp/native-lib.cpp || cmake_object_order_depends_target_audioapp
   DEFINES = -Daudioapp_EXPORTS
   DEP_FILE = CMakeFiles\audioapp.dir\native-lib.cpp.o.d
   FLAGS = -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -mfloat-abi=softfp -mfpu=neon -fno-limit-debug-info  -fPIC
-  INCLUDES = -IC:/Users/stant/AndroidStudioProjects/AAudacitee/app/src/main/cpp/libebur128 -IC:/Users/stant/AndroidStudioProjects/AAudacitee/app/src/main/cpp/lame -isystem C:/Users/stant/.gradle/caches/transforms-3/750cd355f74f293a14287285b6361954/transformed/oboe-1.5.0/prefab/modules/oboe/include
+  INCLUDES = -IC:/Users/stant/AndroidStudioProjects/AAudacitee/app/src/main/cpp -IC:/Users/stant/AndroidStudioProjects/AAudacitee/app/src/main/cpp/dsp -IC:/Users/stant/AndroidStudioProjects/AAudacitee/app/src/main/cpp/avst -isystem C:/Users/stant/.gradle/caches/transforms-3/750cd355f74f293a14287285b6361954/transformed/oboe-1.5.0/prefab/modules/oboe/include
   OBJECT_DIR = CMakeFiles\audioapp.dir
   OBJECT_FILE_DIR = CMakeFiles\audioapp.dir
+
+build CMakeFiles/audioapp.dir/dsp/Biquad.cpp.o: CXX_COMPILER__audioapp_Debug C$:/Users/stant/AndroidStudioProjects/AAudacitee/app/src/main/cpp/dsp/Biquad.cpp || cmake_object_order_depends_target_audioapp
+  DEFINES = -Daudioapp_EXPORTS
+  DEP_FILE = CMakeFiles\audioapp.dir\dsp\Biquad.cpp.o.d
+  FLAGS = -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -mfloat-abi=softfp -mfpu=neon -fno-limit-debug-info  -fPIC
+  INCLUDES = -IC:/Users/stant/AndroidStudioProjects/AAudacitee/app/src/main/cpp -IC:/Users/stant/AndroidStudioProjects/AAudacitee/app/src/main/cpp/dsp -IC:/Users/stant/AndroidStudioProjects/AAudacitee/app/src/main/cpp/avst -isystem C:/Users/stant/.gradle/caches/transforms-3/750cd355f74f293a14287285b6361954/transformed/oboe-1.5.0/prefab/modules/oboe/include
+  OBJECT_DIR = CMakeFiles\audioapp.dir
+  OBJECT_FILE_DIR = CMakeFiles\audioapp.dir\dsp
+
+build CMakeFiles/audioapp.dir/dsp/Compressor.cpp.o: CXX_COMPILER__audioapp_Debug C$:/Users/stant/AndroidStudioProjects/AAudacitee/app/src/main/cpp/dsp/Compressor.cpp || cmake_object_order_depends_target_audioapp
+  DEFINES = -Daudioapp_EXPORTS
+  DEP_FILE = CMakeFiles\audioapp.dir\dsp\Compressor.cpp.o.d
+  FLAGS = -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -mfloat-abi=softfp -mfpu=neon -fno-limit-debug-info  -fPIC
+  INCLUDES = -IC:/Users/stant/AndroidStudioProjects/AAudacitee/app/src/main/cpp -IC:/Users/stant/AndroidStudioProjects/AAudacitee/app/src/main/cpp/dsp -IC:/Users/stant/AndroidStudioProjects/AAudacitee/app/src/main/cpp/avst -isystem C:/Users/stant/.gradle/caches/transforms-3/750cd355f74f293a14287285b6361954/transformed/oboe-1.5.0/prefab/modules/oboe/include
+  OBJECT_DIR = CMakeFiles\audioapp.dir
+  OBJECT_FILE_DIR = CMakeFiles\audioapp.dir\dsp
+
+build CMakeFiles/audioapp.dir/dsp/FFT.cpp.o: CXX_COMPILER__audioapp_Debug C$:/Users/stant/AndroidStudioProjects/AAudacitee/app/src/main/cpp/dsp/FFT.cpp || cmake_object_order_depends_target_audioapp
+  DEFINES = -Daudioapp_EXPORTS
+  DEP_FILE = CMakeFiles\audioapp.dir\dsp\FFT.cpp.o.d
+  FLAGS = -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -mfloat-abi=softfp -mfpu=neon -fno-limit-debug-info  -fPIC
+  INCLUDES = -IC:/Users/stant/AndroidStudioProjects/AAudacitee/app/src/main/cpp -IC:/Users/stant/AndroidStudioProjects/AAudacitee/app/src/main/cpp/dsp -IC:/Users/stant/AndroidStudioProjects/AAudacitee/app/src/main/cpp/avst -isystem C:/Users/stant/.gradle/caches/transforms-3/750cd355f74f293a14287285b6361954/transformed/oboe-1.5.0/prefab/modules/oboe/include
+  OBJECT_DIR = CMakeFiles\audioapp.dir
+  OBJECT_FILE_DIR = CMakeFiles\audioapp.dir\dsp
+
+build CMakeFiles/audioapp.dir/dsp/FrequencyResponse.cpp.o: CXX_COMPILER__audioapp_Debug C$:/Users/stant/AndroidStudioProjects/AAudacitee/app/src/main/cpp/dsp/FrequencyResponse.cpp || cmake_object_order_depends_target_audioapp
+  DEFINES = -Daudioapp_EXPORTS
+  DEP_FILE = CMakeFiles\audioapp.dir\dsp\FrequencyResponse.cpp.o.d
+  FLAGS = -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -mfloat-abi=softfp -mfpu=neon -fno-limit-debug-info  -fPIC
+  INCLUDES = -IC:/Users/stant/AndroidStudioProjects/AAudacitee/app/src/main/cpp -IC:/Users/stant/AndroidStudioProjects/AAudacitee/app/src/main/cpp/dsp -IC:/Users/stant/AndroidStudioProjects/AAudacitee/app/src/main/cpp/avst -isystem C:/Users/stant/.gradle/caches/transforms-3/750cd355f74f293a14287285b6361954/transformed/oboe-1.5.0/prefab/modules/oboe/include
+  OBJECT_DIR = CMakeFiles\audioapp.dir
+  OBJECT_FILE_DIR = CMakeFiles\audioapp.dir\dsp
+
+build CMakeFiles/audioapp.dir/dsp/Leveler.cpp.o: CXX_COMPILER__audioapp_Debug C$:/Users/stant/AndroidStudioProjects/AAudacitee/app/src/main/cpp/dsp/Leveler.cpp || cmake_object_order_depends_target_audioapp
+  DEFINES = -Daudioapp_EXPORTS
+  DEP_FILE = CMakeFiles\audioapp.dir\dsp\Leveler.cpp.o.d
+  FLAGS = -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -mfloat-abi=softfp -mfpu=neon -fno-limit-debug-info  -fPIC
+  INCLUDES = -IC:/Users/stant/AndroidStudioProjects/AAudacitee/app/src/main/cpp -IC:/Users/stant/AndroidStudioProjects/AAudacitee/app/src/main/cpp/dsp -IC:/Users/stant/AndroidStudioProjects/AAudacitee/app/src/main/cpp/avst -isystem C:/Users/stant/.gradle/caches/transforms-3/750cd355f74f293a14287285b6361954/transformed/oboe-1.5.0/prefab/modules/oboe/include
+  OBJECT_DIR = CMakeFiles\audioapp.dir
+  OBJECT_FILE_DIR = CMakeFiles\audioapp.dir\dsp
+
+build CMakeFiles/audioapp.dir/dsp/TransientShaper.cpp.o: CXX_COMPILER__audioapp_Debug C$:/Users/stant/AndroidStudioProjects/AAudacitee/app/src/main/cpp/dsp/TransientShaper.cpp || cmake_object_order_depends_target_audioapp
+  DEFINES = -Daudioapp_EXPORTS
+  DEP_FILE = CMakeFiles\audioapp.dir\dsp\TransientShaper.cpp.o.d
+  FLAGS = -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -mfloat-abi=softfp -mfpu=neon -fno-limit-debug-info  -fPIC
+  INCLUDES = -IC:/Users/stant/AndroidStudioProjects/AAudacitee/app/src/main/cpp -IC:/Users/stant/AndroidStudioProjects/AAudacitee/app/src/main/cpp/dsp -IC:/Users/stant/AndroidStudioProjects/AAudacitee/app/src/main/cpp/avst -isystem C:/Users/stant/.gradle/caches/transforms-3/750cd355f74f293a14287285b6361954/transformed/oboe-1.5.0/prefab/modules/oboe/include
+  OBJECT_DIR = CMakeFiles\audioapp.dir
+  OBJECT_FILE_DIR = CMakeFiles\audioapp.dir\dsp
 
 
 # =============================================================================
@@ -65,10 +113,10 @@ build CMakeFiles/audioapp.dir/native-lib.cpp.o: CXX_COMPILER__audioapp_Debug C$:
 #############################################
 # Link the shared library C:\Users\stant\AndroidStudioProjects\AAudacitee\app\build\intermediates\cxx\Debug\5e141q4t\obj\arm64-v8a\libaudioapp.so
 
-build C$:/Users/stant/AndroidStudioProjects/AAudacitee/app/build/intermediates/cxx/Debug/5e141q4t/obj/arm64-v8a/libaudioapp.so: CXX_SHARED_LIBRARY_LINKER__audioapp_Debug CMakeFiles/audioapp.dir/native-lib.cpp.o | C$:/Users/stant/.gradle/caches/transforms-3/750cd355f74f293a14287285b6361954/transformed/oboe-1.5.0/prefab/modules/oboe/libs/android.arm64-v8a/liboboe.so libebur128/libebur128.a lame/liblame.a || lame/liblame.a libebur128/libebur128.a
+build C$:/Users/stant/AndroidStudioProjects/AAudacitee/app/build/intermediates/cxx/Debug/5e141q4t/obj/arm64-v8a/libaudioapp.so: CXX_SHARED_LIBRARY_LINKER__audioapp_Debug CMakeFiles/audioapp.dir/native-lib.cpp.o CMakeFiles/audioapp.dir/dsp/Biquad.cpp.o CMakeFiles/audioapp.dir/dsp/Compressor.cpp.o CMakeFiles/audioapp.dir/dsp/FFT.cpp.o CMakeFiles/audioapp.dir/dsp/FrequencyResponse.cpp.o CMakeFiles/audioapp.dir/dsp/Leveler.cpp.o CMakeFiles/audioapp.dir/dsp/TransientShaper.cpp.o | C$:/Users/stant/.gradle/caches/transforms-3/750cd355f74f293a14287285b6361954/transformed/oboe-1.5.0/prefab/modules/oboe/libs/android.arm64-v8a/liboboe.so
   LANGUAGE_COMPILE_FLAGS = -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -mfloat-abi=softfp -mfpu=neon -fno-limit-debug-info
   LINK_FLAGS = -Wl,--build-id=sha1 -Wl,--no-rosegment -Wl,--fatal-warnings -Wl,--gc-sections -Wl,--no-undefined -Qunused-arguments
-  LINK_LIBRARIES = C:/Users/stant/.gradle/caches/transforms-3/750cd355f74f293a14287285b6361954/transformed/oboe-1.5.0/prefab/modules/oboe/libs/android.arm64-v8a/liboboe.so  libebur128/libebur128.a  lame/liblame.a  -llog  -latomic -lm
+  LINK_LIBRARIES = C:/Users/stant/.gradle/caches/transforms-3/750cd355f74f293a14287285b6361954/transformed/oboe-1.5.0/prefab/modules/oboe/libs/android.arm64-v8a/liboboe.so  -llog  -latomic -lm
   OBJECT_DIR = CMakeFiles\audioapp.dir
   POST_BUILD = cd .
   PRE_LINK = cd .
@@ -76,192 +124,6 @@ build C$:/Users/stant/AndroidStudioProjects/AAudacitee/app/build/intermediates/c
   SONAME_FLAG = -Wl,-soname,
   TARGET_FILE = C:\Users\stant\AndroidStudioProjects\AAudacitee\app\build\intermediates\cxx\Debug\5e141q4t\obj\arm64-v8a\libaudioapp.so
   TARGET_PDB = audioapp.so.dbg
-
-# =============================================================================
-# Object build statements for SHARED_LIBRARY target parametric_eq
-
-
-#############################################
-# Order-only phony target for parametric_eq
-
-build cmake_object_order_depends_target_parametric_eq: phony || CMakeFiles/parametric_eq.dir
-
-build CMakeFiles/parametric_eq.dir/plugins/parametric_eq/ParametricEQ.cpp.o: CXX_COMPILER__parametric_eq_Debug C$:/Users/stant/AndroidStudioProjects/AAudacitee/app/src/main/cpp/plugins/parametric_eq/ParametricEQ.cpp || cmake_object_order_depends_target_parametric_eq
-  DEFINES = -Dparametric_eq_EXPORTS
-  DEP_FILE = CMakeFiles\parametric_eq.dir\plugins\parametric_eq\ParametricEQ.cpp.o.d
-  FLAGS = -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -mfloat-abi=softfp -mfpu=neon -fno-limit-debug-info  -fPIC
-  OBJECT_DIR = CMakeFiles\parametric_eq.dir
-  OBJECT_FILE_DIR = CMakeFiles\parametric_eq.dir\plugins\parametric_eq
-
-build CMakeFiles/parametric_eq.dir/dsp/Biquad.cpp.o: CXX_COMPILER__parametric_eq_Debug C$:/Users/stant/AndroidStudioProjects/AAudacitee/app/src/main/cpp/dsp/Biquad.cpp || cmake_object_order_depends_target_parametric_eq
-  DEFINES = -Dparametric_eq_EXPORTS
-  DEP_FILE = CMakeFiles\parametric_eq.dir\dsp\Biquad.cpp.o.d
-  FLAGS = -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -mfloat-abi=softfp -mfpu=neon -fno-limit-debug-info  -fPIC
-  OBJECT_DIR = CMakeFiles\parametric_eq.dir
-  OBJECT_FILE_DIR = CMakeFiles\parametric_eq.dir\dsp
-
-build CMakeFiles/parametric_eq.dir/dsp/FFT.cpp.o: CXX_COMPILER__parametric_eq_Debug C$:/Users/stant/AndroidStudioProjects/AAudacitee/app/src/main/cpp/dsp/FFT.cpp || cmake_object_order_depends_target_parametric_eq
-  DEFINES = -Dparametric_eq_EXPORTS
-  DEP_FILE = CMakeFiles\parametric_eq.dir\dsp\FFT.cpp.o.d
-  FLAGS = -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -mfloat-abi=softfp -mfpu=neon -fno-limit-debug-info  -fPIC
-  OBJECT_DIR = CMakeFiles\parametric_eq.dir
-  OBJECT_FILE_DIR = CMakeFiles\parametric_eq.dir\dsp
-
-build CMakeFiles/parametric_eq.dir/dsp/FrequencyResponse.cpp.o: CXX_COMPILER__parametric_eq_Debug C$:/Users/stant/AndroidStudioProjects/AAudacitee/app/src/main/cpp/dsp/FrequencyResponse.cpp || cmake_object_order_depends_target_parametric_eq
-  DEFINES = -Dparametric_eq_EXPORTS
-  DEP_FILE = CMakeFiles\parametric_eq.dir\dsp\FrequencyResponse.cpp.o.d
-  FLAGS = -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -mfloat-abi=softfp -mfpu=neon -fno-limit-debug-info  -fPIC
-  OBJECT_DIR = CMakeFiles\parametric_eq.dir
-  OBJECT_FILE_DIR = CMakeFiles\parametric_eq.dir\dsp
-
-
-# =============================================================================
-# Link build statements for SHARED_LIBRARY target parametric_eq
-
-
-#############################################
-# Link the shared library C:\Users\stant\AndroidStudioProjects\AAudacitee\app\build\intermediates\cxx\Debug\5e141q4t\obj\arm64-v8a\libparametric_eq.so
-
-build C$:/Users/stant/AndroidStudioProjects/AAudacitee/app/build/intermediates/cxx/Debug/5e141q4t/obj/arm64-v8a/libparametric_eq.so: CXX_SHARED_LIBRARY_LINKER__parametric_eq_Debug CMakeFiles/parametric_eq.dir/plugins/parametric_eq/ParametricEQ.cpp.o CMakeFiles/parametric_eq.dir/dsp/Biquad.cpp.o CMakeFiles/parametric_eq.dir/dsp/FFT.cpp.o CMakeFiles/parametric_eq.dir/dsp/FrequencyResponse.cpp.o
-  LANGUAGE_COMPILE_FLAGS = -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -mfloat-abi=softfp -mfpu=neon -fno-limit-debug-info
-  LINK_FLAGS = -Wl,--build-id=sha1 -Wl,--no-rosegment -Wl,--fatal-warnings -Wl,--gc-sections -Wl,--no-undefined -Qunused-arguments
-  LINK_LIBRARIES = -llog  -latomic -lm
-  OBJECT_DIR = CMakeFiles\parametric_eq.dir
-  POST_BUILD = cd .
-  PRE_LINK = cd .
-  SONAME = libparametric_eq.so
-  SONAME_FLAG = -Wl,-soname,
-  TARGET_FILE = C:\Users\stant\AndroidStudioProjects\AAudacitee\app\build\intermediates\cxx\Debug\5e141q4t\obj\arm64-v8a\libparametric_eq.so
-  TARGET_PDB = parametric_eq.so.dbg
-
-# =============================================================================
-# Object build statements for SHARED_LIBRARY target compressor
-
-
-#############################################
-# Order-only phony target for compressor
-
-build cmake_object_order_depends_target_compressor: phony || CMakeFiles/compressor.dir
-
-build CMakeFiles/compressor.dir/plugins/compressor/CompressorPlugin.cpp.o: CXX_COMPILER__compressor_Debug C$:/Users/stant/AndroidStudioProjects/AAudacitee/app/src/main/cpp/plugins/compressor/CompressorPlugin.cpp || cmake_object_order_depends_target_compressor
-  DEFINES = -Dcompressor_EXPORTS
-  DEP_FILE = CMakeFiles\compressor.dir\plugins\compressor\CompressorPlugin.cpp.o.d
-  FLAGS = -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -mfloat-abi=softfp -mfpu=neon -fno-limit-debug-info  -fPIC
-  OBJECT_DIR = CMakeFiles\compressor.dir
-  OBJECT_FILE_DIR = CMakeFiles\compressor.dir\plugins\compressor
-
-build CMakeFiles/compressor.dir/dsp/Compressor.cpp.o: CXX_COMPILER__compressor_Debug C$:/Users/stant/AndroidStudioProjects/AAudacitee/app/src/main/cpp/dsp/Compressor.cpp || cmake_object_order_depends_target_compressor
-  DEFINES = -Dcompressor_EXPORTS
-  DEP_FILE = CMakeFiles\compressor.dir\dsp\Compressor.cpp.o.d
-  FLAGS = -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -mfloat-abi=softfp -mfpu=neon -fno-limit-debug-info  -fPIC
-  OBJECT_DIR = CMakeFiles\compressor.dir
-  OBJECT_FILE_DIR = CMakeFiles\compressor.dir\dsp
-
-
-# =============================================================================
-# Link build statements for SHARED_LIBRARY target compressor
-
-
-#############################################
-# Link the shared library C:\Users\stant\AndroidStudioProjects\AAudacitee\app\build\intermediates\cxx\Debug\5e141q4t\obj\arm64-v8a\libcompressor.so
-
-build C$:/Users/stant/AndroidStudioProjects/AAudacitee/app/build/intermediates/cxx/Debug/5e141q4t/obj/arm64-v8a/libcompressor.so: CXX_SHARED_LIBRARY_LINKER__compressor_Debug CMakeFiles/compressor.dir/plugins/compressor/CompressorPlugin.cpp.o CMakeFiles/compressor.dir/dsp/Compressor.cpp.o
-  LANGUAGE_COMPILE_FLAGS = -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -mfloat-abi=softfp -mfpu=neon -fno-limit-debug-info
-  LINK_FLAGS = -Wl,--build-id=sha1 -Wl,--no-rosegment -Wl,--fatal-warnings -Wl,--gc-sections -Wl,--no-undefined -Qunused-arguments
-  LINK_LIBRARIES = -llog  -latomic -lm
-  OBJECT_DIR = CMakeFiles\compressor.dir
-  POST_BUILD = cd .
-  PRE_LINK = cd .
-  SONAME = libcompressor.so
-  SONAME_FLAG = -Wl,-soname,
-  TARGET_FILE = C:\Users\stant\AndroidStudioProjects\AAudacitee\app\build\intermediates\cxx\Debug\5e141q4t\obj\arm64-v8a\libcompressor.so
-  TARGET_PDB = compressor.so.dbg
-
-# =============================================================================
-# Object build statements for SHARED_LIBRARY target leveler
-
-
-#############################################
-# Order-only phony target for leveler
-
-build cmake_object_order_depends_target_leveler: phony || CMakeFiles/leveler.dir
-
-build CMakeFiles/leveler.dir/plugins/leveler/LevelerPlugin.cpp.o: CXX_COMPILER__leveler_Debug C$:/Users/stant/AndroidStudioProjects/AAudacitee/app/src/main/cpp/plugins/leveler/LevelerPlugin.cpp || cmake_object_order_depends_target_leveler
-  DEFINES = -Dleveler_EXPORTS
-  DEP_FILE = CMakeFiles\leveler.dir\plugins\leveler\LevelerPlugin.cpp.o.d
-  FLAGS = -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -mfloat-abi=softfp -mfpu=neon -fno-limit-debug-info  -fPIC
-  OBJECT_DIR = CMakeFiles\leveler.dir
-  OBJECT_FILE_DIR = CMakeFiles\leveler.dir\plugins\leveler
-
-build CMakeFiles/leveler.dir/dsp/Leveler.cpp.o: CXX_COMPILER__leveler_Debug C$:/Users/stant/AndroidStudioProjects/AAudacitee/app/src/main/cpp/dsp/Leveler.cpp || cmake_object_order_depends_target_leveler
-  DEFINES = -Dleveler_EXPORTS
-  DEP_FILE = CMakeFiles\leveler.dir\dsp\Leveler.cpp.o.d
-  FLAGS = -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -mfloat-abi=softfp -mfpu=neon -fno-limit-debug-info  -fPIC
-  OBJECT_DIR = CMakeFiles\leveler.dir
-  OBJECT_FILE_DIR = CMakeFiles\leveler.dir\dsp
-
-
-# =============================================================================
-# Link build statements for SHARED_LIBRARY target leveler
-
-
-#############################################
-# Link the shared library C:\Users\stant\AndroidStudioProjects\AAudacitee\app\build\intermediates\cxx\Debug\5e141q4t\obj\arm64-v8a\libleveler.so
-
-build C$:/Users/stant/AndroidStudioProjects/AAudacitee/app/build/intermediates/cxx/Debug/5e141q4t/obj/arm64-v8a/libleveler.so: CXX_SHARED_LIBRARY_LINKER__leveler_Debug CMakeFiles/leveler.dir/plugins/leveler/LevelerPlugin.cpp.o CMakeFiles/leveler.dir/dsp/Leveler.cpp.o
-  LANGUAGE_COMPILE_FLAGS = -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -mfloat-abi=softfp -mfpu=neon -fno-limit-debug-info
-  LINK_FLAGS = -Wl,--build-id=sha1 -Wl,--no-rosegment -Wl,--fatal-warnings -Wl,--gc-sections -Wl,--no-undefined -Qunused-arguments
-  LINK_LIBRARIES = -llog  -latomic -lm
-  OBJECT_DIR = CMakeFiles\leveler.dir
-  POST_BUILD = cd .
-  PRE_LINK = cd .
-  SONAME = libleveler.so
-  SONAME_FLAG = -Wl,-soname,
-  TARGET_FILE = C:\Users\stant\AndroidStudioProjects\AAudacitee\app\build\intermediates\cxx\Debug\5e141q4t\obj\arm64-v8a\libleveler.so
-  TARGET_PDB = leveler.so.dbg
-
-# =============================================================================
-# Object build statements for SHARED_LIBRARY target transient_shaper
-
-
-#############################################
-# Order-only phony target for transient_shaper
-
-build cmake_object_order_depends_target_transient_shaper: phony || CMakeFiles/transient_shaper.dir
-
-build CMakeFiles/transient_shaper.dir/plugins/transient_shaper/TransientShaperPlugin.cpp.o: CXX_COMPILER__transient_shaper_Debug C$:/Users/stant/AndroidStudioProjects/AAudacitee/app/src/main/cpp/plugins/transient_shaper/TransientShaperPlugin.cpp || cmake_object_order_depends_target_transient_shaper
-  DEFINES = -Dtransient_shaper_EXPORTS
-  DEP_FILE = CMakeFiles\transient_shaper.dir\plugins\transient_shaper\TransientShaperPlugin.cpp.o.d
-  FLAGS = -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -mfloat-abi=softfp -mfpu=neon -fno-limit-debug-info  -fPIC
-  OBJECT_DIR = CMakeFiles\transient_shaper.dir
-  OBJECT_FILE_DIR = CMakeFiles\transient_shaper.dir\plugins\transient_shaper
-
-build CMakeFiles/transient_shaper.dir/dsp/TransientShaper.cpp.o: CXX_COMPILER__transient_shaper_Debug C$:/Users/stant/AndroidStudioProjects/AAudacitee/app/src/main/cpp/dsp/TransientShaper.cpp || cmake_object_order_depends_target_transient_shaper
-  DEFINES = -Dtransient_shaper_EXPORTS
-  DEP_FILE = CMakeFiles\transient_shaper.dir\dsp\TransientShaper.cpp.o.d
-  FLAGS = -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -mfloat-abi=softfp -mfpu=neon -fno-limit-debug-info  -fPIC
-  OBJECT_DIR = CMakeFiles\transient_shaper.dir
-  OBJECT_FILE_DIR = CMakeFiles\transient_shaper.dir\dsp
-
-
-# =============================================================================
-# Link build statements for SHARED_LIBRARY target transient_shaper
-
-
-#############################################
-# Link the shared library C:\Users\stant\AndroidStudioProjects\AAudacitee\app\build\intermediates\cxx\Debug\5e141q4t\obj\arm64-v8a\libtransient_shaper.so
-
-build C$:/Users/stant/AndroidStudioProjects/AAudacitee/app/build/intermediates/cxx/Debug/5e141q4t/obj/arm64-v8a/libtransient_shaper.so: CXX_SHARED_LIBRARY_LINKER__transient_shaper_Debug CMakeFiles/transient_shaper.dir/plugins/transient_shaper/TransientShaperPlugin.cpp.o CMakeFiles/transient_shaper.dir/dsp/TransientShaper.cpp.o
-  LANGUAGE_COMPILE_FLAGS = -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -mfloat-abi=softfp -mfpu=neon -fno-limit-debug-info
-  LINK_FLAGS = -Wl,--build-id=sha1 -Wl,--no-rosegment -Wl,--fatal-warnings -Wl,--gc-sections -Wl,--no-undefined -Qunused-arguments
-  LINK_LIBRARIES = -llog  -latomic -lm
-  OBJECT_DIR = CMakeFiles\transient_shaper.dir
-  POST_BUILD = cd .
-  PRE_LINK = cd .
-  SONAME = libtransient_shaper.so
-  SONAME_FLAG = -Wl,-soname,
-  TARGET_FILE = C:\Users\stant\AndroidStudioProjects\AAudacitee\app\build\intermediates\cxx\Debug\5e141q4t\obj\arm64-v8a\libtransient_shaper.so
-  TARGET_PDB = transient_shaper.so.dbg
 
 
 #############################################
@@ -287,155 +149,11 @@ build CMakeFiles/rebuild_cache.util: CUSTOM_COMMAND
 build rebuild_cache: phony CMakeFiles/rebuild_cache.util
 
 # =============================================================================
-# Write statements declared in CMakeLists.txt:
-# C:/Users/stant/AndroidStudioProjects/AAudacitee/app/src/main/cpp/CMakeLists.txt
-# =============================================================================
-
-# =============================================================================
-# Object build statements for STATIC_LIBRARY target ebur128
-
-
-#############################################
-# Order-only phony target for ebur128
-
-build cmake_object_order_depends_target_ebur128: phony || libebur128/CMakeFiles/ebur128.dir
-
-build libebur128/CMakeFiles/ebur128.dir/ebur128.c.o: C_COMPILER__ebur128_Debug C$:/Users/stant/AndroidStudioProjects/AAudacitee/app/src/main/cpp/libebur128/ebur128.c || cmake_object_order_depends_target_ebur128
-  DEP_FILE = libebur128\CMakeFiles\ebur128.dir\ebur128.c.o.d
-  FLAGS = -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -fno-limit-debug-info  -fPIC
-  INCLUDES = -IC:/Users/stant/AndroidStudioProjects/AAudacitee/app/src/main/cpp/libebur128
-  OBJECT_DIR = libebur128\CMakeFiles\ebur128.dir
-  OBJECT_FILE_DIR = libebur128\CMakeFiles\ebur128.dir
-
-
-# =============================================================================
-# Link build statements for STATIC_LIBRARY target ebur128
-
-
-#############################################
-# Link the static library libebur128\libebur128.a
-
-build libebur128/libebur128.a: C_STATIC_LIBRARY_LINKER__ebur128_Debug libebur128/CMakeFiles/ebur128.dir/ebur128.c.o
-  LANGUAGE_COMPILE_FLAGS = -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -fno-limit-debug-info
-  OBJECT_DIR = libebur128\CMakeFiles\ebur128.dir
-  POST_BUILD = cd .
-  PRE_LINK = cd .
-  TARGET_FILE = libebur128\libebur128.a
-  TARGET_PDB = ebur128.a.dbg
-
-
-#############################################
-# Utility command for edit_cache
-
-build libebur128/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D C:\Users\stant\AndroidStudioProjects\AAudacitee\app\.cxx\Debug\5e141q4t\arm64-v8a\libebur128 && C:\Users\stant\AppData\Local\Android\Sdk\cmake\3.22.1\bin\cmake.exe -E echo "No interactive CMake dialog available.""
-  DESC = No interactive CMake dialog available...
-  restat = 1
-
-build libebur128/edit_cache: phony libebur128/CMakeFiles/edit_cache.util
-
-
-#############################################
-# Utility command for rebuild_cache
-
-build libebur128/CMakeFiles/rebuild_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D C:\Users\stant\AndroidStudioProjects\AAudacitee\app\.cxx\Debug\5e141q4t\arm64-v8a\libebur128 && C:\Users\stant\AppData\Local\Android\Sdk\cmake\3.22.1\bin\cmake.exe --regenerate-during-build -SC:\Users\stant\AndroidStudioProjects\AAudacitee\app\src\main\cpp -BC:\Users\stant\AndroidStudioProjects\AAudacitee\app\.cxx\Debug\5e141q4t\arm64-v8a"
-  DESC = Running CMake to regenerate build system...
-  pool = console
-  restat = 1
-
-build libebur128/rebuild_cache: phony libebur128/CMakeFiles/rebuild_cache.util
-
-# =============================================================================
-# Write statements declared in CMakeLists.txt:
-# C:/Users/stant/AndroidStudioProjects/AAudacitee/app/src/main/cpp/CMakeLists.txt
-# =============================================================================
-
-# =============================================================================
-# Object build statements for STATIC_LIBRARY target lame
-
-
-#############################################
-# Order-only phony target for lame
-
-build cmake_object_order_depends_target_lame: phony || lame/CMakeFiles/lame.dir
-
-build lame/CMakeFiles/lame.dir/libmp3lame.c.o: C_COMPILER__lame_Debug C$:/Users/stant/AndroidStudioProjects/AAudacitee/app/src/main/cpp/lame/libmp3lame.c || cmake_object_order_depends_target_lame
-  DEP_FILE = lame\CMakeFiles\lame.dir\libmp3lame.c.o.d
-  FLAGS = -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -fno-limit-debug-info  -fPIC
-  INCLUDES = -IC:/Users/stant/AndroidStudioProjects/AAudacitee/app/src/main/cpp/lame
-  OBJECT_DIR = lame\CMakeFiles\lame.dir
-  OBJECT_FILE_DIR = lame\CMakeFiles\lame.dir
-
-
-# =============================================================================
-# Link build statements for STATIC_LIBRARY target lame
-
-
-#############################################
-# Link the static library lame\liblame.a
-
-build lame/liblame.a: C_STATIC_LIBRARY_LINKER__lame_Debug lame/CMakeFiles/lame.dir/libmp3lame.c.o
-  LANGUAGE_COMPILE_FLAGS = -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -fno-limit-debug-info
-  OBJECT_DIR = lame\CMakeFiles\lame.dir
-  POST_BUILD = cd .
-  PRE_LINK = cd .
-  TARGET_FILE = lame\liblame.a
-  TARGET_PDB = lame.a.dbg
-
-
-#############################################
-# Utility command for edit_cache
-
-build lame/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D C:\Users\stant\AndroidStudioProjects\AAudacitee\app\.cxx\Debug\5e141q4t\arm64-v8a\lame && C:\Users\stant\AppData\Local\Android\Sdk\cmake\3.22.1\bin\cmake.exe -E echo "No interactive CMake dialog available.""
-  DESC = No interactive CMake dialog available...
-  restat = 1
-
-build lame/edit_cache: phony lame/CMakeFiles/edit_cache.util
-
-
-#############################################
-# Utility command for rebuild_cache
-
-build lame/CMakeFiles/rebuild_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D C:\Users\stant\AndroidStudioProjects\AAudacitee\app\.cxx\Debug\5e141q4t\arm64-v8a\lame && C:\Users\stant\AppData\Local\Android\Sdk\cmake\3.22.1\bin\cmake.exe --regenerate-during-build -SC:\Users\stant\AndroidStudioProjects\AAudacitee\app\src\main\cpp -BC:\Users\stant\AndroidStudioProjects\AAudacitee\app\.cxx\Debug\5e141q4t\arm64-v8a"
-  DESC = Running CMake to regenerate build system...
-  pool = console
-  restat = 1
-
-build lame/rebuild_cache: phony lame/CMakeFiles/rebuild_cache.util
-
-# =============================================================================
 # Target aliases.
 
 build audioapp: phony C$:/Users/stant/AndroidStudioProjects/AAudacitee/app/build/intermediates/cxx/Debug/5e141q4t/obj/arm64-v8a/libaudioapp.so
 
-build compressor: phony C$:/Users/stant/AndroidStudioProjects/AAudacitee/app/build/intermediates/cxx/Debug/5e141q4t/obj/arm64-v8a/libcompressor.so
-
-build ebur128: phony libebur128/libebur128.a
-
-build lame: phony lame/liblame.a
-
-build leveler: phony C$:/Users/stant/AndroidStudioProjects/AAudacitee/app/build/intermediates/cxx/Debug/5e141q4t/obj/arm64-v8a/libleveler.so
-
 build libaudioapp.so: phony C$:/Users/stant/AndroidStudioProjects/AAudacitee/app/build/intermediates/cxx/Debug/5e141q4t/obj/arm64-v8a/libaudioapp.so
-
-build libcompressor.so: phony C$:/Users/stant/AndroidStudioProjects/AAudacitee/app/build/intermediates/cxx/Debug/5e141q4t/obj/arm64-v8a/libcompressor.so
-
-build libebur128.a: phony libebur128/libebur128.a
-
-build liblame.a: phony lame/liblame.a
-
-build libleveler.so: phony C$:/Users/stant/AndroidStudioProjects/AAudacitee/app/build/intermediates/cxx/Debug/5e141q4t/obj/arm64-v8a/libleveler.so
-
-build libparametric_eq.so: phony C$:/Users/stant/AndroidStudioProjects/AAudacitee/app/build/intermediates/cxx/Debug/5e141q4t/obj/arm64-v8a/libparametric_eq.so
-
-build libtransient_shaper.so: phony C$:/Users/stant/AndroidStudioProjects/AAudacitee/app/build/intermediates/cxx/Debug/5e141q4t/obj/arm64-v8a/libtransient_shaper.so
-
-build parametric_eq: phony C$:/Users/stant/AndroidStudioProjects/AAudacitee/app/build/intermediates/cxx/Debug/5e141q4t/obj/arm64-v8a/libparametric_eq.so
-
-build transient_shaper: phony C$:/Users/stant/AndroidStudioProjects/AAudacitee/app/build/intermediates/cxx/Debug/5e141q4t/obj/arm64-v8a/libtransient_shaper.so
 
 # =============================================================================
 # Folder targets.
@@ -445,21 +163,7 @@ build transient_shaper: phony C$:/Users/stant/AndroidStudioProjects/AAudacitee/a
 #############################################
 # Folder: C:/Users/stant/AndroidStudioProjects/AAudacitee/app/.cxx/Debug/5e141q4t/arm64-v8a
 
-build all: phony C$:/Users/stant/AndroidStudioProjects/AAudacitee/app/build/intermediates/cxx/Debug/5e141q4t/obj/arm64-v8a/libaudioapp.so C$:/Users/stant/AndroidStudioProjects/AAudacitee/app/build/intermediates/cxx/Debug/5e141q4t/obj/arm64-v8a/libparametric_eq.so C$:/Users/stant/AndroidStudioProjects/AAudacitee/app/build/intermediates/cxx/Debug/5e141q4t/obj/arm64-v8a/libcompressor.so C$:/Users/stant/AndroidStudioProjects/AAudacitee/app/build/intermediates/cxx/Debug/5e141q4t/obj/arm64-v8a/libleveler.so C$:/Users/stant/AndroidStudioProjects/AAudacitee/app/build/intermediates/cxx/Debug/5e141q4t/obj/arm64-v8a/libtransient_shaper.so libebur128/all lame/all
-
-# =============================================================================
-
-#############################################
-# Folder: C:/Users/stant/AndroidStudioProjects/AAudacitee/app/.cxx/Debug/5e141q4t/arm64-v8a/lame
-
-build lame/all: phony lame/liblame.a
-
-# =============================================================================
-
-#############################################
-# Folder: C:/Users/stant/AndroidStudioProjects/AAudacitee/app/.cxx/Debug/5e141q4t/arm64-v8a/libebur128
-
-build libebur128/all: phony libebur128/libebur128.a
+build all: phony C$:/Users/stant/AndroidStudioProjects/AAudacitee/app/build/intermediates/cxx/Debug/5e141q4t/obj/arm64-v8a/libaudioapp.so
 
 # =============================================================================
 # Built-in targets
@@ -468,14 +172,14 @@ build libebur128/all: phony libebur128/libebur128.a
 #############################################
 # Re-run CMake if any of its inputs changed.
 
-build build.ninja: RERUN_CMAKE | C$:/Users/stant/AndroidStudioProjects/AAudacitee/app/.cxx/Debug/5e141q4t/prefab/arm64-v8a/prefab/lib/aarch64-linux-android/cmake/oboe/oboeConfig.cmake C$:/Users/stant/AndroidStudioProjects/AAudacitee/app/.cxx/Debug/5e141q4t/prefab/arm64-v8a/prefab/lib/aarch64-linux-android/cmake/oboe/oboeConfigVersion.cmake C$:/Users/stant/AndroidStudioProjects/AAudacitee/app/src/main/cpp/CMakeLists.txt C$:/Users/stant/AndroidStudioProjects/AAudacitee/app/src/main/cpp/lame/CMakeLists.txt C$:/Users/stant/AndroidStudioProjects/AAudacitee/app/src/main/cpp/libebur128/CMakeLists.txt C$:/Users/stant/AppData/Local/Android/Sdk/cmake/3.22.1/share/cmake-3.22/Modules/CMakeCInformation.cmake C$:/Users/stant/AppData/Local/Android/Sdk/cmake/3.22.1/share/cmake-3.22/Modules/CMakeCXXInformation.cmake C$:/Users/stant/AppData/Local/Android/Sdk/cmake/3.22.1/share/cmake-3.22/Modules/CMakeCommonLanguageInclude.cmake C$:/Users/stant/AppData/Local/Android/Sdk/cmake/3.22.1/share/cmake-3.22/Modules/CMakeGenericSystem.cmake C$:/Users/stant/AppData/Local/Android/Sdk/cmake/3.22.1/share/cmake-3.22/Modules/CMakeInitializeConfigs.cmake C$:/Users/stant/AppData/Local/Android/Sdk/cmake/3.22.1/share/cmake-3.22/Modules/CMakeLanguageInformation.cmake C$:/Users/stant/AppData/Local/Android/Sdk/cmake/3.22.1/share/cmake-3.22/Modules/CMakeSystemSpecificInformation.cmake C$:/Users/stant/AppData/Local/Android/Sdk/cmake/3.22.1/share/cmake-3.22/Modules/CMakeSystemSpecificInitialize.cmake C$:/Users/stant/AppData/Local/Android/Sdk/cmake/3.22.1/share/cmake-3.22/Modules/Compiler/CMakeCommonCompilerMacros.cmake C$:/Users/stant/AppData/Local/Android/Sdk/cmake/3.22.1/share/cmake-3.22/Modules/Compiler/Clang-C.cmake C$:/Users/stant/AppData/Local/Android/Sdk/cmake/3.22.1/share/cmake-3.22/Modules/Compiler/Clang-CXX.cmake C$:/Users/stant/AppData/Local/Android/Sdk/cmake/3.22.1/share/cmake-3.22/Modules/Compiler/Clang.cmake C$:/Users/stant/AppData/Local/Android/Sdk/cmake/3.22.1/share/cmake-3.22/Modules/Compiler/GNU.cmake C$:/Users/stant/AppData/Local/Android/Sdk/cmake/3.22.1/share/cmake-3.22/Modules/Platform/Android-Clang-C.cmake C$:/Users/stant/AppData/Local/Android/Sdk/cmake/3.22.1/share/cmake-3.22/Modules/Platform/Android-Clang-CXX.cmake C$:/Users/stant/AppData/Local/Android/Sdk/cmake/3.22.1/share/cmake-3.22/Modules/Platform/Android-Clang.cmake C$:/Users/stant/AppData/Local/Android/Sdk/cmake/3.22.1/share/cmake-3.22/Modules/Platform/Android-Initialize.cmake C$:/Users/stant/AppData/Local/Android/Sdk/cmake/3.22.1/share/cmake-3.22/Modules/Platform/Android.cmake C$:/Users/stant/AppData/Local/Android/Sdk/cmake/3.22.1/share/cmake-3.22/Modules/Platform/Linux.cmake C$:/Users/stant/AppData/Local/Android/Sdk/cmake/3.22.1/share/cmake-3.22/Modules/Platform/UnixPaths.cmake C$:/Users/stant/AppData/Local/Android/Sdk/ndk/25.1.8937393/build/cmake/android-legacy.toolchain.cmake C$:/Users/stant/AppData/Local/Android/Sdk/ndk/25.1.8937393/build/cmake/android.toolchain.cmake C$:/Users/stant/AppData/Local/Android/Sdk/ndk/25.1.8937393/build/cmake/flags.cmake C$:/Users/stant/AppData/Local/Android/Sdk/ndk/25.1.8937393/build/cmake/hooks/pre/Android-Clang.cmake C$:/Users/stant/AppData/Local/Android/Sdk/ndk/25.1.8937393/build/cmake/hooks/pre/Android-Initialize.cmake C$:/Users/stant/AppData/Local/Android/Sdk/ndk/25.1.8937393/build/cmake/hooks/pre/Android.cmake C$:/Users/stant/AppData/Local/Android/Sdk/ndk/25.1.8937393/build/cmake/platforms.cmake CMakeCache.txt CMakeFiles/3.22.1-g37088a8-dirty/CMakeCCompiler.cmake CMakeFiles/3.22.1-g37088a8-dirty/CMakeCXXCompiler.cmake CMakeFiles/3.22.1-g37088a8-dirty/CMakeSystem.cmake
+build build.ninja: RERUN_CMAKE | C$:/Users/stant/AndroidStudioProjects/AAudacitee/app/.cxx/Debug/5e141q4t/prefab/arm64-v8a/prefab/lib/aarch64-linux-android/cmake/oboe/oboeConfig.cmake C$:/Users/stant/AndroidStudioProjects/AAudacitee/app/.cxx/Debug/5e141q4t/prefab/arm64-v8a/prefab/lib/aarch64-linux-android/cmake/oboe/oboeConfigVersion.cmake C$:/Users/stant/AndroidStudioProjects/AAudacitee/app/src/main/cpp/CMakeLists.txt C$:/Users/stant/AppData/Local/Android/Sdk/cmake/3.22.1/share/cmake-3.22/Modules/CMakeCInformation.cmake C$:/Users/stant/AppData/Local/Android/Sdk/cmake/3.22.1/share/cmake-3.22/Modules/CMakeCXXInformation.cmake C$:/Users/stant/AppData/Local/Android/Sdk/cmake/3.22.1/share/cmake-3.22/Modules/CMakeCommonLanguageInclude.cmake C$:/Users/stant/AppData/Local/Android/Sdk/cmake/3.22.1/share/cmake-3.22/Modules/CMakeGenericSystem.cmake C$:/Users/stant/AppData/Local/Android/Sdk/cmake/3.22.1/share/cmake-3.22/Modules/CMakeInitializeConfigs.cmake C$:/Users/stant/AppData/Local/Android/Sdk/cmake/3.22.1/share/cmake-3.22/Modules/CMakeLanguageInformation.cmake C$:/Users/stant/AppData/Local/Android/Sdk/cmake/3.22.1/share/cmake-3.22/Modules/CMakeSystemSpecificInformation.cmake C$:/Users/stant/AppData/Local/Android/Sdk/cmake/3.22.1/share/cmake-3.22/Modules/CMakeSystemSpecificInitialize.cmake C$:/Users/stant/AppData/Local/Android/Sdk/cmake/3.22.1/share/cmake-3.22/Modules/Compiler/CMakeCommonCompilerMacros.cmake C$:/Users/stant/AppData/Local/Android/Sdk/cmake/3.22.1/share/cmake-3.22/Modules/Compiler/Clang-C.cmake C$:/Users/stant/AppData/Local/Android/Sdk/cmake/3.22.1/share/cmake-3.22/Modules/Compiler/Clang-CXX.cmake C$:/Users/stant/AppData/Local/Android/Sdk/cmake/3.22.1/share/cmake-3.22/Modules/Compiler/Clang.cmake C$:/Users/stant/AppData/Local/Android/Sdk/cmake/3.22.1/share/cmake-3.22/Modules/Compiler/GNU.cmake C$:/Users/stant/AppData/Local/Android/Sdk/cmake/3.22.1/share/cmake-3.22/Modules/Platform/Android-Clang-C.cmake C$:/Users/stant/AppData/Local/Android/Sdk/cmake/3.22.1/share/cmake-3.22/Modules/Platform/Android-Clang-CXX.cmake C$:/Users/stant/AppData/Local/Android/Sdk/cmake/3.22.1/share/cmake-3.22/Modules/Platform/Android-Clang.cmake C$:/Users/stant/AppData/Local/Android/Sdk/cmake/3.22.1/share/cmake-3.22/Modules/Platform/Android-Initialize.cmake C$:/Users/stant/AppData/Local/Android/Sdk/cmake/3.22.1/share/cmake-3.22/Modules/Platform/Android.cmake C$:/Users/stant/AppData/Local/Android/Sdk/cmake/3.22.1/share/cmake-3.22/Modules/Platform/Linux.cmake C$:/Users/stant/AppData/Local/Android/Sdk/cmake/3.22.1/share/cmake-3.22/Modules/Platform/UnixPaths.cmake C$:/Users/stant/AppData/Local/Android/Sdk/ndk/25.1.8937393/build/cmake/android-legacy.toolchain.cmake C$:/Users/stant/AppData/Local/Android/Sdk/ndk/25.1.8937393/build/cmake/android.toolchain.cmake C$:/Users/stant/AppData/Local/Android/Sdk/ndk/25.1.8937393/build/cmake/flags.cmake C$:/Users/stant/AppData/Local/Android/Sdk/ndk/25.1.8937393/build/cmake/hooks/pre/Android-Clang.cmake C$:/Users/stant/AppData/Local/Android/Sdk/ndk/25.1.8937393/build/cmake/hooks/pre/Android-Initialize.cmake C$:/Users/stant/AppData/Local/Android/Sdk/ndk/25.1.8937393/build/cmake/hooks/pre/Android.cmake C$:/Users/stant/AppData/Local/Android/Sdk/ndk/25.1.8937393/build/cmake/platforms.cmake CMakeCache.txt CMakeFiles/3.22.1-g37088a8-dirty/CMakeCCompiler.cmake CMakeFiles/3.22.1-g37088a8-dirty/CMakeCXXCompiler.cmake CMakeFiles/3.22.1-g37088a8-dirty/CMakeSystem.cmake
   pool = console
 
 
 #############################################
 # A missing CMake input file is not an error.
 
-build C$:/Users/stant/AndroidStudioProjects/AAudacitee/app/.cxx/Debug/5e141q4t/prefab/arm64-v8a/prefab/lib/aarch64-linux-android/cmake/oboe/oboeConfig.cmake C$:/Users/stant/AndroidStudioProjects/AAudacitee/app/.cxx/Debug/5e141q4t/prefab/arm64-v8a/prefab/lib/aarch64-linux-android/cmake/oboe/oboeConfigVersion.cmake C$:/Users/stant/AndroidStudioProjects/AAudacitee/app/src/main/cpp/CMakeLists.txt C$:/Users/stant/AndroidStudioProjects/AAudacitee/app/src/main/cpp/lame/CMakeLists.txt C$:/Users/stant/AndroidStudioProjects/AAudacitee/app/src/main/cpp/libebur128/CMakeLists.txt C$:/Users/stant/AppData/Local/Android/Sdk/cmake/3.22.1/share/cmake-3.22/Modules/CMakeCInformation.cmake C$:/Users/stant/AppData/Local/Android/Sdk/cmake/3.22.1/share/cmake-3.22/Modules/CMakeCXXInformation.cmake C$:/Users/stant/AppData/Local/Android/Sdk/cmake/3.22.1/share/cmake-3.22/Modules/CMakeCommonLanguageInclude.cmake C$:/Users/stant/AppData/Local/Android/Sdk/cmake/3.22.1/share/cmake-3.22/Modules/CMakeGenericSystem.cmake C$:/Users/stant/AppData/Local/Android/Sdk/cmake/3.22.1/share/cmake-3.22/Modules/CMakeInitializeConfigs.cmake C$:/Users/stant/AppData/Local/Android/Sdk/cmake/3.22.1/share/cmake-3.22/Modules/CMakeLanguageInformation.cmake C$:/Users/stant/AppData/Local/Android/Sdk/cmake/3.22.1/share/cmake-3.22/Modules/CMakeSystemSpecificInformation.cmake C$:/Users/stant/AppData/Local/Android/Sdk/cmake/3.22.1/share/cmake-3.22/Modules/CMakeSystemSpecificInitialize.cmake C$:/Users/stant/AppData/Local/Android/Sdk/cmake/3.22.1/share/cmake-3.22/Modules/Compiler/CMakeCommonCompilerMacros.cmake C$:/Users/stant/AppData/Local/Android/Sdk/cmake/3.22.1/share/cmake-3.22/Modules/Compiler/Clang-C.cmake C$:/Users/stant/AppData/Local/Android/Sdk/cmake/3.22.1/share/cmake-3.22/Modules/Compiler/Clang-CXX.cmake C$:/Users/stant/AppData/Local/Android/Sdk/cmake/3.22.1/share/cmake-3.22/Modules/Compiler/Clang.cmake C$:/Users/stant/AppData/Local/Android/Sdk/cmake/3.22.1/share/cmake-3.22/Modules/Compiler/GNU.cmake C$:/Users/stant/AppData/Local/Android/Sdk/cmake/3.22.1/share/cmake-3.22/Modules/Platform/Android-Clang-C.cmake C$:/Users/stant/AppData/Local/Android/Sdk/cmake/3.22.1/share/cmake-3.22/Modules/Platform/Android-Clang-CXX.cmake C$:/Users/stant/AppData/Local/Android/Sdk/cmake/3.22.1/share/cmake-3.22/Modules/Platform/Android-Clang.cmake C$:/Users/stant/AppData/Local/Android/Sdk/cmake/3.22.1/share/cmake-3.22/Modules/Platform/Android-Initialize.cmake C$:/Users/stant/AppData/Local/Android/Sdk/cmake/3.22.1/share/cmake-3.22/Modules/Platform/Android.cmake C$:/Users/stant/AppData/Local/Android/Sdk/cmake/3.22.1/share/cmake-3.22/Modules/Platform/Linux.cmake C$:/Users/stant/AppData/Local/Android/Sdk/cmake/3.22.1/share/cmake-3.22/Modules/Platform/UnixPaths.cmake C$:/Users/stant/AppData/Local/Android/Sdk/ndk/25.1.8937393/build/cmake/android-legacy.toolchain.cmake C$:/Users/stant/AppData/Local/Android/Sdk/ndk/25.1.8937393/build/cmake/android.toolchain.cmake C$:/Users/stant/AppData/Local/Android/Sdk/ndk/25.1.8937393/build/cmake/flags.cmake C$:/Users/stant/AppData/Local/Android/Sdk/ndk/25.1.8937393/build/cmake/hooks/pre/Android-Clang.cmake C$:/Users/stant/AppData/Local/Android/Sdk/ndk/25.1.8937393/build/cmake/hooks/pre/Android-Initialize.cmake C$:/Users/stant/AppData/Local/Android/Sdk/ndk/25.1.8937393/build/cmake/hooks/pre/Android.cmake C$:/Users/stant/AppData/Local/Android/Sdk/ndk/25.1.8937393/build/cmake/platforms.cmake CMakeCache.txt CMakeFiles/3.22.1-g37088a8-dirty/CMakeCCompiler.cmake CMakeFiles/3.22.1-g37088a8-dirty/CMakeCXXCompiler.cmake CMakeFiles/3.22.1-g37088a8-dirty/CMakeSystem.cmake: phony
+build C$:/Users/stant/AndroidStudioProjects/AAudacitee/app/.cxx/Debug/5e141q4t/prefab/arm64-v8a/prefab/lib/aarch64-linux-android/cmake/oboe/oboeConfig.cmake C$:/Users/stant/AndroidStudioProjects/AAudacitee/app/.cxx/Debug/5e141q4t/prefab/arm64-v8a/prefab/lib/aarch64-linux-android/cmake/oboe/oboeConfigVersion.cmake C$:/Users/stant/AndroidStudioProjects/AAudacitee/app/src/main/cpp/CMakeLists.txt C$:/Users/stant/AppData/Local/Android/Sdk/cmake/3.22.1/share/cmake-3.22/Modules/CMakeCInformation.cmake C$:/Users/stant/AppData/Local/Android/Sdk/cmake/3.22.1/share/cmake-3.22/Modules/CMakeCXXInformation.cmake C$:/Users/stant/AppData/Local/Android/Sdk/cmake/3.22.1/share/cmake-3.22/Modules/CMakeCommonLanguageInclude.cmake C$:/Users/stant/AppData/Local/Android/Sdk/cmake/3.22.1/share/cmake-3.22/Modules/CMakeGenericSystem.cmake C$:/Users/stant/AppData/Local/Android/Sdk/cmake/3.22.1/share/cmake-3.22/Modules/CMakeInitializeConfigs.cmake C$:/Users/stant/AppData/Local/Android/Sdk/cmake/3.22.1/share/cmake-3.22/Modules/CMakeLanguageInformation.cmake C$:/Users/stant/AppData/Local/Android/Sdk/cmake/3.22.1/share/cmake-3.22/Modules/CMakeSystemSpecificInformation.cmake C$:/Users/stant/AppData/Local/Android/Sdk/cmake/3.22.1/share/cmake-3.22/Modules/CMakeSystemSpecificInitialize.cmake C$:/Users/stant/AppData/Local/Android/Sdk/cmake/3.22.1/share/cmake-3.22/Modules/Compiler/CMakeCommonCompilerMacros.cmake C$:/Users/stant/AppData/Local/Android/Sdk/cmake/3.22.1/share/cmake-3.22/Modules/Compiler/Clang-C.cmake C$:/Users/stant/AppData/Local/Android/Sdk/cmake/3.22.1/share/cmake-3.22/Modules/Compiler/Clang-CXX.cmake C$:/Users/stant/AppData/Local/Android/Sdk/cmake/3.22.1/share/cmake-3.22/Modules/Compiler/Clang.cmake C$:/Users/stant/AppData/Local/Android/Sdk/cmake/3.22.1/share/cmake-3.22/Modules/Compiler/GNU.cmake C$:/Users/stant/AppData/Local/Android/Sdk/cmake/3.22.1/share/cmake-3.22/Modules/Platform/Android-Clang-C.cmake C$:/Users/stant/AppData/Local/Android/Sdk/cmake/3.22.1/share/cmake-3.22/Modules/Platform/Android-Clang-CXX.cmake C$:/Users/stant/AppData/Local/Android/Sdk/cmake/3.22.1/share/cmake-3.22/Modules/Platform/Android-Clang.cmake C$:/Users/stant/AppData/Local/Android/Sdk/cmake/3.22.1/share/cmake-3.22/Modules/Platform/Android-Initialize.cmake C$:/Users/stant/AppData/Local/Android/Sdk/cmake/3.22.1/share/cmake-3.22/Modules/Platform/Android.cmake C$:/Users/stant/AppData/Local/Android/Sdk/cmake/3.22.1/share/cmake-3.22/Modules/Platform/Linux.cmake C$:/Users/stant/AppData/Local/Android/Sdk/cmake/3.22.1/share/cmake-3.22/Modules/Platform/UnixPaths.cmake C$:/Users/stant/AppData/Local/Android/Sdk/ndk/25.1.8937393/build/cmake/android-legacy.toolchain.cmake C$:/Users/stant/AppData/Local/Android/Sdk/ndk/25.1.8937393/build/cmake/android.toolchain.cmake C$:/Users/stant/AppData/Local/Android/Sdk/ndk/25.1.8937393/build/cmake/flags.cmake C$:/Users/stant/AppData/Local/Android/Sdk/ndk/25.1.8937393/build/cmake/hooks/pre/Android-Clang.cmake C$:/Users/stant/AppData/Local/Android/Sdk/ndk/25.1.8937393/build/cmake/hooks/pre/Android-Initialize.cmake C$:/Users/stant/AppData/Local/Android/Sdk/ndk/25.1.8937393/build/cmake/hooks/pre/Android.cmake C$:/Users/stant/AppData/Local/Android/Sdk/ndk/25.1.8937393/build/cmake/platforms.cmake CMakeCache.txt CMakeFiles/3.22.1-g37088a8-dirty/CMakeCCompiler.cmake CMakeFiles/3.22.1-g37088a8-dirty/CMakeCXXCompiler.cmake CMakeFiles/3.22.1-g37088a8-dirty/CMakeSystem.cmake: phony
 
 
 #############################################

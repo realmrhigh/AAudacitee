@@ -1,5 +1,43 @@
 ninja: Entering directory `C:\Users\stant\AndroidStudioProjects\AAudacitee\app\.cxx\Debug\5e141q4t\arm64-v8a'
-[1/2] Building CXX object CMakeFiles/audioapp.dir/native-lib.cpp.o
+[1/20] Building C object libebur128/CMakeFiles/ebur128.dir/ebur128.c.o
+[2/20] Building CXX object CMakeFiles/parametric_eq.dir/dsp/Biquad.cpp.o
 clang++: warning: argument unused during compilation: '-mfloat-abi=softfp' [-Wunused-command-line-argument]
 clang++: warning: argument unused during compilation: '-mfpu=neon' [-Wunused-command-line-argument]
-[2/2] Linking CXX shared library C:\Users\stant\AndroidStudioProjects\AAudacitee\app\build\intermediates\cxx\Debug\5e141q4t\obj\arm64-v8a\libaudioapp.so
+[3/20] Building C object lame/CMakeFiles/lame.dir/libmp3lame.c.o
+[4/20] Building CXX object CMakeFiles/leveler.dir/dsp/Leveler.cpp.o
+clang++: warning: argument unused during compilation: '-mfloat-abi=softfp' [-Wunused-command-line-argument]
+clang++: warning: argument unused during compilation: '-mfpu=neon' [-Wunused-command-line-argument]
+[5/20] Building CXX object CMakeFiles/compressor.dir/dsp/Compressor.cpp.o
+clang++: warning: argument unused during compilation: '-mfloat-abi=softfp' [-Wunused-command-line-argument]
+clang++: warning: argument unused during compilation: '-mfpu=neon' [-Wunused-command-line-argument]
+[6/20] Building CXX object CMakeFiles/transient_shaper.dir/plugins/transient_shaper/TransientShaperPlugin.cpp.o
+clang++: warning: argument unused during compilation: '-mfloat-abi=softfp' [-Wunused-command-line-argument]
+clang++: warning: argument unused during compilation: '-mfpu=neon' [-Wunused-command-line-argument]
+[7/20] Building CXX object CMakeFiles/parametric_eq.dir/dsp/FFT.cpp.o
+clang++: warning: argument unused during compilation: '-mfloat-abi=softfp' [-Wunused-command-line-argument]
+clang++: warning: argument unused during compilation: '-mfpu=neon' [-Wunused-command-line-argument]
+[8/20] Linking C static library lame\liblame.a
+[9/20] Linking C static library libebur128\libebur128.a
+[10/20] Building CXX object CMakeFiles/transient_shaper.dir/dsp/TransientShaper.cpp.o
+clang++: warning: argument unused during compilation: '-mfloat-abi=softfp' [-Wunused-command-line-argument]
+clang++: warning: argument unused during compilation: '-mfpu=neon' [-Wunused-command-line-argument]
+[11/20] Linking CXX shared library C:\Users\stant\AndroidStudioProjects\AAudacitee\app\build\intermediates\cxx\Debug\5e141q4t\obj\arm64-v8a\libtransient_shaper.so
+[12/20] Building CXX object CMakeFiles/compressor.dir/plugins/compressor/CompressorPlugin.cpp.o
+clang++: warning: argument unused during compilation: '-mfloat-abi=softfp' [-Wunused-command-line-argument]
+clang++: warning: argument unused during compilation: '-mfpu=neon' [-Wunused-command-line-argument]
+[13/20] Linking CXX shared library C:\Users\stant\AndroidStudioProjects\AAudacitee\app\build\intermediates\cxx\Debug\5e141q4t\obj\arm64-v8a\libcompressor.so
+[14/20] Building CXX object CMakeFiles/leveler.dir/plugins/leveler/LevelerPlugin.cpp.o
+clang++: warning: argument unused during compilation: '-mfloat-abi=softfp' [-Wunused-command-line-argument]
+clang++: warning: argument unused during compilation: '-mfpu=neon' [-Wunused-command-line-argument]
+[15/20] Building CXX object CMakeFiles/parametric_eq.dir/plugins/parametric_eq/ParametricEQ.cpp.o
+clang++: warning: argument unused during compilation: '-mfloat-abi=softfp' [-Wunused-command-line-argument]
+clang++: warning: argument unused during compilation: '-mfpu=neon' [-Wunused-command-line-argument]
+[16/20] Linking CXX shared library C:\Users\stant\AndroidStudioProjects\AAudacitee\app\build\intermediates\cxx\Debug\5e141q4t\obj\arm64-v8a\libleveler.so
+[17/20] Building CXX object CMakeFiles/parametric_eq.dir/dsp/FrequencyResponse.cpp.o
+clang++: warning: argument unused during compilation: '-mfloat-abi=softfp' [-Wunused-command-line-argument]
+clang++: warning: argument unused during compilation: '-mfpu=neon' [-Wunused-command-line-argument]
+[18/20] Linking CXX shared library C:\Users\stant\AndroidStudioProjects\AAudacitee\app\build\intermediates\cxx\Debug\5e141q4t\obj\arm64-v8a\libparametric_eq.so
+[19/20] Building CXX object CMakeFiles/audioapp.dir/native-lib.cpp.o
+clang++: warning: argument unused during compilation: '-mfloat-abi=softfp' [-Wunused-command-line-argument]
+clang++: warning: argument unused during compilation: '-mfpu=neon' [-Wunused-command-line-argument]
+[20/20] Linking CXX shared library C:\Users\stant\AndroidStudioProjects\AAudacitee\app\build\intermediates\cxx\Debug\5e141q4t\obj\arm64-v8a\libaudioapp.so

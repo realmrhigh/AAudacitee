@@ -1,0 +1,149 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"childIndexes" : 
+					[
+						1,
+						2
+					],
+					"jsonFile" : "directory-.-RelWithDebInfo-d0094a50bb2071803777.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.6.0"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						4,
+						5,
+						6
+					]
+				},
+				{
+					"build" : "libebur128",
+					"jsonFile" : "directory-libebur128-RelWithDebInfo-a7cbc74e0bedf74b165c.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.6.0"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 0,
+					"source" : "libebur128",
+					"targetIndexes" : 
+					[
+						2
+					]
+				},
+				{
+					"build" : "lame",
+					"jsonFile" : "directory-lame-RelWithDebInfo-077d95a590abd1955163.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.6.0"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 0,
+					"source" : "lame",
+					"targetIndexes" : 
+					[
+						3
+					]
+				}
+			],
+			"name" : "RelWithDebInfo",
+			"projects" : 
+			[
+				{
+					"directoryIndexes" : 
+					[
+						0,
+						1,
+						2
+					],
+					"name" : "audioapp",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3,
+						4,
+						5,
+						6
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 0,
+					"id" : "audioapp::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-audioapp-RelWithDebInfo-9fd780afa0a26e85c362.json",
+					"name" : "audioapp",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "compressor::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-compressor-RelWithDebInfo-7fc5b73daa3fb2e04a61.json",
+					"name" : "compressor",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 1,
+					"id" : "ebur128::@30f546d5a4e978394388",
+					"jsonFile" : "target-ebur128-RelWithDebInfo-d876602671ec56a39259.json",
+					"name" : "ebur128",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 2,
+					"id" : "lame::@63a1ef5fc29c7872ba9a",
+					"jsonFile" : "target-lame-RelWithDebInfo-f0d40b277951916e98f7.json",
+					"name" : "lame",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "leveler::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-leveler-RelWithDebInfo-5637fc5ab213fed3b95a.json",
+					"name" : "leveler",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "parametric_eq::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-parametric_eq-RelWithDebInfo-cbd32bb944a966953cd5.json",
+					"name" : "parametric_eq",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "transient_shaper::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-transient_shaper-RelWithDebInfo-6a83d5cbcfa4eba641d5.json",
+					"name" : "transient_shaper",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "C:/Users/stant/AndroidStudioProjects/AAudacitee/app/.cxx/RelWithDebInfo/125u55g2/x86_64",
+		"source" : "C:/Users/stant/AndroidStudioProjects/AAudacitee/app/src/main/cpp"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 3
+	}
+}

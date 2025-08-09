@@ -1,3 +1,0 @@
--- Configuring done
--- Generating done
--- Build files have been written to: C:/Users/stant/AndroidStudioProjects/AAudacitee/app/.cxx/Debug/5e141q4t/arm64-v8a

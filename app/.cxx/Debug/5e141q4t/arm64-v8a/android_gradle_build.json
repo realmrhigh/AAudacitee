@@ -1,6 +1,8 @@
 {
   "buildFiles": [
-    "C:\\Users\\stant\\AndroidStudioProjects\\AAudacitee\\app\\src\\main\\cpp\\CMakeLists.txt"
+    "C:\\Users\\stant\\AndroidStudioProjects\\AAudacitee\\app\\src\\main\\cpp\\CMakeLists.txt",
+    "C:\\Users\\stant\\AndroidStudioProjects\\AAudacitee\\app\\src\\main\\cpp\\lame\\CMakeLists.txt",
+    "C:\\Users\\stant\\AndroidStudioProjects\\AAudacitee\\app\\src\\main\\cpp\\libebur128\\CMakeLists.txt"
   ],
   "cleanCommandsComponents": [
     [
@@ -26,11 +28,44 @@
         "C:\\Users\\stant\\.gradle\\caches\\transforms-3\\750cd355f74f293a14287285b6361954\\transformed\\oboe-1.5.0\\prefab\\modules\\oboe\\libs\\android.arm64-v8a\\liboboe.so"
       ]
     },
+    "compressor::@6890427a1f51a3e7e1df": {
+      "toolchain": "toolchain",
+      "abi": "arm64-v8a",
+      "artifactName": "compressor",
+      "output": "C:\\Users\\stant\\AndroidStudioProjects\\AAudacitee\\app\\build\\intermediates\\cxx\\Debug\\5e141q4t\\obj\\arm64-v8a\\libcompressor.so",
+      "runtimeFiles": []
+    },
+    "ebur128::@30f546d5a4e978394388": {
+      "toolchain": "toolchain",
+      "abi": "arm64-v8a",
+      "artifactName": "ebur128",
+      "output": "C:\\Users\\stant\\AndroidStudioProjects\\AAudacitee\\app\\.cxx\\Debug\\5e141q4t\\arm64-v8a\\libebur128\\libebur128.a"
+    },
+    "lame::@63a1ef5fc29c7872ba9a": {
+      "toolchain": "toolchain",
+      "abi": "arm64-v8a",
+      "artifactName": "lame",
+      "output": "C:\\Users\\stant\\AndroidStudioProjects\\AAudacitee\\app\\.cxx\\Debug\\5e141q4t\\arm64-v8a\\lame\\liblame.a"
+    },
+    "leveler::@6890427a1f51a3e7e1df": {
+      "toolchain": "toolchain",
+      "abi": "arm64-v8a",
+      "artifactName": "leveler",
+      "output": "C:\\Users\\stant\\AndroidStudioProjects\\AAudacitee\\app\\build\\intermediates\\cxx\\Debug\\5e141q4t\\obj\\arm64-v8a\\libleveler.so",
+      "runtimeFiles": []
+    },
     "parametric_eq::@6890427a1f51a3e7e1df": {
       "toolchain": "toolchain",
       "abi": "arm64-v8a",
       "artifactName": "parametric_eq",
       "output": "C:\\Users\\stant\\AndroidStudioProjects\\AAudacitee\\app\\build\\intermediates\\cxx\\Debug\\5e141q4t\\obj\\arm64-v8a\\libparametric_eq.so",
+      "runtimeFiles": []
+    },
+    "transient_shaper::@6890427a1f51a3e7e1df": {
+      "toolchain": "toolchain",
+      "abi": "arm64-v8a",
+      "artifactName": "transient_shaper",
+      "output": "C:\\Users\\stant\\AndroidStudioProjects\\AAudacitee\\app\\build\\intermediates\\cxx\\Debug\\5e141q4t\\obj\\arm64-v8a\\libtransient_shaper.so",
       "runtimeFiles": []
     }
   },
@@ -40,7 +75,9 @@
       "cppCompilerExecutable": "C:\\Users\\stant\\AppData\\Local\\Android\\Sdk\\ndk\\25.1.8937393\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\clang++.exe"
     }
   },
-  "cFileExtensions": [],
+  "cFileExtensions": [
+    "c"
+  ],
   "cppFileExtensions": [
     "cpp"
   ]

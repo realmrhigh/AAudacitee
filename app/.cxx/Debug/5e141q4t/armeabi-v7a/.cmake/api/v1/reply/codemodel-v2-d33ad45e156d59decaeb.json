@@ -1,0 +1,149 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"childIndexes" : 
+					[
+						1,
+						2
+					],
+					"jsonFile" : "directory-.-Debug-d0094a50bb2071803777.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.6.0"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						4,
+						5,
+						6
+					]
+				},
+				{
+					"build" : "libebur128",
+					"jsonFile" : "directory-libebur128-Debug-a7cbc74e0bedf74b165c.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.6.0"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 0,
+					"source" : "libebur128",
+					"targetIndexes" : 
+					[
+						2
+					]
+				},
+				{
+					"build" : "lame",
+					"jsonFile" : "directory-lame-Debug-077d95a590abd1955163.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.6.0"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 0,
+					"source" : "lame",
+					"targetIndexes" : 
+					[
+						3
+					]
+				}
+			],
+			"name" : "Debug",
+			"projects" : 
+			[
+				{
+					"directoryIndexes" : 
+					[
+						0,
+						1,
+						2
+					],
+					"name" : "audioapp",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3,
+						4,
+						5,
+						6
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 0,
+					"id" : "audioapp::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-audioapp-Debug-dfd4e0b02aa7ac49de66.json",
+					"name" : "audioapp",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "compressor::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-compressor-Debug-179d99658833cd1b6e1b.json",
+					"name" : "compressor",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 1,
+					"id" : "ebur128::@30f546d5a4e978394388",
+					"jsonFile" : "target-ebur128-Debug-8bbe30e0101cf7c8950f.json",
+					"name" : "ebur128",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 2,
+					"id" : "lame::@63a1ef5fc29c7872ba9a",
+					"jsonFile" : "target-lame-Debug-9f4fdbfaf1ed413e0ce8.json",
+					"name" : "lame",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "leveler::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-leveler-Debug-d51a24e08c78caae2300.json",
+					"name" : "leveler",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "parametric_eq::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-parametric_eq-Debug-fe4cca1cd95f78ad5554.json",
+					"name" : "parametric_eq",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "transient_shaper::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-transient_shaper-Debug-076638ac93ac71d1f08c.json",
+					"name" : "transient_shaper",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "C:/Users/stant/AndroidStudioProjects/AAudacitee/app/.cxx/Debug/5e141q4t/armeabi-v7a",
+		"source" : "C:/Users/stant/AndroidStudioProjects/AAudacitee/app/src/main/cpp"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 3
+	}
+}

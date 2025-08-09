@@ -2901,10 +2901,12 @@ id bounceBoth
 id bounceEnd
 id bounceStart
 id buttonPanel
+id button_export
 id button_load_file
 id button_pause
 id button_play
 id button_stop
+id button_switch_plugin
 id cache_measures
 id callMeasure
 id cancel_button
@@ -2928,6 +2930,7 @@ id clockwise
 id closest
 id collapseActionView
 id compress
+id compressor_view
 id confirm_button
 id constraint
 id container
@@ -2977,21 +2980,15 @@ id easeInOut
 id easeOut
 id east
 id edit_query
+id edit_text_bitrate
+id edit_text_filename
+id edit_text_target_loudness
 id elastic
 id embed
 id end
 id endToStart
 id enterAlways
 id enterAlwaysCollapsed
-id eq_band_1
-id eq_band_2
-id eq_band_3
-id eq_band_4
-id eq_band_5
-id eq_band_6
-id eq_controls_container
-id eq_scroll_view
-id eq_title
 id exitUntilCollapsed
 id expand_activities_button
 id expanded_menu
@@ -3030,7 +3027,6 @@ id home
 id homeAsUp
 id honorRequest
 id horizontal_only
-id horizontal_scroll_view
 id icon
 id icon_group
 id ifRoom
@@ -3052,6 +3048,7 @@ id layout
 id left
 id leftToRight
 id legacy
+id leveler_view
 id line1
 id line3
 id linear
@@ -3060,7 +3057,6 @@ id list_item
 id m3_side_sheet
 id marquee
 id masked
-id master_volume
 id match_constraint
 id match_parent
 id material_clock_display
@@ -3144,6 +3140,7 @@ id outward
 id overshoot
 id packed
 id parallax
+id parametric_eq_view
 id parent
 id parentPanel
 id parentRelative
@@ -3162,6 +3159,9 @@ id progress_horizontal
 id q_slider
 id q_value
 id radio
+id radio_button_mp3
+id radio_button_wav
+id radio_group_format
 id ratio
 id rectangles
 id reverseSawtooth
@@ -3277,7 +3277,6 @@ id textinput_placeholder
 id textinput_prefix_text
 id textinput_suffix_text
 id time
-id timeline_view
 id title
 id titleDividerNoCustom
 id title_template
@@ -3285,6 +3284,7 @@ id toggle
 id top
 id topPanel
 id touch_outside
+id transient_shaper_view
 id transitionToEnd
 id transitionToStart
 id transition_current_scene
@@ -3440,6 +3440,7 @@ layout design_navigation_menu
 layout design_navigation_menu_item
 layout design_text_input_end_icon
 layout design_text_input_start_icon
+layout dialog_export
 layout eq_band_control
 layout m3_alert_dialog
 layout m3_alert_dialog_actions

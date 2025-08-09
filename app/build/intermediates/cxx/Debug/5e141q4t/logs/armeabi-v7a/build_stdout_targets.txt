@@ -1,3 +1,21 @@
 ninja: Entering directory `C:\Users\stant\AndroidStudioProjects\AAudacitee\app\.cxx\Debug\5e141q4t\armeabi-v7a'
-[1/2] Building CXX object CMakeFiles/audioapp.dir/native-lib.cpp.o
-[2/2] Linking CXX shared library C:\Users\stant\AndroidStudioProjects\AAudacitee\app\build\intermediates\cxx\Debug\5e141q4t\obj\armeabi-v7a\libaudioapp.so
+[1/20] Building C object libebur128/CMakeFiles/ebur128.dir/ebur128.c.o
+[2/20] Building C object lame/CMakeFiles/lame.dir/libmp3lame.c.o
+[3/20] Linking C static library libebur128\libebur128.a
+[4/20] Building CXX object CMakeFiles/parametric_eq.dir/dsp/Biquad.cpp.o
+[5/20] Linking C static library lame\liblame.a
+[6/20] Building CXX object CMakeFiles/transient_shaper.dir/dsp/TransientShaper.cpp.o
+[7/20] Building CXX object CMakeFiles/leveler.dir/dsp/Leveler.cpp.o
+[8/20] Building CXX object CMakeFiles/compressor.dir/dsp/Compressor.cpp.o
+[9/20] Building CXX object CMakeFiles/transient_shaper.dir/plugins/transient_shaper/TransientShaperPlugin.cpp.o
+[10/20] Building CXX object CMakeFiles/leveler.dir/plugins/leveler/LevelerPlugin.cpp.o
+[11/20] Building CXX object CMakeFiles/compressor.dir/plugins/compressor/CompressorPlugin.cpp.o
+[12/20] Linking CXX shared library C:\Users\stant\AndroidStudioProjects\AAudacitee\app\build\intermediates\cxx\Debug\5e141q4t\obj\armeabi-v7a\libtransient_shaper.so
+[13/20] Linking CXX shared library C:\Users\stant\AndroidStudioProjects\AAudacitee\app\build\intermediates\cxx\Debug\5e141q4t\obj\armeabi-v7a\libleveler.so
+[14/20] Building CXX object CMakeFiles/parametric_eq.dir/dsp/FFT.cpp.o
+[15/20] Linking CXX shared library C:\Users\stant\AndroidStudioProjects\AAudacitee\app\build\intermediates\cxx\Debug\5e141q4t\obj\armeabi-v7a\libcompressor.so
+[16/20] Building CXX object CMakeFiles/parametric_eq.dir/plugins/parametric_eq/ParametricEQ.cpp.o
+[17/20] Building CXX object CMakeFiles/parametric_eq.dir/dsp/FrequencyResponse.cpp.o
+[18/20] Linking CXX shared library C:\Users\stant\AndroidStudioProjects\AAudacitee\app\build\intermediates\cxx\Debug\5e141q4t\obj\armeabi-v7a\libparametric_eq.so
+[19/20] Building CXX object CMakeFiles/audioapp.dir/native-lib.cpp.o
+[20/20] Linking CXX shared library C:\Users\stant\AndroidStudioProjects\AAudacitee\app\build\intermediates\cxx\Debug\5e141q4t\obj\armeabi-v7a\libaudioapp.so

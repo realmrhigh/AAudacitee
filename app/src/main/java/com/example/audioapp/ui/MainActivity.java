@@ -133,21 +133,22 @@ public class MainActivity extends AppCompatActivity {
     }
     
     private void setupMasterVolume() {
-        SeekBar masterVolume = findViewById(R.id.master_volume);
-        if (masterVolume != null) {
-            masterVolume.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-                @Override
-                public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                    if (fromUser) {
-                        float volume = progress / 100f;
-                        AudioEngine.native_setMasterVolume(volume);
-                    }
-                }
-                
-                @Override public void onStartTrackingTouch(SeekBar seekBar) {}
-                @Override public void onStopTrackingTouch(SeekBar seekBar) {}
-            });
-        }
+        // Master volume control is now handled by the individual plugin views
+        // SeekBar masterVolume = findViewById(R.id.master_volume);
+        // if (masterVolume != null) {
+        //     masterVolume.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+        //         @Override
+        //         public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+        //             if (fromUser) {
+        //                 float volume = progress / 100f;
+        //                 AudioEngine.native_setMasterVolume(volume);
+        //             }
+        //         }
+        //         
+        //         @Override public void onStartTrackingTouch(SeekBar seekBar) {}
+        //         @Override public void onStopTrackingTouch(SeekBar seekBar) {}
+        //     });
+        // }
     }
     
     private void updateFrequencyDisplay(TextView textView, float frequency) {

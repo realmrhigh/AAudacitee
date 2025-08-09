@@ -1,7 +1,7 @@
 [
 {
   "directory": "C:/Users/stant/AndroidStudioProjects/AAudacitee/app/.cxx/Debug/5e141q4t/x86_64",
-  "command": "C:\\Users\\stant\\AppData\\Local\\Android\\Sdk\\ndk\\25.1.8937393\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\clang++.exe --target=x86_64-none-linux-android21 --sysroot=C:/Users/stant/AppData/Local/Android/Sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/windows-x86_64/sysroot -Daudioapp_EXPORTS -isystem C:/Users/stant/.gradle/caches/transforms-3/750cd355f74f293a14287285b6361954/transformed/oboe-1.5.0/prefab/modules/oboe/include -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -mfloat-abi=softfp -mfpu=neon -fno-limit-debug-info  -fPIC -o CMakeFiles\\audioapp.dir\\native-lib.cpp.o -c C:\\Users\\stant\\AndroidStudioProjects\\AAudacitee\\app\\src\\main\\cpp\\native-lib.cpp",
+  "command": "C:\\Users\\stant\\AppData\\Local\\Android\\Sdk\\ndk\\25.1.8937393\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\clang++.exe --target=x86_64-none-linux-android21 --sysroot=C:/Users/stant/AppData/Local/Android/Sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/windows-x86_64/sysroot -Daudioapp_EXPORTS -IC:/Users/stant/AndroidStudioProjects/AAudacitee/app/src/main/cpp/libebur128 -IC:/Users/stant/AndroidStudioProjects/AAudacitee/app/src/main/cpp/lame -isystem C:/Users/stant/.gradle/caches/transforms-3/750cd355f74f293a14287285b6361954/transformed/oboe-1.5.0/prefab/modules/oboe/include -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -mfloat-abi=softfp -mfpu=neon -fno-limit-debug-info  -fPIC -o CMakeFiles\\audioapp.dir\\native-lib.cpp.o -c C:\\Users\\stant\\AndroidStudioProjects\\AAudacitee\\app\\src\\main\\cpp\\native-lib.cpp",
   "file": "C:\\Users\\stant\\AndroidStudioProjects\\AAudacitee\\app\\src\\main\\cpp\\native-lib.cpp"
 },
 {
@@ -23,5 +23,45 @@
   "directory": "C:/Users/stant/AndroidStudioProjects/AAudacitee/app/.cxx/Debug/5e141q4t/x86_64",
   "command": "C:\\Users\\stant\\AppData\\Local\\Android\\Sdk\\ndk\\25.1.8937393\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\clang++.exe --target=x86_64-none-linux-android21 --sysroot=C:/Users/stant/AppData/Local/Android/Sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/windows-x86_64/sysroot -Dparametric_eq_EXPORTS -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -mfloat-abi=softfp -mfpu=neon -fno-limit-debug-info  -fPIC -o CMakeFiles\\parametric_eq.dir\\dsp\\FrequencyResponse.cpp.o -c C:\\Users\\stant\\AndroidStudioProjects\\AAudacitee\\app\\src\\main\\cpp\\dsp\\FrequencyResponse.cpp",
   "file": "C:\\Users\\stant\\AndroidStudioProjects\\AAudacitee\\app\\src\\main\\cpp\\dsp\\FrequencyResponse.cpp"
+},
+{
+  "directory": "C:/Users/stant/AndroidStudioProjects/AAudacitee/app/.cxx/Debug/5e141q4t/x86_64",
+  "command": "C:\\Users\\stant\\AppData\\Local\\Android\\Sdk\\ndk\\25.1.8937393\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\clang++.exe --target=x86_64-none-linux-android21 --sysroot=C:/Users/stant/AppData/Local/Android/Sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/windows-x86_64/sysroot -Dcompressor_EXPORTS -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -mfloat-abi=softfp -mfpu=neon -fno-limit-debug-info  -fPIC -o CMakeFiles\\compressor.dir\\plugins\\compressor\\CompressorPlugin.cpp.o -c C:\\Users\\stant\\AndroidStudioProjects\\AAudacitee\\app\\src\\main\\cpp\\plugins\\compressor\\CompressorPlugin.cpp",
+  "file": "C:\\Users\\stant\\AndroidStudioProjects\\AAudacitee\\app\\src\\main\\cpp\\plugins\\compressor\\CompressorPlugin.cpp"
+},
+{
+  "directory": "C:/Users/stant/AndroidStudioProjects/AAudacitee/app/.cxx/Debug/5e141q4t/x86_64",
+  "command": "C:\\Users\\stant\\AppData\\Local\\Android\\Sdk\\ndk\\25.1.8937393\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\clang++.exe --target=x86_64-none-linux-android21 --sysroot=C:/Users/stant/AppData/Local/Android/Sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/windows-x86_64/sysroot -Dcompressor_EXPORTS -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -mfloat-abi=softfp -mfpu=neon -fno-limit-debug-info  -fPIC -o CMakeFiles\\compressor.dir\\dsp\\Compressor.cpp.o -c C:\\Users\\stant\\AndroidStudioProjects\\AAudacitee\\app\\src\\main\\cpp\\dsp\\Compressor.cpp",
+  "file": "C:\\Users\\stant\\AndroidStudioProjects\\AAudacitee\\app\\src\\main\\cpp\\dsp\\Compressor.cpp"
+},
+{
+  "directory": "C:/Users/stant/AndroidStudioProjects/AAudacitee/app/.cxx/Debug/5e141q4t/x86_64",
+  "command": "C:\\Users\\stant\\AppData\\Local\\Android\\Sdk\\ndk\\25.1.8937393\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\clang++.exe --target=x86_64-none-linux-android21 --sysroot=C:/Users/stant/AppData/Local/Android/Sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/windows-x86_64/sysroot -Dleveler_EXPORTS -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -mfloat-abi=softfp -mfpu=neon -fno-limit-debug-info  -fPIC -o CMakeFiles\\leveler.dir\\plugins\\leveler\\LevelerPlugin.cpp.o -c C:\\Users\\stant\\AndroidStudioProjects\\AAudacitee\\app\\src\\main\\cpp\\plugins\\leveler\\LevelerPlugin.cpp",
+  "file": "C:\\Users\\stant\\AndroidStudioProjects\\AAudacitee\\app\\src\\main\\cpp\\plugins\\leveler\\LevelerPlugin.cpp"
+},
+{
+  "directory": "C:/Users/stant/AndroidStudioProjects/AAudacitee/app/.cxx/Debug/5e141q4t/x86_64",
+  "command": "C:\\Users\\stant\\AppData\\Local\\Android\\Sdk\\ndk\\25.1.8937393\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\clang++.exe --target=x86_64-none-linux-android21 --sysroot=C:/Users/stant/AppData/Local/Android/Sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/windows-x86_64/sysroot -Dleveler_EXPORTS -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -mfloat-abi=softfp -mfpu=neon -fno-limit-debug-info  -fPIC -o CMakeFiles\\leveler.dir\\dsp\\Leveler.cpp.o -c C:\\Users\\stant\\AndroidStudioProjects\\AAudacitee\\app\\src\\main\\cpp\\dsp\\Leveler.cpp",
+  "file": "C:\\Users\\stant\\AndroidStudioProjects\\AAudacitee\\app\\src\\main\\cpp\\dsp\\Leveler.cpp"
+},
+{
+  "directory": "C:/Users/stant/AndroidStudioProjects/AAudacitee/app/.cxx/Debug/5e141q4t/x86_64",
+  "command": "C:\\Users\\stant\\AppData\\Local\\Android\\Sdk\\ndk\\25.1.8937393\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\clang++.exe --target=x86_64-none-linux-android21 --sysroot=C:/Users/stant/AppData/Local/Android/Sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/windows-x86_64/sysroot -Dtransient_shaper_EXPORTS -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -mfloat-abi=softfp -mfpu=neon -fno-limit-debug-info  -fPIC -o CMakeFiles\\transient_shaper.dir\\plugins\\transient_shaper\\TransientShaperPlugin.cpp.o -c C:\\Users\\stant\\AndroidStudioProjects\\AAudacitee\\app\\src\\main\\cpp\\plugins\\transient_shaper\\TransientShaperPlugin.cpp",
+  "file": "C:\\Users\\stant\\AndroidStudioProjects\\AAudacitee\\app\\src\\main\\cpp\\plugins\\transient_shaper\\TransientShaperPlugin.cpp"
+},
+{
+  "directory": "C:/Users/stant/AndroidStudioProjects/AAudacitee/app/.cxx/Debug/5e141q4t/x86_64",
+  "command": "C:\\Users\\stant\\AppData\\Local\\Android\\Sdk\\ndk\\25.1.8937393\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\clang++.exe --target=x86_64-none-linux-android21 --sysroot=C:/Users/stant/AppData/Local/Android/Sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/windows-x86_64/sysroot -Dtransient_shaper_EXPORTS -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -mfloat-abi=softfp -mfpu=neon -fno-limit-debug-info  -fPIC -o CMakeFiles\\transient_shaper.dir\\dsp\\TransientShaper.cpp.o -c C:\\Users\\stant\\AndroidStudioProjects\\AAudacitee\\app\\src\\main\\cpp\\dsp\\TransientShaper.cpp",
+  "file": "C:\\Users\\stant\\AndroidStudioProjects\\AAudacitee\\app\\src\\main\\cpp\\dsp\\TransientShaper.cpp"
+},
+{
+  "directory": "C:/Users/stant/AndroidStudioProjects/AAudacitee/app/.cxx/Debug/5e141q4t/x86_64",
+  "command": "C:\\Users\\stant\\AppData\\Local\\Android\\Sdk\\ndk\\25.1.8937393\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\clang.exe --target=x86_64-none-linux-android21 --sysroot=C:/Users/stant/AppData/Local/Android/Sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/windows-x86_64/sysroot -IC:/Users/stant/AndroidStudioProjects/AAudacitee/app/src/main/cpp/libebur128 -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -fno-limit-debug-info  -fPIC -o libebur128\\CMakeFiles\\ebur128.dir\\ebur128.c.o -c C:\\Users\\stant\\AndroidStudioProjects\\AAudacitee\\app\\src\\main\\cpp\\libebur128\\ebur128.c",
+  "file": "C:\\Users\\stant\\AndroidStudioProjects\\AAudacitee\\app\\src\\main\\cpp\\libebur128\\ebur128.c"
+},
+{
+  "directory": "C:/Users/stant/AndroidStudioProjects/AAudacitee/app/.cxx/Debug/5e141q4t/x86_64",
+  "command": "C:\\Users\\stant\\AppData\\Local\\Android\\Sdk\\ndk\\25.1.8937393\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\clang.exe --target=x86_64-none-linux-android21 --sysroot=C:/Users/stant/AppData/Local/Android/Sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/windows-x86_64/sysroot -IC:/Users/stant/AndroidStudioProjects/AAudacitee/app/src/main/cpp/lame -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -fno-limit-debug-info  -fPIC -o lame\\CMakeFiles\\lame.dir\\libmp3lame.c.o -c C:\\Users\\stant\\AndroidStudioProjects\\AAudacitee\\app\\src\\main\\cpp\\lame\\libmp3lame.c",
+  "file": "C:\\Users\\stant\\AndroidStudioProjects\\AAudacitee\\app\\src\\main\\cpp\\lame\\libmp3lame.c"
 }
 ]

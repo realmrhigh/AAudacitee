@@ -248,16 +248,6 @@
                     android:backgroundTint="#4CAF50"
                     android:textColor="#ffffff" />
 
-                <ToggleButton
-                    android:id="@+id/button_capture"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="4dp"
-                    android:textOn="Stop Capture"
-                    android:textOff="Start Capture"
-                    android:backgroundTint="#00BCD4"
-                    android:textColor="#ffffff" />
-
                 <Button
                     android:id="@+id/button_play"
                     android:layout_width="wrap_content"

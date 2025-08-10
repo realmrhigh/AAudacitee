@@ -1,29 +1,5 @@
 ninja: Entering directory `C:\Users\stant\AndroidStudioProjects\AAudacitee\app\.cxx\Debug\5e141q4t\arm64-v8a'
 [1/2] Building CXX object CMakeFiles/audioapp.dir/native-lib.cpp.o
-FAILED: CMakeFiles/audioapp.dir/native-lib.cpp.o 
-C:\Users\stant\AppData\Local\Android\Sdk\ndk\25.1.8937393\toolchains\llvm\prebuilt\windows-x86_64\bin\clang++.exe --target=aarch64-none-linux-android21 --sysroot=C:/Users/stant/AppData/Local/Android/Sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/windows-x86_64/sysroot -Daudioapp_EXPORTS -IC:/Users/stant/AndroidStudioProjects/AAudacitee/app/src/main/cpp -IC:/Users/stant/AndroidStudioProjects/AAudacitee/app/src/main/cpp/dsp -IC:/Users/stant/AndroidStudioProjects/AAudacitee/app/src/main/cpp/avst -isystem C:/Users/stant/.gradle/caches/transforms-3/750cd355f74f293a14287285b6361954/transformed/oboe-1.5.0/prefab/modules/oboe/include -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -mfloat-abi=softfp -mfpu=neon -fno-limit-debug-info  -fPIC -MD -MT CMakeFiles/audioapp.dir/native-lib.cpp.o -MF CMakeFiles\audioapp.dir\native-lib.cpp.o.d -o CMakeFiles/audioapp.dir/native-lib.cpp.o -c C:/Users/stant/AndroidStudioProjects/AAudacitee/app/src/main/cpp/native-lib.cpp
 clang++: warning: argument unused during compilation: '-mfloat-abi=softfp' [-Wunused-command-line-argument]
 clang++: warning: argument unused during compilation: '-mfpu=neon' [-Wunused-command-line-argument]
-C:/Users/stant/AndroidStudioProjects/AAudacitee/app/src/main/cpp/native-lib.cpp:49:49: error: use of undeclared identifier 'AudioChunk'
-    void setLiveMode(bool isLive, LockFreeQueue<AudioChunk>* queue) {
-                                                ^
-C:/Users/stant/AndroidStudioProjects/AAudacitee/app/src/main/cpp/native-lib.cpp:484:19: error: use of undeclared identifier 'AudioChunk'
-    LockFreeQueue<AudioChunk>* captureQueue = nullptr;
-                  ^
-C:/Users/stant/AndroidStudioProjects/AAudacitee/app/src/main/cpp/native-lib.cpp:76:13: error: unknown type name 'AudioChunk'
-            AudioChunk chunk;
-            ^
-C:/Users/stant/AndroidStudioProjects/AAudacitee/app/src/main/cpp/native-lib.cpp:265:29: error: cannot initialize a parameter of type 'oboe::AudioStreamCallback *' with an rvalue of type 'AudioEngine *'
-        builder.setCallback(this);
-                            ^~~~
-C:/Users/stant/.gradle/caches/transforms-3/750cd355f74f293a14287285b6361954/transformed/oboe-1.5.0/prefab/modules/oboe/include/oboe/AudioStreamBuilder.h:372:58: note: passing argument to parameter 'streamCallback' here
-    AudioStreamBuilder *setCallback(AudioStreamCallback *streamCallback) {
-                                                         ^
-C:/Users/stant/AndroidStudioProjects/AAudacitee/app/src/main/cpp/native-lib.cpp:499:50: error: use of undeclared identifier 'AudioChunk'
-    auto* queue = reinterpret_cast<LockFreeQueue<AudioChunk>*>(queue_handle);
-                                                 ^
-C:/Users/stant/AndroidStudioProjects/AAudacitee/app/src/main/cpp/native-lib.cpp:499:11: error: variable 'queue' with type 'auto *' has incompatible initializer of type 'jlong' (aka 'long')
-    auto* queue = reinterpret_cast<LockFreeQueue<AudioChunk>*>(queue_handle);
-          ^                                                    ~~~~~~~~~~~~
-6 errors generated.
-ninja: build stopped: subcommand failed.
+[2/2] Linking CXX shared library C:\Users\stant\AndroidStudioProjects\AAudacitee\app\build\intermediates\cxx\Debug\5e141q4t\obj\arm64-v8a\libaudioapp.so

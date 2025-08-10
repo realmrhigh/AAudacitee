@@ -20,6 +20,8 @@
 #define ALOGI(...) __android_log_print(ANDROID_LOG_INFO, LOG_TAG, __VA_ARGS__)
 #define ALOGE(...) __android_log_print(ANDROID_LOG_ERROR, LOG_TAG, __VA_ARGS__)
 
+using AudioChunk = std::vector<uint8_t>;
+
 class AudioEngine : public oboe::AudioStreamCallback {
 public:
     AudioEngine() : circularBuffer(8192) { // Increased buffer size for live mode
@@ -262,7 +264,7 @@ public:
         builder.setSharingMode(oboe::SharingMode::Exclusive);
         builder.setFormat(oboe::AudioFormat::Float);
         builder.setChannelCount(oboe::ChannelCount::Stereo);
-        builder.setCallback(this);
+        builder.setCallback(static_cast<oboe::AudioStreamCallback*>(this));
 
         oboe::Result result = builder.openStream(&stream_);
         if (result != oboe::Result::OK) {

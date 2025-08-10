@@ -8,6 +8,7 @@ drawable ic_launcher_foreground
 id app_title
 id band_enable
 id band_title
+id button_capture
 id button_export
 id button_load_file
 id button_pause

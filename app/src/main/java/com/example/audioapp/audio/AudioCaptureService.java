@@ -12,14 +12,17 @@ import android.media.AudioRecord;
 import android.media.projection.AudioPlaybackCaptureConfiguration;
 import android.media.projection.MediaProjection;
 import android.media.projection.MediaProjectionManager;
+import android.os.Build;
 import android.os.IBinder;
 import android.util.Log;
 
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
 
 import java.util.Objects;
 
+@RequiresApi(api = Build.VERSION_CODES.Q)
 public class AudioCaptureService extends Service {
     private static final String CHANNEL_ID = "AudioCaptureServiceChannel";
     private static final int NOTIFICATION_ID = 1;
@@ -79,7 +82,7 @@ public class AudioCaptureService extends Service {
     }
 
     private void startCapture(Intent intent) {
-        if (isCapturing) {
+        if (isCapturing || Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
             return;
         }
         int resultCode = intent.getIntExtra("resultCode", Activity.RESULT_CANCELED);

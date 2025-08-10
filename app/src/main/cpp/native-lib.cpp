@@ -22,6 +22,17 @@
 
 using AudioChunk = std::vector<uint8_t>;
 
+// Converts a chunk of 16-bit stereo PCM data to two float arrays.
+void convert_pcm_s16le_to_float(const std::vector<uint8_t>& pcm_s16le, float* left, float* right, int& numFrames) {
+    numFrames = pcm_s16le.size() / 4; // 2 channels, 2 bytes/sample
+    const int16_t* pcmData = reinterpret_cast<const int16_t*>(pcm_s16le.data());
+
+    for (int i = 0; i < numFrames; ++i) {
+        left[i] = static_cast<float>(pcmData[i * 2]) / 32768.0f;
+        right[i] = static_cast<float>(pcmData[i * 2 + 1]) / 32768.0f;
+    }
+}
+
 class AudioEngine : public oboe::AudioStreamCallback {
 public:
     AudioEngine() : circularBuffer(8192) { // Increased buffer size for live mode
@@ -864,20 +875,6 @@ Java_com_example_audioapp_audio_AudioEngine_native_1exportFile(JNIEnv *env, jcla
     env->ReleaseStringUTFChars(path, pathStr);
     delete[] tempBuffer;
     return success;
-}
-
-// Define a type for our queue items
-using AudioChunk = std::vector<uint8_t>;
-
-// Converts a chunk of 16-bit stereo PCM data to two float arrays.
-void convert_pcm_s16le_to_float(const std::vector<uint8_t>& pcm_s16le, float* left, float* right, int& numFrames) {
-    numFrames = pcm_s16le.size() / 4; // 2 channels, 2 bytes/sample
-    const int16_t* pcmData = reinterpret_cast<const int16_t*>(pcm_s16le.data());
-
-    for (int i = 0; i < numFrames; ++i) {
-        left[i] = static_cast<float>(pcmData[i * 2]) / 32768.0f;
-        right[i] = static_cast<float>(pcmData[i * 2 + 1]) / 32768.0f;
-    }
 }
 
 extern "C" JNIEXPORT jlong JNICALL

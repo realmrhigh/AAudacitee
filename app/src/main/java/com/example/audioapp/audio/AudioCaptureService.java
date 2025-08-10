@@ -15,6 +15,7 @@ import android.media.projection.MediaProjectionManager;
 import android.os.Build;
 import android.os.IBinder;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
@@ -22,7 +23,6 @@ import androidx.core.app.NotificationCompat;
 
 import java.util.Objects;
 
-@RequiresApi(api = Build.VERSION_CODES.Q)
 public class AudioCaptureService extends Service {
     private static final String CHANNEL_ID = "AudioCaptureServiceChannel";
     private static final int NOTIFICATION_ID = 1;
@@ -51,7 +51,12 @@ public class AudioCaptureService extends Service {
         startForeground(NOTIFICATION_ID, notification);
 
         if (intent != null && "START".equals(intent.getAction())) {
-            startCapture(intent);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                startCaptureQ(intent);
+            } else {
+                Toast.makeText(this, "Audio capture is not supported on this device.", Toast.LENGTH_SHORT).show();
+                stopSelf();
+            }
         } else if (intent != null && "STOP".equals(intent.getAction())) {
             stopSelf();
         }
@@ -81,8 +86,9 @@ public class AudioCaptureService extends Service {
         manager.createNotificationChannel(serviceChannel);
     }
 
-    private void startCapture(Intent intent) {
-        if (isCapturing || Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+    @RequiresApi(Build.VERSION_CODES.Q)
+    private void startCaptureQ(Intent intent) {
+        if (isCapturing) {
             return;
         }
         int resultCode = intent.getIntExtra("resultCode", Activity.RESULT_CANCELED);

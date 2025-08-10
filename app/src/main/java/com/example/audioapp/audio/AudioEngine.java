@@ -10,6 +10,7 @@ public class AudioEngine {
 
     // Basic engine controls
     public static native void native_create();
+    public static native void native_setLiveMode(boolean isLive, long queueHandle);
     public static native void native_start();
     public static native void native_stop();
     public static native void native_setPlaying(boolean isPlaying);

@@ -5,10 +5,14 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+
 import android.Manifest;
+import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.media.projection.MediaProjectionManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -27,10 +31,15 @@ import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ToggleButton;
+
 import com.example.audioapp.R;
 import com.example.audioapp.audio.AudioBuffer;
+import com.example.audioapp.audio.AudioCaptureService;
 import com.example.audioapp.audio.AudioEngine;
 import com.example.audioapp.audio.AudioFileLoader;
+import com.example.audioapp.audio.AudioStreamManager;
+import com.example.audioapp.audio.AudioStreamQueue;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -38,6 +47,8 @@ public class MainActivity extends AppCompatActivity {
     private static final int STORAGE_PERMISSION_REQUEST_CODE = 3;
 
     private ActivityResultLauncher<Intent> filePickerLauncher;
+    private ActivityResultLauncher<Intent> mediaProjectionLauncher;
+    private MediaProjectionManager mediaProjectionManager;
     
     // UI Components
     private TimelineView timelineView;
@@ -48,6 +59,7 @@ public class MainActivity extends AppCompatActivity {
     private Spinner pluginSpinner;
     private Switch bypassSwitch;
     private LinearLayout eqControlsLayout;
+    private ToggleButton captureButton;
     
     // Audio state
     private AudioBuffer currentAudioBuffer;
@@ -104,6 +116,26 @@ public class MainActivity extends AppCompatActivity {
             }
         );
 
+        mediaProjectionManager = (MediaProjectionManager) getSystemService(Context.MEDIA_PROJECTION_SERVICE);
+
+        mediaProjectionLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == Activity.RESULT_OK) {
+                    Intent serviceIntent = new Intent(this, AudioCaptureService.class);
+                    serviceIntent.setAction("START");
+                    serviceIntent.putExtra("resultCode", result.getResultCode());
+                    serviceIntent.putExtra("data", result.getData());
+                    startForegroundService(serviceIntent);
+                } else {
+                    Toast.makeText(this, "Screen Cast permission is required to capture audio", Toast.LENGTH_SHORT).show();
+                    if (captureButton != null) {
+                        captureButton.setChecked(false); // Reset the button state
+                    }
+                }
+            }
+        );
+
         // Initialize UI components
         initializeUI();
         
@@ -147,6 +179,7 @@ public class MainActivity extends AppCompatActivity {
         pluginSpinner = findViewById(R.id.plugin_spinner);
         bypassSwitch = findViewById(R.id.plugin_bypass_switch);
         eqControlsLayout = findViewById(R.id.eq_controls_layout);
+        captureButton = findViewById(R.id.button_capture);
         
         // Setup progress bar interaction
         progressBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -264,6 +297,22 @@ public class MainActivity extends AppCompatActivity {
 
         Button exportButton = findViewById(R.id.button_export);
         exportButton.setOnClickListener(v -> showExportDialog());
+
+        captureButton.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                Intent screenCaptureIntent = mediaProjectionManager.createScreenCaptureIntent();
+                mediaProjectionLauncher.launch(screenCaptureIntent);
+                AudioStreamQueue queue = AudioStreamManager.getInstance().getQueue();
+                AudioEngine.native_setLiveMode(true, queue.getNativeHandle());
+                AudioEngine.native_setPlaying(true);
+            } else {
+                Intent serviceIntent = new Intent(this, AudioCaptureService.class);
+                serviceIntent.setAction("STOP");
+                stopService(serviceIntent);
+                AudioEngine.native_setPlaying(false);
+                AudioEngine.native_setLiveMode(false, 0);
+            }
+        });
     }
 
     private void setupPluginControls() {

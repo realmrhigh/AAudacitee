@@ -6,8 +6,11 @@
 #include <cmath>
 #include <fstream>
 #include <cstring>
+#include <thread>
+#include <atomic>
 #include "AudioBuffer.h"
 #include "CircularBuffer.h"
+#include "LockFreeQueue.h"
 #include "Biquad.h"
 #include "Compressor.h"
 #include "Leveler.h"
@@ -19,7 +22,7 @@
 
 class AudioEngine : public oboe::AudioStreamCallback {
 public:
-    AudioEngine() : circularBuffer(1024) {
+    AudioEngine() : circularBuffer(8192) { // Increased buffer size for live mode
         // Initialize 6-band parametric EQ
         for (int i = 0; i < 6; i++) {
             eqBands[i].setType(dsp::BiquadFilterType::PEAK);
@@ -39,7 +42,59 @@ public:
         eqBands[5].setType(dsp::BiquadFilterType::HIGH_SHELF);
     }
 
-    ~AudioEngine() = default;
+    ~AudioEngine() {
+        setLiveMode(false, nullptr);
+    }
+
+    void setLiveMode(bool isLive, LockFreeQueue<AudioChunk>* queue) {
+        if (isLiveMode.load() == isLive) {
+            return;
+        }
+
+        isLiveMode.store(isLive);
+        captureQueue = queue;
+
+        if (isLive) {
+            if (!liveProcessingThread.joinable()) {
+                liveProcessingThread = std::thread(&AudioEngine::liveProcessingLoop, this);
+            }
+        } else {
+            if (liveProcessingThread.joinable()) {
+                liveProcessingThread.join();
+            }
+        }
+    }
+
+    void liveProcessingLoop() {
+        ALOGI("Starting live processing loop.");
+        while (isLiveMode.load()) {
+            if (!captureQueue) {
+                std::this_thread::sleep_for(std::chrono::milliseconds(10));
+                continue;
+            }
+
+            AudioChunk chunk;
+            if (captureQueue->pop(chunk)) {
+                int numFrames = chunk.size() / 4;
+                if (numFrames > 0) {
+                    std::vector<float> left(numFrames);
+                    std::vector<float> right(numFrames);
+
+                    convert_pcm_s16le_to_float(chunk, left.data(), right.data(), numFrames);
+
+                    processDSP(left.data(), right.data(), numFrames);
+
+                    for (int i = 0; i < numFrames; ++i) {
+                        circularBuffer.write(left[i]);
+                        circularBuffer.write(right[i]);
+                    }
+                }
+            } else {
+                std::this_thread::sleep_for(std::chrono::milliseconds(5));
+            }
+        }
+        ALOGI("Exiting live processing loop.");
+    }
 
     AudioBuffer* getAudioBuffer() { return audioBuffer; }
 
@@ -260,6 +315,16 @@ public:
     }
 
     oboe::DataCallbackResult onAudioReady(oboe::AudioStream *oboeStream, void *audioData, int32_t numFrames) override {
+        if (isLiveMode.load()) {
+            float *output = static_cast<float *>(audioData);
+            for (int i = 0; i < numFrames * stream_->getChannelCount(); ++i) {
+                float sample = 0.0f;
+                circularBuffer.read(sample);
+                output[i] = sample * masterVolume;
+            }
+            return oboe::DataCallbackResult::Continue;
+        }
+
         // Fast exit if not playing to avoid unnecessary processing
         if (!isPlaying || audioBuffer == nullptr) {
             memset(audioData, 0, numFrames * oboeStream->getChannelCount() * sizeof(float));
@@ -413,6 +478,11 @@ private:
     
     // Master Volume
     float masterVolume = 1.0f;
+
+    // Live processing members
+    std::atomic<bool> isLiveMode{false};
+    LockFreeQueue<AudioChunk>* captureQueue = nullptr;
+    std::thread liveProcessingThread;
 };
 
 static AudioEngine engine;
@@ -422,6 +492,12 @@ Java_com_example_audioapp_audio_AudioEngine_native_1create(JNIEnv *env, jclass c
     ALOGI("JNI native_create called");
     // Initialize any required state here if needed
     ALOGI("JNI native_create completed");
+}
+
+extern "C" JNIEXPORT void JNICALL
+Java_com_example_audioapp_audio_AudioEngine_native_1setLiveMode(JNIEnv *env, jclass clazz, jboolean is_live, jlong queue_handle) {
+    auto* queue = reinterpret_cast<LockFreeQueue<AudioChunk>*>(queue_handle);
+    engine.setLiveMode(is_live, queue);
 }
 
 extern "C" JNIEXPORT void JNICALL
@@ -786,4 +862,64 @@ Java_com_example_audioapp_audio_AudioEngine_native_1exportFile(JNIEnv *env, jcla
     env->ReleaseStringUTFChars(path, pathStr);
     delete[] tempBuffer;
     return success;
+}
+
+// Define a type for our queue items
+using AudioChunk = std::vector<uint8_t>;
+
+// Converts a chunk of 16-bit stereo PCM data to two float arrays.
+void convert_pcm_s16le_to_float(const std::vector<uint8_t>& pcm_s16le, float* left, float* right, int& numFrames) {
+    numFrames = pcm_s16le.size() / 4; // 2 channels, 2 bytes/sample
+    const int16_t* pcmData = reinterpret_cast<const int16_t*>(pcm_s16le.data());
+
+    for (int i = 0; i < numFrames; ++i) {
+        left[i] = static_cast<float>(pcmData[i * 2]) / 32768.0f;
+        right[i] = static_cast<float>(pcmData[i * 2 + 1]) / 32768.0f;
+    }
+}
+
+extern "C" JNIEXPORT jlong JNICALL
+Java_com_example_audioapp_audio_AudioStreamQueue_native_1create(JNIEnv *env, jobject thiz, jint size) {
+    return reinterpret_cast<jlong>(new LockFreeQueue<AudioChunk>(size));
+}
+
+extern "C" JNIEXPORT void JNICALL
+Java_com_example_audioapp_audio_AudioStreamQueue_native_1destroy(JNIEnv *env, jobject thiz, jlong handle) {
+    delete reinterpret_cast<LockFreeQueue<AudioChunk>*>(handle);
+}
+
+extern "C" JNIEXPORT jboolean JNICALL
+Java_com_example_audioapp_audio_AudioStreamQueue_native_1push(JNIEnv *env, jobject thiz, jlong handle, jbyteArray data, jint size) {
+    auto* queue = reinterpret_cast<LockFreeQueue<AudioChunk>*>(handle);
+    if (!queue) {
+        return false;
+    }
+    jbyte* elements = env->GetByteArrayElements(data, nullptr);
+    if (!elements) {
+        return false;
+    }
+    AudioChunk chunk(size);
+    memcpy(chunk.data(), elements, size);
+    bool result = queue->push(chunk);
+    env->ReleaseByteArrayElements(data, elements, JNI_ABORT);
+    return result;
+}
+
+extern "C" JNIEXPORT jint JNICALL
+Java_com_example_audioapp_audio_AudioStreamQueue_native_1pop(JNIEnv *env, jobject thiz, jlong handle, jbyteArray data) {
+    auto* queue = reinterpret_cast<LockFreeQueue<AudioChunk>*>(handle);
+    if (!queue) {
+        return -1;
+    }
+    AudioChunk chunk;
+    if (queue->pop(chunk)) {
+        jsize len = env->GetArrayLength(data);
+        if (len < chunk.size()) {
+            // Buffer provided by Java is too small
+            return -2;
+        }
+        env->SetByteArrayRegion(data, 0, chunk.size(), reinterpret_cast<const jbyte*>(chunk.data()));
+        return chunk.size();
+    }
+    return 0; // Queue was empty
 }

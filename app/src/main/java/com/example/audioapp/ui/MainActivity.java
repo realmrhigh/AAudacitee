@@ -180,6 +180,23 @@ public class MainActivity extends AppCompatActivity {
         Button loadFileButton = findViewById(R.id.button_load_file);
         loadFileButton.setOnClickListener(v -> checkStoragePermissionAndLoadFile());
 
+        Button recordButton = findViewById(R.id.button_record);
+        recordButton.setOnClickListener(v -> {
+            if (AudioEngine.native_isRecording()) {
+                // Stop recording
+                AudioEngine.native_stopRecording();
+                recordButton.setText("● Rec");
+                onRecordingFinished();
+            } else {
+                // Start recording
+                if (AudioEngine.native_startRecording()) {
+                    recordButton.setText("■ Stop");
+                } else {
+                    Toast.makeText(this, "Failed to start recording", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
         Button playButton = findViewById(R.id.button_play);
         playButton.setOnClickListener(v -> {
             if (currentAudioBuffer != null) {
@@ -786,6 +803,28 @@ public class MainActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
         }).start();
+    }
+
+    private void onRecordingFinished() {
+        currentAudioBuffer = AudioEngine.native_getAudioBuffer();
+        if (currentAudioBuffer != null) {
+            timelineView.setAudioBuffer(currentAudioBuffer);
+            fileInfoText.setText("Recorded audio");
+
+            int frameCount = currentAudioBuffer.getFrameCount();
+            int sampleRate = currentAudioBuffer.getSampleRate();
+            float durationSeconds = (float) frameCount / sampleRate;
+
+            totalTimeText.setText(formatTime(durationSeconds));
+            progressBar.setMax(100);
+            progressBar.setProgress(0);
+            timelineView.setPlaybackPosition(0);
+            updateTimeDisplay(0);
+
+            Toast.makeText(this, "Recording finished", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, "Failed to get recorded audio", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void showExportDialog() {

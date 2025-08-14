@@ -242,6 +242,67 @@ public:
             stream_->close();
             stream_ = nullptr;
         }
+        if (recordingStream_) {
+            recordingStream_->stop();
+            recordingStream_->close();
+            recordingStream_ = nullptr;
+        }
+    }
+
+    bool startRecording() {
+        if (isRecording) {
+            return false;
+        }
+
+        oboe::AudioStreamBuilder builder;
+        builder.setDirection(oboe::Direction::Input);
+        builder.setPerformanceMode(oboe::PerformanceMode::LowLatency);
+        builder.setSharingMode(oboe::SharingMode::Exclusive);
+        builder.setFormat(oboe::AudioFormat::Float);
+        builder.setChannelCount(oboe::ChannelCount::Stereo);
+        builder.setCallback(this);
+
+        oboe::Result result = builder.openStream(&recordingStream_);
+        if (result != oboe::Result::OK) {
+            ALOGE("Failed to create recording stream. Error: %s", oboe::convertToText(result));
+            return false;
+        }
+
+        result = recordingStream_->requestStart();
+        if (result != oboe::Result::OK) {
+            ALOGE("Failed to start recording stream. Error: %s", oboe::convertToText(result));
+            return false;
+        }
+
+        recordingBuffer.clear();
+        isRecording = true;
+        return true;
+    }
+
+    void stopRecording() {
+        if (!isRecording) {
+            return;
+        }
+
+        if (recordingStream_) {
+            recordingStream_->stop();
+            recordingStream_->close();
+            recordingStream_ = nullptr;
+        }
+
+        isRecording = false;
+
+        // Create a new AudioBuffer from the recorded data
+        if (!recordingBuffer.empty()) {
+            int frameCount = recordingBuffer.size() / 2; // Assuming stereo
+            auto* data = new float[recordingBuffer.size()];
+            std::copy(recordingBuffer.begin(), recordingBuffer.end(), data);
+            setAudioBuffer(data, sampleRate_, 2, frameCount);
+        }
+    }
+
+    bool isRecording_public() {
+        return isRecording;
     }
 
     void setPlaying(bool isPlaying) {
@@ -260,80 +321,89 @@ public:
     }
 
     oboe::DataCallbackResult onAudioReady(oboe::AudioStream *oboeStream, void *audioData, int32_t numFrames) override {
-        // Fast exit if not playing to avoid unnecessary processing
-        if (!isPlaying || audioBuffer == nullptr) {
-            memset(audioData, 0, numFrames * oboeStream->getChannelCount() * sizeof(float));
+        if (oboeStream == recordingStream_ && isRecording) {
+            int numSamples = numFrames * oboeStream->getChannelCount();
+            float* floatData = static_cast<float*>(audioData);
+            recordingBuffer.insert(recordingBuffer.end(), floatData, floatData + numSamples);
             return oboe::DataCallbackResult::Continue;
         }
 
-        float *output = static_cast<float *>(audioData);
-        
-        int frameCount = audioBuffer->getFrameCount();
-        int channelCount = audioBuffer->getChannelCount();
-        int outputChannels = oboeStream->getChannelCount();
-        float* audioDataPtr = audioBuffer->getData();
-        
-        // Additional safety checks
-        if (audioDataPtr == nullptr || frameCount <= 0 || channelCount <= 0 || outputChannels <= 0) {
-            memset(audioData, 0, numFrames * outputChannels * sizeof(float));
-            return oboe::DataCallbackResult::Continue;
-        }
-        
-        int totalSamples = frameCount * channelCount;
-        
-        // Create temporary buffers for DSP processing
-        float leftBuffer[numFrames];
-        float rightBuffer[numFrames];
-        
-        // Fill buffers with audio data
-        for (int i = 0; i < numFrames; ++i) {
-            // Check if we've reached the end of the audio
-            if (playbackPosition >= frameCount) {
-                // Fill remaining frames with silence
-                for (int j = i; j < numFrames; ++j) {
-                    leftBuffer[j] = 0.0f;
-                    rightBuffer[j] = 0.0f;
-                }
-                break;
+        if (oboeStream == stream_) {
+            // Fast exit if not playing to avoid unnecessary processing
+            if (!isPlaying || audioBuffer == nullptr) {
+                memset(audioData, 0, numFrames * oboeStream->getChannelCount() * sizeof(float));
+                return oboe::DataCallbackResult::Continue;
             }
+
+            float *output = static_cast<float *>(audioData);
             
-            if (channelCount == 1) {
-                // Mono: duplicate to both channels
-                if (playbackPosition < totalSamples) {
-                    float sample = audioDataPtr[playbackPosition];
-                    leftBuffer[i] = sample;
-                    rightBuffer[i] = sample;
-                } else {
-                    leftBuffer[i] = 0.0f;
-                    rightBuffer[i] = 0.0f;
-                }
-            } else if (channelCount == 2) {
-                // Stereo: copy left and right channels with bounds checking
-                int leftIndex = playbackPosition * 2;
-                int rightIndex = playbackPosition * 2 + 1;
-                if (rightIndex < totalSamples) {
-                    leftBuffer[i] = audioDataPtr[leftIndex];
-                    rightBuffer[i] = audioDataPtr[rightIndex];
-                } else {
-                    leftBuffer[i] = 0.0f;
-                    rightBuffer[i] = 0.0f;
-                }
+            int frameCount = audioBuffer->getFrameCount();
+            int channelCount = audioBuffer->getChannelCount();
+            int outputChannels = oboeStream->getChannelCount();
+            float* audioDataPtr = audioBuffer->getData();
+
+            // Additional safety checks
+            if (audioDataPtr == nullptr || frameCount <= 0 || channelCount <= 0 || outputChannels <= 0) {
+                memset(audioData, 0, numFrames * outputChannels * sizeof(float));
+                return oboe::DataCallbackResult::Continue;
             }
-            playbackPosition++;
-        }
-        
-        // Apply DSP processing to the buffers
-        processDSP(leftBuffer, rightBuffer, numFrames);
-        
-        // Apply master volume and copy to output
-        for (int i = 0; i < numFrames; ++i) {
-            if (outputChannels == 1) {
-                // Mix down to mono
-                output[i] = (leftBuffer[i] + rightBuffer[i]) * 0.5f * masterVolume;
-            } else if (outputChannels == 2) {
-                // Stereo output
-                output[i * 2] = leftBuffer[i] * masterVolume;        // Left
-                output[i * 2 + 1] = rightBuffer[i] * masterVolume;   // Right
+
+            int totalSamples = frameCount * channelCount;
+
+            // Create temporary buffers for DSP processing
+            float leftBuffer[numFrames];
+            float rightBuffer[numFrames];
+
+            // Fill buffers with audio data
+            for (int i = 0; i < numFrames; ++i) {
+                // Check if we've reached the end of the audio
+                if (playbackPosition >= frameCount) {
+                    // Fill remaining frames with silence
+                    for (int j = i; j < numFrames; ++j) {
+                        leftBuffer[j] = 0.0f;
+                        rightBuffer[j] = 0.0f;
+                    }
+                    break;
+                }
+
+                if (channelCount == 1) {
+                    // Mono: duplicate to both channels
+                    if (playbackPosition < totalSamples) {
+                        float sample = audioDataPtr[playbackPosition];
+                        leftBuffer[i] = sample;
+                        rightBuffer[i] = sample;
+                    } else {
+                        leftBuffer[i] = 0.0f;
+                        rightBuffer[i] = 0.0f;
+                    }
+                } else if (channelCount == 2) {
+                    // Stereo: copy left and right channels with bounds checking
+                    int leftIndex = playbackPosition * 2;
+                    int rightIndex = playbackPosition * 2 + 1;
+                    if (rightIndex < totalSamples) {
+                        leftBuffer[i] = audioDataPtr[leftIndex];
+                        rightBuffer[i] = audioDataPtr[rightIndex];
+                    } else {
+                        leftBuffer[i] = 0.0f;
+                        rightBuffer[i] = 0.0f;
+                    }
+                }
+                playbackPosition++;
+            }
+
+            // Apply DSP processing to the buffers
+            processDSP(leftBuffer, rightBuffer, numFrames);
+
+            // Apply master volume and copy to output
+            for (int i = 0; i < numFrames; ++i) {
+                if (outputChannels == 1) {
+                    // Mix down to mono
+                    output[i] = (leftBuffer[i] + rightBuffer[i]) * 0.5f * masterVolume;
+                } else if (outputChannels == 2) {
+                    // Stereo output
+                    output[i * 2] = leftBuffer[i] * masterVolume;        // Left
+                    output[i * 2 + 1] = rightBuffer[i] * masterVolume;   // Right
+                }
             }
         }
         
@@ -374,10 +444,13 @@ private:
         }
     }
     oboe::AudioStream *stream_ = nullptr;
+    oboe::AudioStream *recordingStream_ = nullptr;
     int32_t sampleRate_ = 0;
     int32_t bufferSize_ = 0;
     AudioBuffer *audioBuffer = nullptr;
+    std::vector<float> recordingBuffer;
     bool isPlaying = false;
+    std::atomic<bool> isRecording = {false};
     std::atomic<int> playbackPosition;
     CircularBuffer<float> circularBuffer;
     
@@ -623,6 +696,47 @@ extern "C" JNIEXPORT void JNICALL
 Java_com_example_audioapp_audio_AudioEngine_native_1setTransientShaperEnabled(JNIEnv *env, jclass clazz, jboolean enabled) {
     engine.setTransientShaperEnabled(enabled);
     ALOGI("Transient Shaper enabled: %s", enabled ? "true" : "false");
+}
+
+// Recording Controls
+extern "C" JNIEXPORT jboolean JNICALL
+Java_com_example_audioapp_audio_AudioEngine_native_1startRecording(JNIEnv *env, jclass clazz) {
+    return engine.startRecording();
+}
+
+extern "C" JNIEXPORT void JNICALL
+Java_com_example_audioapp_audio_AudioEngine_native_1stopRecording(JNIEnv *env, jclass clazz) {
+    engine.stopRecording();
+}
+
+extern "C" JNIEXPORT jboolean JNICALL
+Java_com_example_audioapp_audio_AudioEngine_native_1isRecording(JNIEnv *env, jclass clazz) {
+    return engine.isRecording_public();
+}
+
+extern "C" JNIEXPORT jobject JNICALL
+Java_com_example_audioapp_audio_AudioEngine_native_1getAudioBuffer(JNIEnv *env, jclass clazz) {
+    AudioBuffer* buffer = engine.getAudioBuffer();
+    if (buffer == nullptr) {
+        return nullptr;
+    }
+
+    jclass bufferClass = env->FindClass("com/example/audioapp/audio/AudioBuffer");
+    if (bufferClass == nullptr) {
+        return nullptr;
+    }
+
+    jmethodID constructor = env->GetMethodID(bufferClass, "<init>", "([FIII)V");
+    if (constructor == nullptr) {
+        return nullptr;
+    }
+
+    int totalSamples = buffer->getFrameCount() * buffer->getChannelCount();
+    jfloatArray dataArray = env->NewFloatArray(totalSamples);
+    env->SetFloatArrayRegion(dataArray, 0, totalSamples, buffer->getData());
+
+    jobject newBuffer = env->NewObject(bufferClass, constructor, dataArray, buffer->getSampleRate(), buffer->getChannelCount(), buffer->getFrameCount());
+    return newBuffer;
 }
 
 extern "C" JNIEXPORT void JNICALL

@@ -18,6 +18,12 @@ public class AudioEngine {
     public static native void native_setAudioBuffer(AudioBuffer buffer);
     public static native void native_setBufferSize(int bufferSize);
     public static native void native_setMasterVolume(float volume);
+
+    // Recording controls
+    public static native boolean native_startRecording();
+    public static native void native_stopRecording();
+    public static native boolean native_isRecording();
+    public static native AudioBuffer native_getAudioBuffer();
     
     // Parametric EQ controls
     public static native void native_setEQBandEnabled(int bandIndex, boolean enabled);

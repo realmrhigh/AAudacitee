@@ -298,6 +298,15 @@
                     android:backgroundTint="#9C27B0"
                     android:textColor="#ffffff" />
 
+                    <Button
+                        android:id="@+id/button_edit_image"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="4dp"
+                        android:text="Edit Image"
+                        android:backgroundTint="#FF5722"
+                        android:textColor="#ffffff" />
+
                 </LinearLayout>
 
             </HorizontalScrollView>

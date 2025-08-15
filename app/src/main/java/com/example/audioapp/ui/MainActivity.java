@@ -281,6 +281,12 @@ public class MainActivity extends AppCompatActivity {
 
         Button exportButton = findViewById(R.id.button_export);
         exportButton.setOnClickListener(v -> showExportDialog());
+
+        Button editImageButton = findViewById(R.id.button_edit_image);
+        editImageButton.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, ImageEditorActivity.class);
+            startActivity(intent);
+        });
     }
 
     private void setupPluginControls() {
